@@ -1,0 +1,28 @@
+{
+  "region_id": "first_night",
+  "region_name": "首夜城区",
+  "dispatch_case_ids": ["case_sofa", "case_tv", "case_wardrobe"],
+  "rest_points": [
+    {"x": -13.5, "y": 0.9, "z": 0.0}
+  ],
+  "zones": [
+    {"id": "rest", "type": "rest", "x": -13.5, "z": 0.0},
+    {"id": "case_sofa", "type": "case", "x": -8.0, "z": 0.0},
+    {"id": "case_tv", "type": "case", "x": 0.0, "z": 0.0},
+    {"id": "case_wardrobe", "type": "case", "x": 8.0, "z": 0.0},
+    {"id": "boss_room", "type": "boss", "x": 11.0, "z": 0.0},
+    {"id": "seal_endpoint", "type": "objective", "x": 16.0, "z": 0.0}
+  ],
+  "ability_gates": [
+    {"id": "shortcut_east", "required_ability": "night_stamp", "unlocks_zone": "boss_room"},
+    {"id": "seal_door", "required_boss": "seal_boss", "unlocks_zone": "seal_endpoint"}
+  ],
+  "abilities": [
+    {"id": "night_stamp", "name": "夜巡印章", "flavor": "让旧路出现新的入口。"},
+    {"id": "seal_key", "name": "封印钥匙", "flavor": "可以打开第一区域的重要目标。"}
+  ],
+  "quests": [
+    {"id": "side_a", "name": "失物印章", "zone_id": "case_tv", "reward_ability": "night_stamp"},
+    {"id": "side_b", "name": "遗物线索", "zone_id": "case_wardrobe", "reveals_boss": "boss_room"}
+  ]
+}
