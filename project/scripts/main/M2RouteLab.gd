@@ -3,6 +3,7 @@ extends Node3D
 const PlayerScript := preload("res://scripts/player/PlayerController.gd")
 const GhostScript := preload("res://scripts/actors/TestGhost.gd")
 const LiquidBarScript := preload("res://scripts/ui/LiquidHealthBar.gd")
+const GateScript := preload("res://scripts/v2/V2AbilityGate.gd")
 
 const CAMERA_HEIGHT := 10.5
 const CAMERA_BACK := 5.0
@@ -63,6 +64,9 @@ var _route_gates: Array[StaticBody3D] = []
 var _gate_visuals: Array[MeshInstance3D] = []
 var _final_started := false
 var _shift_done := false
+var _boss_key_granted := false
+var _seal_gate
+var _target_marker: MeshInstance3D
 
 
 func _ready() -> void:
@@ -71,6 +75,7 @@ func _ready() -> void:
 	_build_case_pads()
 	_build_rest_markers()
 	_build_route_gates()
+	_build_v2_seal_end()
 	_build_player()
 	_build_camera()
 	_build_hud()
@@ -84,6 +89,8 @@ func _process(delta: float) -> void:
 	var blend := 1.0 - exp(-6.5 * delta)
 	_camera.global_position = _camera.global_position.lerp(camera_target, blend)
 	_camera.look_at(_player.global_position + Vector3.UP, Vector3.UP)
+	if _boss_key_granted and not _shift_done and _player.global_position.x > 17.0:
+		_finish_shift()
 
 
 func _on_ghost_sent(ghost: TestGhost) -> void:
@@ -94,7 +101,7 @@ func _on_ghost_sent(ghost: TestGhost) -> void:
 	if _remaining_ghosts == 0 and not _final_started:
 		_complete_current_case()
 	elif _remaining_ghosts == 0 and _final_started and not _shift_done:
-		_finish_shift()
+		_boss_cleared()
 	else:
 		_update_hud()
 
@@ -171,6 +178,28 @@ func _finish_shift() -> void:
 	_set_pad_color(2, Color("#6fce8f"))
 	_show_event("今晚收工：五星结业，事务所传来新订单预告")
 	_update_hud()
+
+
+func _boss_cleared() -> void:
+	if _boss_key_granted:
+		return
+	_boss_key_granted = true
+	if is_instance_valid(_seal_gate):
+		_seal_gate.try_open({}, true)
+	_show_event("封印钥匙到手：封印终点已打开，走过去确认收工")
+	_update_hud()
+
+
+func _build_v2_seal_end() -> void:
+	_seal_gate = GateScript.new()
+	_seal_gate.set("gate_id", "seal_door")
+	_seal_gate.set("required_boss", "seal_boss")
+	_seal_gate.position = Vector3(15.4, 0.0, 0.0)
+	add_child(_seal_gate)
+
+	_target_marker = PlaceholderKit.box("art_key_v2_seal_target", Color("#f2d77a"), Vector3(1.2, 4.0, 1.2))
+	_target_marker.position = Vector3(18.2, 2.0, 0.0)
+	add_child(_target_marker)
 
 
 func _build_environment() -> void:
@@ -335,9 +364,13 @@ func _update_hud() -> void:
 		var data: Dictionary = CASES[_case_index]
 		case_text = data.title
 		stage_text = "%d / %d" % [_case_index + 1, CASES.size()]
-	_hud_label.text = "夜班派单 | 第 %s 单\n现场：%s\n还能上班：%d/%d\n剩余闹事鬼：%d\n好评：%d\n清扫连锁：%d\n扫劲：%d/%d\n\nWASD 移动 | 空格 跳跃 | Shift 冲刺 | LMB 清扫 | RMB 短按横扫/长按陀螺 | 静止按住 X 回血 | E 送走" % [
+	var objective_text := "封印终点：暂时无法到达"
+	if _boss_key_granted:
+		objective_text = "封印终点：已打开，前往确认"
+	_hud_label.text = "夜班派单 | 第 %s 单\n现场：%s\n目标：%s\n还能上班：%d/%d\n剩余闹事鬼：%d\n好评：%d\n清扫连锁：%d\n扫劲：%d/%d\n\nWASD 移动 | 空格 跳跃 | Shift 冲刺 | LMB 清扫 | RMB 短按横扫/长按陀螺 | 静止按住 X 回血 | E 送走" % [
 		stage_text,
 		case_text,
+		objective_text,
 		_player_health,
 		5,
 		_remaining_ghosts,

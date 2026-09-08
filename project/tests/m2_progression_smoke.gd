@@ -31,5 +31,11 @@ func _run() -> void:
 		for _frame in range(2):
 			await process_frame
 
+	if not route.get("_shift_done") and route.get("_boss_key_granted"):
+		var player := get_first_node_in_group("player")
+		player.global_position = Vector3(18.0, 0.9, 0.0)
+		for _frame in range(10):
+			await process_frame
+
 	print("PROGRESSION shift_done=%s reviews=%s steps=%s" % [route.get("_shift_done"), route.get("_review_count"), steps])
 	quit(0 if route.get("_shift_done") and int(route.get("_review_count")) >= 4 else 1)
