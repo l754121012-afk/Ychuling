@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/main/M2RouteLab.gd" id="1_m2"]
+
+[node name="M2Route" type="Node3D"]
+script = ExtResource("1_m2")
