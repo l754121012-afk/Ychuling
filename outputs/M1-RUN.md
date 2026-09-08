@@ -2,6 +2,8 @@
 
 状态：Godot 工程已推进到 M2 路线白盒；headless smoke 与完整送走流程测试均通过。
 
+V2 可见玩法：按 M 打开首夜城区地图；两个 NPC 用 E 对话提供世界观；第一案后拾取“夜巡印章”可强化清扫并打开下一段门；Boss 后靠近金色目标柱按 E 完成封印终点。
+
 ## 工程位置
 
 `C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs\project`

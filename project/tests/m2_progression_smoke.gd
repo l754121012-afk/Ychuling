@@ -18,6 +18,8 @@ func _run() -> void:
 		steps += 1
 		var ghosts := get_nodes_in_group("ghosts")
 		if ghosts.is_empty():
+			if not route.get("_has_night_stamp") and is_instance_valid(route.get("_reward_pickup")):
+				route._on_ability_collected("night_stamp")
 			await process_frame
 			continue
 		for ghost in ghosts:

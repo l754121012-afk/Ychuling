@@ -4,6 +4,7 @@ const PlayerScript := preload("res://scripts/player/PlayerController.gd")
 const GhostScript := preload("res://scripts/actors/TestGhost.gd")
 const LiquidBarScript := preload("res://scripts/ui/LiquidHealthBar.gd")
 const GateScript := preload("res://scripts/v2/V2AbilityGate.gd")
+const PickupScript := preload("res://scripts/v2/V2AbilityPickup.gd")
 
 const CAMERA_HEIGHT := 10.5
 const CAMERA_BACK := 5.0
@@ -67,6 +68,13 @@ var _shift_done := false
 var _boss_key_granted := false
 var _seal_gate
 var _target_marker: MeshInstance3D
+var _has_night_stamp := false
+var _reward_pickup
+var _map_open := false
+var _map_layer: CanvasLayer
+var _map_current_label: Label
+var _zone_marker_labels: Array[Label] = []
+var _npc_data: Array[Dictionary] = []
 
 
 func _ready() -> void:
@@ -79,12 +87,18 @@ func _ready() -> void:
 	_build_player()
 	_build_camera()
 	_build_hud()
+	_setup_map_hud()
+	_build_v2_npcs()
 	_activate_case(_case_index)
 
 
 func _process(delta: float) -> void:
 	if not _player or not _camera:
 		return
+	if Input.is_action_just_pressed("map"):
+		_toggle_map()
+	if _map_open:
+		_update_map()
 	var camera_target := _player.global_position + Vector3(0.0, CAMERA_HEIGHT, CAMERA_BACK)
 	var blend := 1.0 - exp(-6.5 * delta)
 	_camera.global_position = _camera.global_position.lerp(camera_target, blend)
@@ -94,6 +108,8 @@ func _process(delta: float) -> void:
 			_finish_shift()
 		elif _player.global_position.x > 17.0:
 			_finish_shift()
+	if Input.is_action_just_pressed("interact") and not (_boss_key_granted and absf(_player.global_position.x - 18.0) < 3.0):
+		_try_v2_npc()
 
 
 func _on_ghost_sent(ghost: TestGhost) -> void:
@@ -112,6 +128,11 @@ func _on_ghost_sent(ghost: TestGhost) -> void:
 func _complete_current_case() -> void:
 	_review_count += 1
 	_set_pad_color(_case_index, Color("#6fce8f"))
+	if _case_index == 0 and not _has_night_stamp:
+		_spawn_stamp_reward()
+		_show_event("案件1清完：附近出现了夜巡印章")
+		_update_hud()
+		return
 	if _case_index < CASES.size() - 1:
 		_show_event("顾客回访：五星好评，下一单已亮起")
 		_case_index += 1
@@ -123,6 +144,31 @@ func _complete_current_case() -> void:
 	else:
 		_show_event("三单清完，收工事件来了")
 		_start_final_event()
+
+
+func _spawn_stamp_reward() -> void:
+	if is_instance_valid(_reward_pickup):
+		return
+	_reward_pickup = PickupScript.new()
+	_reward_pickup.set("ability_id", "night_stamp")
+	_reward_pickup.set("ability_name", "夜巡印章")
+	_reward_pickup.position = Vector3(-8.0, 0.0, -3.6)
+	add_child(_reward_pickup)
+	_reward_pickup.collected.connect(_on_ability_collected)
+
+
+func _on_ability_collected(p_ability_id: String) -> void:
+	if p_ability_id != "night_stamp":
+		return
+	_has_night_stamp = true
+	_reward_pickup = null
+	if is_instance_valid(_player):
+		_player.set_base_sweep_damage(2)
+	_open_route_gate(0)
+	_show_event("获得夜巡印章：清扫伤害提升，下一案件门已打开")
+	_case_index = 1
+	_activate_case(1)
+	_update_hud()
 
 
 func _activate_case(p_index: int) -> void:
@@ -203,6 +249,35 @@ func _build_v2_seal_end() -> void:
 	_target_marker = PlaceholderKit.box("art_key_v2_seal_target", Color("#f2d77a"), Vector3(1.2, 4.0, 1.2))
 	_target_marker.position = Vector3(18.2, 2.0, 0.0)
 	add_child(_target_marker)
+
+
+func _build_v2_npcs() -> void:
+	_npc_data = [
+		{
+			"id": "np_old_watchman",
+			"position": Vector3(-12.0, 0.0, 4.2),
+			"message": "老巡夜员：东区三案不是三个邻居吵架，它们都是在给封印‘续命’。第一案清完后，那边会浮出一枚夜巡印章。",
+		},
+		{
+			"id": "np_mystery_ghost",
+			"position": Vector3(6.2, 0.0, -4.6),
+			"message": "神秘鬼：你要找的钥匙不在房间里，而在收工 Boss 心里。金色柱子就是那扇该被打开的门。",
+		},
+	]
+	for npc in _npc_data:
+		var marker := PlaceholderKit.box("art_key_v2_npc_%s" % npc.id, Color("#57d4a5"), Vector3(0.8, 1.6, 0.8))
+		marker.position = npc.position + Vector3(0.0, 0.8, 0.0)
+		add_child(marker)
+
+
+func _try_v2_npc() -> void:
+	if not is_instance_valid(_player):
+		return
+	for npc in _npc_data:
+		var npc_position: Vector3 = npc.position
+		if _player.global_position.distance_to(npc_position) < 3.2:
+			_show_event(str(npc.message))
+			return
 
 
 func _build_environment() -> void:
@@ -370,7 +445,7 @@ func _update_hud() -> void:
 	var objective_text := "封印终点：暂时无法到达"
 	if _boss_key_granted:
 		objective_text = "封印终点：已打开，靠近金色柱按 E 确认"
-	_hud_label.text = "夜班派单 | 第 %s 单\n现场：%s\n目标：%s\n还能上班：%d/%d\n剩余闹事鬼：%d\n好评：%d\n清扫连锁：%d\n扫劲：%d/%d\n\nWASD 移动 | 空格 跳跃 | Shift 冲刺 | LMB 清扫 | RMB 短按横扫/长按陀螺 | 静止按住 X 回血 | E 送走" % [
+	_hud_label.text = "夜班派单 | 第 %s 单\n现场：%s\n目标：%s\n还能上班：%d/%d\n剩余闹事鬼：%d\n好评：%d\n清扫连锁：%d\n扫劲：%d/%d\n\nWASD 移动 | M 地图 | 空格 跳跃 | Shift 冲刺 | LMB 清扫 | RMB 短按横扫/长按陀螺 | 静止按住 X 回血 | E 互动/送走" % [
 		stage_text,
 		case_text,
 		objective_text,
@@ -429,6 +504,13 @@ func _on_followup_available() -> void:
 func _handle_player_defeat() -> void:
 	_show_event("出局：回到最近的休息点，当前案件重头开始")
 	_chain_count = 0
+	if not _final_started:
+		_has_night_stamp = false
+		if is_instance_valid(_reward_pickup):
+			_reward_pickup.queue_free()
+		_reward_pickup = null
+		if is_instance_valid(_player):
+			_player.set_base_sweep_damage(1)
 	for ghost in _active_ghosts:
 		if is_instance_valid(ghost):
 			ghost.queue_free()
@@ -548,3 +630,87 @@ func _refresh_stamina_bar() -> void:
 	_stamina_bar_fill.size.x = 210.0 * ratio
 	if is_instance_valid(_stamina_value_label):
 		_stamina_value_label.text = "%d/15" % ceili(_player_stamina)
+
+
+func _setup_map_hud() -> void:
+	_map_layer = CanvasLayer.new()
+	_map_layer.name = "RegionMap"
+	add_child(_map_layer)
+
+	var panel := ColorRect.new()
+	panel.name = "RegionMapPanel"
+	panel.color = Color(0.07, 0.1, 0.12, 0.96)
+	panel.position = Vector2(400.0, 120.0)
+	panel.size = Vector2(800.0, 620.0)
+	_map_layer.add_child(panel)
+
+	var title := Label.new()
+	title.text = "首夜城区地图"
+	title.position = Vector2(424.0, 146.0)
+	title.add_theme_color_override("font_color", Color("#f4f7fb"))
+	title.add_theme_font_size_override("font_size", 28)
+	_map_layer.add_child(title)
+
+	_map_current_label = Label.new()
+	_map_current_label.position = Vector2(424.0, 190.0)
+	_map_current_label.add_theme_color_override("font_color", Color("#ffd166"))
+	_map_current_label.add_theme_font_size_override("font_size", 20)
+	_map_layer.add_child(_map_current_label)
+
+	var zones := [
+		["夜巡司", -13.5, 0],
+		["案件1：沙发灰影", -8.0, 1],
+		["案件2：电视歌声", 0.0, 2],
+		["案件3：衣柜呼吸", 8.0, 3],
+		["Boss 收工区", 11.0, 4],
+		["封印终点", 18.0, 5],
+	]
+	for zone in zones:
+		var label := Label.new()
+		label.text = "%s" % zone[0]
+		label.add_theme_color_override("font_color", Color("#c9d6e5"))
+		label.add_theme_font_size_override("font_size", 18)
+		var map_x := 460.0 + (float(zone[1]) + 14.0) * 17.0
+		var map_y := 250.0 + float(int(zone[2]) % 2) * 34.0
+		label.position = Vector2(map_x, map_y)
+		_map_layer.add_child(label)
+		_zone_marker_labels.append(label)
+
+	var map_hint := Label.new()
+	map_hint.text = "按 M 关闭地图"
+	map_hint.position = Vector2(424.0, 700.0)
+	map_hint.add_theme_color_override("font_color", Color("#93a2b5"))
+	map_hint.add_theme_font_size_override("font_size", 16)
+	_map_layer.add_child(map_hint)
+	_map_layer.visible = false
+
+
+func _toggle_map() -> void:
+	_map_open = not _map_open
+	_map_layer.visible = _map_open
+	_update_map()
+
+
+func _update_map() -> void:
+	if not is_instance_valid(_map_current_label):
+		return
+	var current := "夜巡司/案件区"
+	if is_instance_valid(_player):
+		var px := _player.global_position.x
+		if px > 17.0:
+			current = "封印终点"
+		elif px > 13.0:
+			current = "Boss 收工区"
+		elif px > 5.0:
+			current = "案件3：衣柜呼吸"
+		elif px > -3.0:
+			current = "案件2：电视歌声"
+		elif px > -10.0:
+			current = "案件1：沙发灰影"
+	_map_current_label.text = "当前位置：%s" % current
+	var endpoint_text := "封印终点：锁着"
+	if _boss_key_granted:
+		endpoint_text = "封印终点：可交互"
+	for index in range(mini(_zone_marker_labels.size(), 6)):
+		if index == 5:
+			_zone_marker_labels[index].text = endpoint_text

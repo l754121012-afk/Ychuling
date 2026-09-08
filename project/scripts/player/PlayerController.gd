@@ -117,6 +117,7 @@ var _body_visual: MeshInstance3D
 var _broom_visuals: Array[MeshInstance3D] = []
 var _broom_default_colors: Array[Color] = []
 var _enhanced_sweep := false
+var base_sweep_damage := 1
 
 
 func _ready() -> void:
@@ -794,7 +795,7 @@ func _show_bounce_effect(p_position: Vector3) -> void:
 
 
 func _apply_slash_damage() -> void:
-	var sweep_damage := 2 if _enhanced_sweep else 1
+	var sweep_damage := base_sweep_damage * (2 if _enhanced_sweep else 1)
 	for body in _slash_area.get_overlapping_bodies():
 		if body == self:
 			continue
@@ -803,6 +804,10 @@ func _apply_slash_damage() -> void:
 			add_bean(1)
 			_mark_followup_target(body)
 	_enhanced_sweep = false
+
+
+func set_base_sweep_damage(p_damage: int) -> void:
+	base_sweep_damage = maxi(1, p_damage)
 
 
 func _try_send_off() -> void:
