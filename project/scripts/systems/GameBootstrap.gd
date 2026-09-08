@@ -35,7 +35,7 @@ func _ready() -> void:
 	_add_key("interact", KEY_E)
 	_add_joy_button("interact", JOY_BUTTON_Y)
 	_add_key("heal", KEY_X)
-	_add_key("map", KEY_M)
+	_add_key("map", KEY_TAB)
 	_add_key("pause", KEY_ESCAPE)
 	_add_joy_button("pause", JOY_BUTTON_START)
 	_add_key("confirm", KEY_ENTER)

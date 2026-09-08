@@ -445,7 +445,7 @@ func _update_hud() -> void:
 	var objective_text := "封印终点：暂时无法到达"
 	if _boss_key_granted:
 		objective_text = "封印终点：已打开，靠近金色柱按 E 确认"
-	_hud_label.text = "夜班派单 | 第 %s 单\n现场：%s\n目标：%s\n还能上班：%d/%d\n剩余闹事鬼：%d\n好评：%d\n清扫连锁：%d\n扫劲：%d/%d\n\nWASD 移动 | M 地图 | 空格 跳跃 | Shift 冲刺 | LMB 清扫 | RMB 短按横扫/长按陀螺 | 静止按住 X 回血 | E 互动/送走" % [
+	_hud_label.text = "夜班派单 | 第 %s 单\n现场：%s\n目标：%s\n还能上班：%d/%d\n剩余闹事鬼：%d\n好评：%d\n清扫连锁：%d\n扫劲：%d/%d\n\nWASD 移动 | Tab 地图 | 空格 跳跃 | Shift 冲刺 | LMB 清扫 | RMB 短按横扫/长按陀螺 | 静止按住 X 回血 | E 互动/送走" % [
 		stage_text,
 		case_text,
 		objective_text,
@@ -677,7 +677,7 @@ func _setup_map_hud() -> void:
 		_zone_marker_labels.append(label)
 
 	var map_hint := Label.new()
-	map_hint.text = "按 M 关闭地图"
+	map_hint.text = "按 Tab 关闭地图"
 	map_hint.position = Vector2(424.0, 700.0)
 	map_hint.add_theme_color_override("font_color", Color("#93a2b5"))
 	map_hint.add_theme_font_size_override("font_size", 16)
