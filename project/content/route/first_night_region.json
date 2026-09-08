@@ -7,6 +7,7 @@
   ],
   "zones": [
     {"id": "rest", "type": "rest", "x": -13.5, "z": 0.0},
+    {"id": "shortcut_east", "type": "path", "x": -4.0, "z": 4.0},
     {"id": "case_sofa", "type": "case", "x": -8.0, "z": 0.0},
     {"id": "case_tv", "type": "case", "x": 0.0, "z": 0.0},
     {"id": "case_wardrobe", "type": "case", "x": 8.0, "z": 0.0},
@@ -14,7 +15,8 @@
     {"id": "seal_endpoint", "type": "objective", "x": 16.0, "z": 0.0}
   ],
   "ability_gates": [
-    {"id": "shortcut_east", "required_ability": "night_stamp", "unlocks_zone": "boss_room"},
+    {"id": "shortcut_gate", "required_ability": "night_stamp", "unlocks_zone": "shortcut_east"},
+    {"id": "boss_gate", "required_quest": "side_b", "unlocks_zone": "boss_room"},
     {"id": "seal_door", "required_boss": "seal_boss", "unlocks_zone": "seal_endpoint"}
   ],
   "abilities": [
