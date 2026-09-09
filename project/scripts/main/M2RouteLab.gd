@@ -69,6 +69,8 @@ var _boss_key_granted := false
 var _seal_gate
 var _target_marker: MeshInstance3D
 var _has_night_stamp := false
+var _boss_waiting_npc := false
+var _boss_revealed := false
 var _reward_pickup
 var _map_open := false
 var _map_layer: CanvasLayer
@@ -142,8 +144,9 @@ func _complete_current_case() -> void:
 			_open_route_gate(1)
 		_activate_case(_case_index)
 	else:
-		_show_event("三单清完，收工事件来了")
-		_start_final_event()
+		_boss_waiting_npc = true
+		_show_event("三单清完：收工 Boss 线索已出现，先去找神秘鬼确认弱点")
+		_update_hud()
 
 
 func _spawn_stamp_reward() -> void:
@@ -277,6 +280,10 @@ func _try_v2_npc() -> void:
 		var npc_position: Vector3 = npc.position
 		if _player.global_position.distance_to(npc_position) < 3.2:
 			_show_event(str(npc.message))
+			if str(npc.id) == "np_mystery_ghost" and _boss_waiting_npc and not _final_started:
+				_boss_waiting_npc = false
+				_boss_revealed = true
+				_start_final_event()
 			return
 
 
@@ -443,7 +450,11 @@ func _update_hud() -> void:
 		case_text = data.title
 		stage_text = "%d / %d" % [_case_index + 1, CASES.size()]
 	var objective_text := "封印终点：暂时无法到达"
-	if _boss_key_granted:
+	if _boss_waiting_npc:
+		objective_text = "三单已清：寻找神秘鬼确认 Boss 弱点"
+	elif _final_started and not _boss_key_granted:
+		objective_text = "收工 Boss 现身：击败后取得封印钥匙"
+	elif _boss_key_granted:
 		objective_text = "封印终点：已打开，靠近金色柱按 E 确认"
 	_hud_label.text = "夜班派单 | 第 %s 单\n现场：%s\n目标：%s\n还能上班：%d/%d\n剩余闹事鬼：%d\n好评：%d\n清扫连锁：%d\n扫劲：%d/%d\n\nWASD 移动 | Tab 地图 | 空格 跳跃 | Shift 冲刺 | LMB 清扫 | RMB 短按横扫/长按陀螺 | 静止按住 X 回血 | E 互动/送走" % [
 		stage_text,
@@ -506,6 +517,8 @@ func _handle_player_defeat() -> void:
 	_chain_count = 0
 	if not _final_started:
 		_has_night_stamp = false
+		_boss_waiting_npc = false
+		_boss_revealed = false
 		if is_instance_valid(_reward_pickup):
 			_reward_pickup.queue_free()
 		_reward_pickup = null
@@ -714,3 +727,8 @@ func _update_map() -> void:
 	for index in range(mini(_zone_marker_labels.size(), 6)):
 		if index == 5:
 			_zone_marker_labels[index].text = endpoint_text
+		elif index == 4:
+			if _boss_waiting_npc:
+				_zone_marker_labels[index].text = "Boss 收工区：找神秘鬼确认"
+			elif _final_started:
+				_zone_marker_labels[index].text = "Boss 收工区：现身"

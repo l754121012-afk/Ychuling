@@ -20,6 +20,8 @@ func _run() -> void:
 		if ghosts.is_empty():
 			if not route.get("_has_night_stamp") and is_instance_valid(route.get("_reward_pickup")):
 				route._on_ability_collected("night_stamp")
+			elif route.get("_boss_waiting_npc"):
+				route._start_final_event()
 			await process_frame
 			continue
 		for ghost in ghosts:
