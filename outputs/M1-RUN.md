@@ -120,7 +120,25 @@ V2 地图数据 smoke：
 & 'F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs\project' --script 'res://tests/v2_region_build_smoke.gd'
 ```
 
-预期输出：`V2_REGION floors=4 props=11 decor=24 gates=seal_door`。说明 `V2RegionBuilder` 能按 JSON 生成 4 个区域地板、11 个组件、24 个装饰，并产出带世界坐标的 `seal_door` 实体门。
+预期输出：`V2_REGION floors=4 props=18 decor=24 gates=seal_door`。说明 `V2RegionBuilder` 能按 JSON 生成 4 个区域地板、18 个组件（含夜巡司值房柜台/线索档案桌/两立柱/三灯/可击破罐）、24 个装饰，并产出带世界坐标的 `seal_door` 实体门。
+
+（`gates=seal_door` 是该脚本固定打印的 seal 门；`shortcut_gate` 属另一条捷径门，由下方 R1 冒烟覆盖。）
+
+R1 夜巡司区实体冒烟：
+
+```powershell
+& 'F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs\project' --script 'res://tests/v2_r1_nightwatch_smoke.gd'
+```
+
+预期输出：`V2_R1 props=18 shortcut=true req=night_stamp locked=true openable=true seal=true counter=true clue=true jar=true` 与 `V2_R1_MAP hub=IN_PROGRESS clue=IN_PROGRESS gate=IN_PROGRESS key=LOCKED hub_done_after=true`。说明捷径门是 `night_stamp` 能力门（无印章锁、有印章可开），值房柜台/线索档案桌/可击破罐可读，地图初始状态正确且 `nw_hub` 可翻 DONE。
+
+R1 夜巡司区运行时冒烟（加载主场景 `V2FirstLoop.tscn`，驱动互动路径）：
+
+```powershell
+& 'F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs\project' --script 'res://tests/v2_r1_runtime_smoke.gd'
+```
+
+预期输出：`V2_R1_RT clue=IN_PROGRESS->DONE gate_before=false lock_return=true gate_after_lock=false stamp_return=true gate_after_stamp=true gate_state=DONE key_state=DONE`。说明读线索档案把 `nw_clue` 翻 DONE；无印章按 E 仍锁着；拿到 `night_stamp` 按 E **能**开启捷径门并翻 `nw_gate/nw_key` 为 DONE。
 
 其余 V2 数据/运行时 smoke：
 

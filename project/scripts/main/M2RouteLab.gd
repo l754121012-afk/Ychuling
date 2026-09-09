@@ -89,6 +89,7 @@ func _ready() -> void:
 	_build_environment()
 	_build_route_floor()
 	_build_region_world()
+	_build_shortcut_gate_marker()
 	_build_case_pads()
 	_build_rest_markers()
 	_build_route_gates()
@@ -124,7 +125,8 @@ func _process(delta: float) -> void:
 		elif _player.global_position.x > 17.0:
 			_finish_shift()
 	if Input.is_action_just_pressed("interact") and not (_boss_key_granted and absf(_player.global_position.x - 18.0) < 3.0):
-		_try_v2_npc()
+		if not _try_region_gate():
+			_try_v2_npc()
 
 
 func _on_ghost_sent(ghost: TestGhost) -> void:
@@ -300,6 +302,11 @@ func _build_v2_npcs() -> void:
 			"position": Vector3(6.2, 0.0, -4.6),
 			"message": "神秘鬼：你要找的钥匙不在房间里，而在收工 Boss 心里。金色柱子就是那扇该被打开的门。",
 		},
+		{
+			"id": "np_clue_archive",
+			"position": Vector3(-11.6, 0.0, -2.2),
+			"message": "线索档案：夜巡印章是开旧捷径门的凭据。第一单落地后它会浮出，回来按 E 打开这扇侧门。",
+		},
 	]
 	for npc in _npc_data:
 		var marker := PlaceholderKit.box("art_key_v2_npc_%s" % npc.id, Color("#57d4a5"), Vector3(0.8, 1.6, 0.8))
@@ -321,11 +328,66 @@ func _try_v2_npc() -> void:
 		var npc_position: Vector3 = npc.position
 		if _player.global_position.distance_to(npc_position) < 3.2:
 			_show_event(str(npc.message))
+			if str(npc.id) == "np_clue_archive" and is_instance_valid(_world_map):
+				_world_map.set_state("nw_clue", V2WorldMap.STATE_DONE)
 			if str(npc.id) == "np_mystery_ghost" and _boss_waiting_npc and not _final_started:
 				_boss_waiting_npc = false
 				_boss_revealed = true
 				_start_final_event()
 			return
+
+
+func _build_shortcut_gate_marker() -> void:
+	var gate: Node = _region_gates.get("shortcut_gate")
+	if not is_instance_valid(gate):
+		return
+	var lock := PlaceholderKit.box("art_key_v2_shortcut_lock", Color("#ffd166"), Vector3(0.24, 0.3, 0.24))
+	lock.material_override = PlaceholderKit.emissive_material(Color("#ffd166"), 2.2)
+	lock.position = gate.global_position + Vector3(0.0, 3.3, 0.0)
+	add_child(lock)
+
+
+# 门/捷径互动：靠近一个带坐标的世界门按 E —— 满足条件则开启，否则给出锁提示。
+func _try_region_gate() -> bool:
+	if not is_instance_valid(_player):
+		return false
+	for gate_id in _region_gates:
+		var gate: Node = _region_gates[gate_id]
+		if not is_instance_valid(gate) or not gate.has_method("can_open"):
+			continue
+		var gate_pos: Vector3 = gate.global_position
+		if _player.global_position.distance_to(gate_pos) < 3.4:
+			var abilities := {}
+			if _has_night_stamp:
+				abilities["night_stamp"] = true
+			if gate.can_open(abilities, _boss_key_granted):
+				gate.attempt_open(abilities, _boss_key_granted)
+				if gate_id == "shortcut_gate":
+					_show_event("夜巡印章捷径门开启！通往东侧的旧路恢复了")
+					_on_shortcut_gate_opened(gate_pos)
+				else:
+					_show_event(str(gate.get("prompt")))
+				return true
+			var req_ability := str(gate.get("required_ability"))
+			var req_boss := str(gate.get("required_boss"))
+			var req_quest := str(gate.get("required_quest"))
+			if req_ability == "night_stamp":
+				_show_event("夜巡印章捷径门锁着：需要『夜巡印章』才能打开")
+			elif req_boss == "seal_boss":
+				_show_event("封印之门：需要击败收工 Boss 才能打开")
+			elif req_quest == "side_b":
+				_show_event("Boss 之门：需要完成支线『遗物线索』才能打开")
+			else:
+				_show_event("门锁住了")
+			return true
+	return false
+
+
+func _on_shortcut_gate_opened(p_pos: Vector3) -> void:
+	_spawn_ritual(p_pos, Color("#ffd166"))
+	if is_instance_valid(_world_map):
+		_world_map.set_state("nw_gate", V2WorldMap.STATE_DONE)
+		_world_map.set_state("nw_key", V2WorldMap.STATE_DONE)
 
 
 func _build_environment() -> void:

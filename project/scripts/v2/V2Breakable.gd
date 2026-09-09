@@ -12,6 +12,21 @@ func _ready() -> void:
 		collision.shape = shape
 		collision.position.y = 0.55
 		add_child(collision)
+	_build_visible_jar()
+
+
+# 可击破物目前只有碰撞球、没有可见网格，玩家在场景里看不见罐子。这里补一个占位罐体，
+# 让“可击破罐”成为可读的实体（颜色/形状后续可直接换美术，不影响判定）。
+func _build_visible_jar() -> void:
+	if get_node_or_null("JarBody") != null:
+		return
+	var body := PlaceholderKit.box("JarBody", Color("#b08d5f"), Vector3(0.62, 0.78, 0.62))
+	body.position.y = 0.42
+	add_child(body)
+	var rim := PlaceholderKit.box("JarRim", Color("#c9a05e"), Vector3(0.42, 0.26, 0.42))
+	rim.position.y = 0.96
+	rim.material_override = PlaceholderKit.emissive_material(Color("#c9a05e"), 1.0)
+	add_child(rim)
 
 
 func on_cleaned(_p_by: Node, _p_is_sweep: bool = false, _p_damage: int = 1) -> void:

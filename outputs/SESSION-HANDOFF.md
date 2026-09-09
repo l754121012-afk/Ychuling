@@ -4,9 +4,13 @@
 
 ## 当前任务
 
-- **本次：接管 FIVESTAR 旧项目 → 从地图“左下角区域”（西南角 = 夜巡司区）开始实现。**
+- **本次：接管 FIVESTAR 旧项目 → 从地图“左下角区域”（西南角 = 夜巡司区）开始实现，按区域逐一做完一块就喊用户进游戏测试验证。**
 - 先决已做：完成上下文瘦身（新增 `outputs/CODE-INDEX.md`；本文件与 `AGENTS.md` 已去掉元叙述，只留状态与协议）。
-- 首刀已做：新增 `v2/V2WorldMap.gd`（节点式世界地图，`LOCKED/IN_PROGRESS/DONE` 三态配色），并集成进 Tab 地图（`M2RouteLab.gd` `_setup_map_hud` 以它替换旧区域文字层），含“当前位置”软光晕高亮；冒烟 `v2_world_map_smoke.gd` 通过。下一步：夜巡司区 3D 落位（休息/值房/线索/捷径门/案1连通/可击破物）。
+- 上一刀：新增 `v2/V2WorldMap.gd`（节点式世界地图，`LOCKED/IN_PROGRESS/DONE` 三态配色），集成进 Tab 地图（`M2RouteLab.gd` `_setup_map_hud` 以它替换旧区域文字层），含“当前位置”软光晕高亮；冒烟 `v2_world_map_smoke.gd` 通过。
+- 本轮已做（R1 夜巡司区收尾）：`v2/V2Breakable.gd` 补可见罐体（`JarBody`+`JarRim`，原只有碰撞球）；`first_night_region.json` 夜巡司区 +7 个值房物件（柜台/两立柱/三灯/线索档案桌），`shortcut_gate` 由数据层改为带世界坐标实体门 `(-10.3,-4)`；`M2RouteLab.gd` 新增 `_build_shortcut_gate_marker`（顶上金锁）、`_try_region_gate`（靠近按 E：满足条件开、否则给对应锁提示）、`_on_shortcut_gate_opened`（仪式光柱+翻地图状态）、线索档案 NPC（读档翻 `nw_clue` DONE），并把主 `_process` 的 E 互动改为“先 `_try_region_gate`，失败再 `_try_v2_npc`”。新增冒烟 `v2_r1_nightwatch_smoke.gd`（实体+地图态）与 `v2_r1_runtime_smoke.gd`（互动路径），均通过。
+- **关键修复**：`M2RouteLab.gd` `_try_region_gate` 里误用 `Node.get("属性", 默认值)` 两参调用（Godot `Object.get` 只接受 1 参），导致加载主场景即 `Parse Error: Too many arguments for "get()"`。已改为单参 `gate.get("属性")`（属性由 `V2AbilityGate` `@export` 保证存在）。此前只跑静态冒烟没加载主场景故未暴露；已用真实场景加载 smoke（`m2_q_tech_smoke`）验证并修复。
+- 验证：既有完整冒烟（`v2_world_map` / `v2_region_build` / `v2_region_runtime` / `v2_env_components` / `v2_save` / `v2_route_data` / `v2_gate_pickup` 与全部 m2_*、真实场景 `m2_q_tech`）全部 EXIT=0。`v2_map_organic` 为地图截图导出，headless 无真实渲染器必然失败，属既有特性非回归。
+- 下一步：喊用户进游戏（带窗口上帝视角，见 M1-RUN「直接运行白盒」）验证夜巡司区：出生在夜巡司能看见值房柜台/线索档案桌/锁住的捷径门金锁/可击破罐；按 E 读线索档案；拿夜巡印章后回来按 E 开捷径门；按 Tab 看 R1 状态色（夜巡司区应在标记为“正在做/已做”）。
 
 ## 项目定位
 
