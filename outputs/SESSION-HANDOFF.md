@@ -1,84 +1,41 @@
 # SESSION-HANDOFF（会话交接簿）
 
-## 最小上下文块（新会话先只读这一节，其余按需定位，不要整读）
+> 冷启动只读：本文件 + `AGENTS.md` + 本次任务指向的文档。脚本/场景/测试导航见 `CODE-INDEX.md`。
 
-- 本次任务：交付首夜城区「有机手绘发光」风格地图 `outputs/map-v2-organic.png`（接近参考图，供确认布局）。
-- Godot：`F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe`；工程根 `...\project`；渲染必须带窗口。
-- 地图数据：`project/content/route/first_night_region.json`。
-- 4 大区：夜巡司 / 居住区 / 旧剧场·电视台 / Boss 封印场。
-- 关键锚点：rest、case_sofa、case_tv、case_wardrobe、boss_room、seal_endpoint。
-- 门：shortcut_east 需 night_stamp；seal_door 需 seal_boss（world door @ x=15.4）。
-- 视觉规则：红=敌攻击预告；金=可送走；白/黄绿=玩家动作反馈；武器中性色。
-- 输入：RMB 满蓄松手→陀螺；X 静止长按0.8s→回血；Tab 地图；E 交互；Q 撤步耗1体力；Shift 冲刺不耗体力。
-- 死亡回最近休息点；三小关回第一小关。
+## 当前任务
 
-> 强制：禁止把 `G:/好简历/项目原画/清道夫地图.png` 等大参考图加载进模型上下文；只读 `outputs/map-style-notes.md` 与缩略图 `outputs/reference-map-thumb.png`。
-> 施工源：地图“怎么搭、布怪在哪、哪里能走”只看 `outputs/map-construction-blueprint.md`（权威施工图），`map-style-notes.md` 只负责视觉风格。
+- **本次：接管 FIVESTAR 旧项目 → 从地图“左下角区域”（西南角 = 夜巡司区）开始实现。**
+- 先决已做：完成上下文瘦身（新增 `outputs/CODE-INDEX.md`；本文件与 `AGENTS.md` 已去掉元叙述，只留状态与协议）。
 
-> 用途：让每个新会话“冷启动”，不继承上个会话的聊天记录。
-> 我们约定：一个里程碑/一个清晰任务开一个新会话；每次收尾先回填本文件，再交试玩。
-> 这样会话上下文永远保持小，不会因为“上下文长度限制”而失败或行为漂移。
+## 项目定位
 
-## 为什么需要它
+- 工程：`C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs`；分支 `v2`（HEAD `db489e2`）；`master` 冻结于 tag `v1.0-basic-stable`。
+- 框架：Godot 4.7.2。本机：`F:\Godot\4.7.2\Godot_v4.7.2-stable_win64.exe`（渲染**必须带窗口**）；`..._console.exe`（headless 跑 smoke）。
+- 工程根：`...\project`；主场景 `res://scenes/main/V2FirstLoop.tscn`（根脚本 `M2RouteLab.gd`）。
+- 阶段：V2 行为循环白盒（不换美术资产，不做 Demo/盈利验证）。红/金/白黄绿视觉规则与输入语义见 `AGENTS.md`。
 
-Codex 单次会话的上下文是有限的。如果在一个长会话里反复重读大文档、大日志、长代码，窗口会被撑满并触发自动压缩；压缩会丢掉早期细节，表现为“会话因上下文失败 / 前后不一致 / 反复问同一件事”。
+## 读取攻略（坚决避免二次整读）
 
-治本不是调大上下文（没有这个开关），而是**别让一个会话承载太多**：把“可复用的项目事实”落到文件里，新会话只读文件，从根上避免撑满。
+- 脚本/测试：先查 `outputs/CODE-INDEX.md` 定位 文件+行，再用 `rg`/行范围局部读；**不要整读 >300 行的大脚本**。
+- 地图怎么搭/布怪/门锁/颜色 → 只读 `outputs/map-construction-blueprint.md`（权威施工图）。
+- 视觉风格 → 只读 `outputs/map-style-notes.md` + 缩略图 `outputs/reference-map-thumb.png`（512×241）。**大参考图永不整读。**
+- 顶视施工图 → `outputs/map-v2-plan.png`；生图提示词 → `outputs/map-v2-imagegen-prompt.md`。
 
-## 防循环执行规则（每次收尾 & 开工都检查）
+## 左下角区域 = 夜巡司区（本次实现范围）
 
-1. 一个会话只做 **一件** 明确的事；收尾回填本文件，再交用户。
-2. 新会话开工只读“最小上下文块”+`AGENTS.md`，不再整读已定稿大文档；要细节用 `rg` 行定位。
-3. **禁止把大参考图/大 PNG 整张读入上下文**。地图类任务只读 `outputs/map-style-notes.md`（风格要点）与 `outputs/reference-map-thumb.png`（缩略图）。
-4. 若中断：从本文件最新状态恢复，**不从头重读**上一轮脚本/参考图。
-5. 交付前必须跑一次可复现的命令并列出预期输出，避免“口头说完成其实没做”。
+- 数据源：`project/content/route/first_night_region.json` → `V2RouteData.load_region` → `V2RegionBuilder.build`。
+- 区段：`district_nightwatch`，`min_x=-19.5`、`max_x=-10.0`（X 负 = 西南/W），`z=0`，地色 `#2b3a4e`。玩家整体从西向东推进。
+- 锚点：休息点 `rest`(-13.5, 0, 0)；案1 沙发 `case_sofa`(-8, 0, 0) 已在居住区边界西侧；`shortcut_gate` 需 `night_stamp`。
+- props：可击破罐 `night_jar`(-16.5, 5.6)。
+- decor：waterfall(-13,-5.4)/plant(-11.5,4.5)/lamp(-17,5.6)/plaque(-15,6.2)/spirit_fire(-12,-5.5)/mist(-14,6.5)。
+- 边界墙：北 Z=-8.5、南 Z=+8.5（40×2.6×0.6）；西 X=-20.5、东 X=20.5（0.6×2.6×18）。可行走大致 X±20、Z±8。
+- 开工顺序：先落实本区地板/装饰/边界，再接入 rest 复活点与案1 R1 门（R1 物理墙 x=-4，清案1 开门）。
 
-## 每次收尾必做的 3 步
-
-1. **回填状态**：更新下文 `## 当前状态` 和 `## 下一步`。写下改了哪些参数（含前后值）、跑了什么 smoke、预期输出。
-2. **写运行文档**：若能用 Godot 跑起来，同步更新 [M1-RUN.md](./M1-RUN.md) 的运行命令与预期输出。
-3. **归档/打点**：阶段性成果 commit（V1 已打 `v1.0-basic-stable`），新里程碑开始就开新会话。
-
-## 新会话启动口令（直接粘贴）
-
-```
-继续《五星除灵》FIVESTAR。工作区在 C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs。
-先读 outputs/SESSION-HANDOFF.md，再读它指向的设计文档；恢复上下文后按“下一步”执行。
-只做本次目标；不要重读已定稿的大文档全文，需要细节时用关键词定位。
-收尾前回填 outputs/SESSION-HANDOFF.md，并列出 smoke 预期输出。
-```
-
-## 当前状态
-
-- 阶段：M2 行为循环白盒（V2）。
-- Godot：4.7.2（本机 `F:\Godot\4.7.2\Godot_v4.7.2-stable_win64.exe`）。
-- 主场景：`project` 下的 V2 首夜城区路线；Godot 工程根 = `...\3d-f-crypt-custodian-green-chs\project`。
-- 2026-09-10 顶视施工图已出 `outputs/map-v2-plan.png`（2000×1100，`project/tests/v2_map_plan.gd` 渲染，复跑日志 `PLAN saved=true err=0 size=2000x1100`，目检通过）。已按用户要求改成“可直接指导地编”的信息结构：4 块实体功能区+围墙（夜巡司蓝灰/居住区棕/旧剧场·电视台酒红/Boss 封印场墨绿）、区块间深色暗沟=不可走、房间隔墙+门洞、浅色主路+支路、金色挂锁（路由门 R1/R2、捷径门需夜巡印章、Boss 门、封印门）、每案 4 只怪红色出生点并标注攻击风格（挥/弹/冲/圈）、Boss 红锯环+杂兵、封印终点金柱、休息点黄绿/能力点亮金、平台高低差斜线、顶部标题+底部图例+右上指北+左下比例尺。旧的 `map-v2-organic.png`/`schematic/topdown*.png` 仍保留，但不作为交付基准。生图提示词 `outputs/map-v2-imagegen-prompt.md` 已同步为同方向的可读施工/顶视描述（实体分区、主路/支路、门锁、布怪、阻挡、图例；明确不要霓虹/发光/雾效）。
-- 已落地：互动光圈收束 + 冲天光柱演出（夜巡印章 / Boss 清除 / 封印终点 / 案件交付 / 能力门开门 / Boss 揭示）；通用地图组件（平台、柱子、可击破罐罐、装饰植物、瀑布、灯、窗、牌匾、灵火堆、雾区、压力机关、可推箱、升降平台）。
-- 地图数据化闭环已接通：`first_night_region.json` -> `V2RouteData.load_region` -> `V2RegionBuilder.build` -> `V2EnvFactory` 生成区域地板/组件；`M2RouteLab._build_region_world()` 已接入，旧的 `_build_v2_env_decor` 硬编码装饰已删除。
-- 首次区域分区已落地 4 个大区：夜巡司 / 居住区 / 旧剧场·电视台 / Boss 封印场（按 JSON 的 zones+props+decor 铺色块与组件，主路/案件/Boss/封印坐标未被遮挡）。
-- 地图确认示意已出 `outputs/map-v2-schematic.png`（2000x1100）+ 俯视/带字裁剪标注 `outputs/map-v2-topdown*.png`，由 `project/tests/v2_map_*.gd` 输出。用户反馈：「这只是大纲，和我要的效果相去甚远」，要求先做成接近参考图（`G:/好简历/项目原画/清道夫地图.png`）的「有机手绘发光」风，再进行后续。
-- 2026-09-09 流程治理（本次会话）：已把参考风格固化为文本 `outputs/map-style-notes.md`，并生成本机只读缩略图 `outputs/reference-map-thumb.png`（512x241）。今后地图类任务只读这两个文件，**禁止整图载入模型上下文**，以根治“重复压缩上下文 / 反复重做”问题。`AGENTS.md` 已强制化（一会话一任务、先锁意图再花大成本、大图禁整读、Godot 渲染带窗口、撞同一堵墙就停止重试）。
-- 2026-09-10 施工图建立：新增 `outputs/map-construction-blueprint.md`，把可执行玩法层（4 大区 X 范围/主题色/联系、案件坐标、每案 4 只怪的精确出生点与攻击风格、路由门 R1/R2、`seal_door` X=15.4、Boss 终战 X=11、封印终点 X=16、边界墙范围、平台高低差）固化为权威施工图。`map-style-notes.md` 已降级为纯视觉补充。
-- 关键输入：Tab 地图开合；NPC 用 E 对话；Q 撤步冲撞耗 1 体力；Shift 冲刺不耗体力；靠近关键目标按 E（也可短暂停留自动完成）。
-- 关键不可违反的规则：红=敌攻击预告、金=可送走、白/黄绿=玩家动作反馈、武器中性色；死亡回最近休息点，三小关回第一小关；RMB 满蓄松手才转陀螺；X 静止长按 0.8s 才回血。
-
-## 下一步
-
-- **首项（已交付，待用户确认）：用户核对 `outputs/map-v2-plan.png`（顶视施工图）与 `outputs/map-v2-imagegen-prompt.md`（生图提示词）。** 若方向对，以此定稿并进入下一项（能力循环 E / Boss 战斗 F）；若不对，按用户反馈微调布局参数（区域比例/连接/可走不可走/怪物点位需保持与 `map-construction-blueprint.md` 一致）。
-- 该项只读「施工图 + `map-style-notes.md` + 缩略图」，**不要读原图**。出图后交用户确认结构与布局，用户点头再进入下一项（能力循环 E / Boss 战斗 F）。
-- 探索与能力循环（E）：地图上保留“可见不可达”目标；每个新能力至少改变一次旧区域路径/可击破物；死亡后能力按正式存档规则保留。
-- Boss 与战斗区域（F）：Boss 从 NPC 揭示后进入独立舞台，补战斗边界、阶段转场、受击演出（当前 Boss 仍在主走廊）。
-- 随机派单与第二区域（G）：案件顺序随机化；第二区域入口只做解锁状态；存档把已完成能力/支线/Boss 写进 `user://`。
-- 统一可互动门：E 门 / 能力门 / Boss 门统一成一套节点与开法（`V2AbilityGate` 已存在，需接 E 门与压力机关联动）。
-
-## 设计文档索引（先读这些，别通读全文）
+## 设计文档索引（仅为定位锚点，别全文读；细节用 `rg`）
 
 - `outputs/README.md` 交付物总览。
 - `outputs/design/04-正式GDD-FIVESTAR.md` 总 GDD。
 - `outputs/design/09-版本路线-V2行为循环.md` V2 路线。
-- `outputs/design/11-V2剩余待办与地图组件清单.md` V2 剩余待办（本文件“下一步”的源头）。
+- `outputs/design/11-V2剩余待办与地图组件清单.md` V2 待办来源。
 - `outputs/design/13-雨城前两关地图细化.md` 首两关地图。
-- `outputs/M1-RUN.md` 运行 / smoke 命令与预期输出。
-
-> 维护规则：本文件只写“维持连续开发所需的高信号事实”，控制在 60–80 行。与代码/参数相关的改动务必同步到本文件，不要让上下文漂移。
+- `outputs/M1-RUN.md` 运行 / smoke 命令与预期输出（权威）。
