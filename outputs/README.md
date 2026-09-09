@@ -16,6 +16,7 @@
 - [13-雨城前两关地图细化](./design/13-雨城前两关地图细化.md)
 - [14-生图提示词-雨城地图](./design/14-生图提示词-雨城地图.md)
 - [M1 白盒运行说明](./M1-RUN.md)
+- [会话交接簿 SESSION-HANDOFF](./SESSION-HANDOFF.md)
 - [直接打开 Godot 工程](./open-fivestar-godot.cmd)
 
 当前状态：V2 已加入重要互动光柱演出、地图装饰与通用组件第一版；剩余地图分区与区域化开发待推进。

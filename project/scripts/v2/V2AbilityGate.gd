@@ -6,6 +6,11 @@ signal opened(gate_id: String)
 @export var gate_id := ""
 @export var required_ability := ""
 @export var required_boss := ""
+@export var required_quest := ""
+@export var kind := "" # "e" | "ability" | "boss" | "quest"
+@export var prompt := ""
+
+var quest_flags: Dictionary = {}
 
 var _opened := false
 
@@ -22,11 +27,26 @@ func can_open(p_abilities: Dictionary, p_boss_defeated: bool) -> bool:
 		return false
 	if not required_boss.is_empty() and not p_boss_defeated:
 		return false
+	if not required_quest.is_empty() and not quest_flags.has(required_quest):
+		return false
 	return true
+
+
+func can_interact(p_abilities: Dictionary, p_boss_defeated: bool, p_quest_flags: Dictionary = {}) -> bool:
+	if not p_quest_flags.is_empty():
+		quest_flags = p_quest_flags
+	return can_open(p_abilities, p_boss_defeated)
 
 
 func try_open(p_abilities: Dictionary, p_boss_defeated: bool) -> bool:
 	if not can_open(p_abilities, p_boss_defeated):
+		return false
+	_open_now()
+	return true
+
+
+func attempt_open(p_abilities: Dictionary, p_boss_defeated: bool, p_quest_flags: Dictionary = {}) -> bool:
+	if not can_interact(p_abilities, p_boss_defeated, p_quest_flags):
 		return false
 	_open_now()
 	return true

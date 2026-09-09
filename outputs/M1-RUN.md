@@ -6,6 +6,8 @@ V2 可见玩法：按 Tab 打开首夜城区地图；两个 NPC 用 E 对话提�
 
 Q 键撤步冲撞会消耗 1 点体力；Shift 冲刺改为不消耗体力。靠近封印终点会显示 E 提示，若未按键也会在短暂停留后自动完成。
 
+首夜城区已按 `first_night_region.json` 数据铺开 4 个区域色块（夜巡司 / 居住区 / 旧剧场·电视台 / Boss 封印场）与通用组件（灯、窗、牌匾、灵火堆、雾区、压力机关、可推箱、升降平台、罐罐等）；区域地板是薄视觉层，主路进度坐标未被遮挡。
+
 ## 工程位置
 
 `C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs\project`
@@ -111,6 +113,26 @@ Boss 攻击 smoke：
 ```
 
 预期无脚本错误，延时落点会生成火球、金色爆光与上冲光柱。
+
+V2 地图数据 smoke：
+
+```powershell
+& 'F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs\project' --script 'res://tests/v2_region_build_smoke.gd'
+```
+
+预期输出：`V2_REGION floors=4 props=11 decor=24 gates=seal_door`。说明 `V2RegionBuilder` 能按 JSON 生成 4 个区域地板、11 个组件、24 个装饰，并产出带世界坐标的 `seal_door` 实体门。
+
+其余 V2 数据/运行时 smoke：
+
+```powershell
+& 'F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs\project' --script 'res://tests/v2_route_data_smoke.gd'
+& 'F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs\project' --script 'res://tests/v2_region_runtime_smoke.gd'
+& 'F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs\project' --script 'res://tests/v2_env_components_smoke.gd'
+& 'F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs\project' --script 'res://tests/v2_gate_pickup_smoke.gd'
+& 'F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs\project' --script 'res://tests/v2_save_smoke.gd'
+```
+
+预期输出依次为：`V2_ROUTE region=first_night endpoint=objective quest_reward=night_stamp`、`V2_RUNTIME blocked=true stamp=true boss_blocked=true objective=true restored_key=true`、`V2_ENV platform_children=8 jar_valid=false`、`V2_GATE allowed_before=false opened=true pickup=seal_key`、`V2_SAVE saved=true seed=20260909 key=true rest=(-13.5, 0.9, 0.0)`。
 
 ## 当前可试内容
 

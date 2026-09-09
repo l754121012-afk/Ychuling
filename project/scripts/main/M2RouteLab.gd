@@ -6,8 +6,8 @@ const LiquidBarScript := preload("res://scripts/ui/LiquidHealthBar.gd")
 const GateScript := preload("res://scripts/v2/V2AbilityGate.gd")
 const PickupScript := preload("res://scripts/v2/V2AbilityPickup.gd")
 const RitualScript := preload("res://scripts/v2/V2RitualEffect.gd")
-const EnvFactory := preload("res://scripts/v2/V2EnvFactory.gd")
-const BreakableScript := preload("res://scripts/v2/V2Breakable.gd")
+const V2RouteData := preload("res://scripts/v2/V2RouteData.gd")
+const V2RegionBuilder := preload("res://scripts/v2/V2RegionBuilder.gd")
 
 const CAMERA_HEIGHT := 10.5
 const CAMERA_BACK := 5.0
@@ -82,11 +82,13 @@ var _map_layer: CanvasLayer
 var _map_current_label: Label
 var _zone_marker_labels: Array[Label] = []
 var _npc_data: Array[Dictionary] = []
+var _region_gates: Dictionary = {}
 
 
 func _ready() -> void:
 	_build_environment()
 	_build_route_floor()
+	_build_region_world()
 	_build_case_pads()
 	_build_rest_markers()
 	_build_route_gates()
@@ -96,7 +98,6 @@ func _ready() -> void:
 	_build_hud()
 	_setup_map_hud()
 	_build_v2_npcs()
-	_build_v2_env_decor()
 	_activate_case(_case_index)
 
 
@@ -141,12 +142,14 @@ func _on_ghost_sent(ghost: TestGhost) -> void:
 
 func _complete_current_case() -> void:
 	_review_count += 1
+	var case_pos: Vector3 = Vector3(float(CASES[_case_index]["zone_x"]), 0.0, 0.0)
 	_set_pad_color(_case_index, Color("#6fce8f"))
 	if _case_index == 0 and not _has_night_stamp:
 		_spawn_stamp_reward()
 		_show_event("案件1清完：附近出现了夜巡印章")
 		_update_hud()
 		return
+	_spawn_ritual(case_pos, Color("#ffe08a"))
 	if _case_index < CASES.size() - 1:
 		_show_event("顾客回访：五星好评，下一单已亮起")
 		_case_index += 1
@@ -209,6 +212,7 @@ func _start_final_event() -> void:
 	_final_started = true
 	_boss_waiting_npc = false
 	_boss_revealed = true
+	_spawn_ritual(FINAL_POS, Color("#c9f2ff"))
 	var minion_styles: Array[String] = ["swipe", "pool", "shot"]
 	for index in range(FINAL_MINION_POS.size()):
 		var minion: TestGhost = GhostScript.new()
@@ -263,15 +267,25 @@ func _boss_cleared() -> void:
 
 
 func _build_v2_seal_end() -> void:
-	_seal_gate = GateScript.new()
-	_seal_gate.set("gate_id", "seal_door")
-	_seal_gate.set("required_boss", "seal_boss")
-	_seal_gate.position = Vector3(15.4, 0.0, 0.0)
-	add_child(_seal_gate)
+	var built_door: Node = _region_gates.get("seal_door")
+	if is_instance_valid(built_door):
+		_seal_gate = built_door
+	else:
+		_seal_gate = GateScript.new()
+		_seal_gate.set("gate_id", "seal_door")
+		_seal_gate.set("required_boss", "seal_boss")
+		_seal_gate.position = Vector3(15.4, 0.0, 0.0)
+		add_child(_seal_gate)
+	if is_instance_valid(_seal_gate):
+		_seal_gate.opened.connect(_on_seal_gate_opened)
 
 	_target_marker = PlaceholderKit.box("art_key_v2_seal_target", Color("#f2d77a"), Vector3(1.2, 4.0, 1.2))
 	_target_marker.position = Vector3(18.2, 2.0, 0.0)
 	add_child(_target_marker)
+
+
+func _on_seal_gate_opened(_gate_id: String) -> void:
+	_spawn_ritual(_seal_gate.global_position if is_instance_valid(_seal_gate) else Vector3(15.4, 0.0, 0.0), Color("#ffd166"))
 
 
 func _build_v2_npcs() -> void:
@@ -291,22 +305,6 @@ func _build_v2_npcs() -> void:
 		var marker := PlaceholderKit.box("art_key_v2_npc_%s" % npc.id, Color("#57d4a5"), Vector3(0.8, 1.6, 0.8))
 		marker.position = npc.position + Vector3(0.0, 0.8, 0.0)
 		add_child(marker)
-
-
-func _build_v2_env_decor() -> void:
-	EnvFactory.waterfall(self, Vector3(-13.0, 0.0, -5.4), 3.0, 7.0)
-	EnvFactory.plant(self, Vector3(-11.5, 0.0, 4.5))
-	EnvFactory.plant(self, Vector3(-7.0, 0.0, -4.7))
-	EnvFactory.plant(self, Vector3(2.0, 0.0, 4.5))
-	EnvFactory.plant(self, Vector3(8.5, 0.0, -4.5))
-	EnvFactory.pillar(self, Vector3(-9.2, 0.0, 4.6), 0.45, 3.4)
-	EnvFactory.pillar(self, Vector3(1.2, 0.0, -4.7), 0.45, 3.8)
-	EnvFactory.pillar(self, Vector3(10.2, 0.0, 4.5), 0.6, 5.0)
-	for index in range(3):
-		var jar: StaticBody3D = BreakableScript.new()
-		jar.set("breakable_id", "night_jar_%d" % index)
-		add_child(jar)
-		jar.position = Vector3(-6.5 + index * 0.8, 0.0, 4.0)
 
 
 func _spawn_ritual(p_position: Vector3, p_color: Color = Color("#ffe08a")) -> void:
@@ -370,6 +368,15 @@ func _build_route_floor() -> void:
 	var start_pad := PlaceholderKit.box("art_key_route_start", Color("#b58b4a"), Vector3(2.0, 0.08, 3.4))
 	start_pad.position = Vector3(-13.8, 0.04, 0.0)
 	add_child(start_pad)
+
+
+func _build_region_world() -> void:
+	var region: Dictionary = V2RouteData.load_region()
+	if region.is_empty():
+		return
+	var handle: Dictionary = V2RegionBuilder.build(self, region)
+	var gates: Dictionary = handle.get("gates", {})
+	_region_gates = gates
 
 
 func _add_boundary_wall(p_name: String, p_size: Vector3, p_position: Vector3) -> void:
