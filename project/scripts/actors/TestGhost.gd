@@ -119,6 +119,8 @@ func configure_attack_style(p_style: String) -> void:
 func _physics_process(delta: float) -> void:
 	if state == State.SENDING:
 		return
+	global_position.y = 0.0
+	velocity.y = 0.0
 	if _chain_tag_time > 0.0:
 		_chain_tag_time = maxf(0.0, _chain_tag_time - delta)
 	if _damage_window_time > 0.0:

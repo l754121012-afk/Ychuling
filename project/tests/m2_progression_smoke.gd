@@ -14,7 +14,7 @@ func _run() -> void:
 
 	var route: Node = main
 	var steps := 0
-	while not route.get("_shift_done") and steps < 80:
+	while not route.get("_shift_done") and steps < 240:
 		steps += 1
 		var ghosts := get_nodes_in_group("ghosts")
 		if ghosts.is_empty():
@@ -22,6 +22,9 @@ func _run() -> void:
 				route._on_ability_collected("night_stamp")
 			elif route.get("_boss_waiting_npc"):
 				route._start_final_event()
+			elif route.get("_boss_key_granted") and not route.get("_shift_done"):
+				var player := get_first_node_in_group("player")
+				player.global_position = Vector3(18.0, 0.9, 0.0)
 			await process_frame
 			continue
 		for ghost in ghosts:

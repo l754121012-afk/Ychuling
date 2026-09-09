@@ -34,6 +34,11 @@ const HEAVY_BASE_RADIUS := 3.8
 const HEAVY_RADIUS_PER_MOMENTUM := 0.75
 const HEAVY_BASE_PUSH := 22.0
 const HEAVY_PUSH_PER_MOMENTUM := 4.0
+const Q_BACKSTEP_SPEED := 9.0
+const Q_BACKSTEP_TIME := 0.12
+const Q_PAUSE_TIME := 0.1
+const Q_FORWARD_SPEED := 20.0
+const Q_FORWARD_TIME := 0.26
 const MAX_MOMENTUM := 3
 const MAX_STAMINA := 15.0
 const DASH_STAMINA_COST := 1.0
@@ -64,6 +69,7 @@ enum State {
 	SPIN,
 	FOLLOWUP,
 	HEAVY,
+	DASH_TECH,
 }
 
 var _state := State.NORMAL
@@ -93,6 +99,9 @@ var _heavy_cooldown := 0.0
 var _heavy_hit_done := false
 var _heavy_radius := HEAVY_BASE_RADIUS
 var _heavy_push_speed := HEAVY_BASE_PUSH
+var _q_phase := 0
+var _q_timer := 0.0
+var _q_dir := Vector3.FORWARD
 var stamina := MAX_STAMINA
 var _stamina_regen_timer := 0.0
 var _defeated := false
@@ -185,6 +194,12 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 		return
 
+	if _state == State.DASH_TECH:
+		_tick_q_tech(delta)
+		_pre_move_velocity = velocity
+		move_and_slide()
+		return
+
 	if _state != State.DASH:
 		var input := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 		var wish := Vector3(input.x, 0.0, input.y)
@@ -203,6 +218,9 @@ func _physics_process(delta: float) -> void:
 
 		if Input.is_action_just_pressed("dash") and _dash_cooldown <= 0.0 and wish.length_squared() > 0.001:
 			_start_dash(wish.normalized())
+
+		if Input.is_action_just_pressed("q_dash_tech"):
+			_start_q_tech(_facing)
 
 		if Input.is_action_just_pressed("attack") and _attack_cooldown <= 0.0:
 			_start_attack()
@@ -314,13 +332,54 @@ func _handle_state_input(delta: float) -> void:
 
 
 func _start_dash(p_dir: Vector3) -> void:
-	if not try_spend_stamina(DASH_STAMINA_COST):
-		return
 	_state = State.DASH
 	_dash_timer = DASH_TIME
 	_dash_cooldown = DASH_COOLDOWN
 	_dash_dir = p_dir
 	velocity = Vector3(p_dir.x * DASH_SPEED, 0.0, p_dir.z * DASH_SPEED)
+
+
+func _start_q_tech(p_dir: Vector3) -> void:
+	if _state != State.NORMAL or not try_spend_stamina(DASH_STAMINA_COST):
+		return
+	var direction := p_dir
+	if direction.length_squared() < 0.001:
+		direction = _facing
+	direction.y = 0.0
+	if direction.length_squared() < 0.001:
+		direction = Vector3.FORWARD
+	_q_dir = direction.normalized()
+	_q_phase = 0
+	_q_timer = Q_BACKSTEP_TIME
+	_state = State.DASH_TECH
+	velocity = -_q_dir * Q_BACKSTEP_SPEED
+
+
+func _tick_q_tech(delta: float) -> void:
+	_q_timer -= delta
+	if _q_phase == 0:
+		velocity.x = -_q_dir.x * Q_BACKSTEP_SPEED
+		velocity.z = -_q_dir.z * Q_BACKSTEP_SPEED
+		if _q_timer <= 0.0:
+			_q_phase = 1
+			_q_timer = Q_PAUSE_TIME
+			velocity.x = 0.0
+			velocity.z = 0.0
+	elif _q_phase == 1:
+		velocity.x = 0.0
+		velocity.z = 0.0
+		if _q_timer <= 0.0:
+			_q_phase = 2
+			_q_timer = Q_FORWARD_TIME
+			velocity.x = _q_dir.x * Q_FORWARD_SPEED
+			velocity.z = _q_dir.z * Q_FORWARD_SPEED
+	elif _q_phase == 2:
+		velocity.x = _q_dir.x * Q_FORWARD_SPEED
+		velocity.z = _q_dir.z * Q_FORWARD_SPEED
+		if _q_timer <= 0.0:
+			_state = State.NORMAL
+			velocity.x = 0.0
+			velocity.z = 0.0
 
 
 func _start_spin_charge() -> void:
@@ -705,6 +764,10 @@ func take_hit(p_from: Node3D) -> void:
 		_end_followup()
 	elif _state == State.HEAVY:
 		_end_heavy()
+	elif _state == State.DASH_TECH:
+		_state = State.NORMAL
+		velocity.x = 0.0
+		velocity.z = 0.0
 	_state = State.NORMAL
 	_attack_timer = 0.0
 	_dash_timer = 0.0

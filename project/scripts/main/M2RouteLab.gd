@@ -66,6 +66,8 @@ var _gate_visuals: Array[MeshInstance3D] = []
 var _final_started := false
 var _shift_done := false
 var _boss_key_granted := false
+var _target_prompt_shown := false
+var _target_auto_timer := 0.0
 var _seal_gate
 var _target_marker: MeshInstance3D
 var _has_night_stamp := false
@@ -106,8 +108,14 @@ func _process(delta: float) -> void:
 	_camera.global_position = _camera.global_position.lerp(camera_target, blend)
 	_camera.look_at(_player.global_position + Vector3.UP, Vector3.UP)
 	if _boss_key_granted and not _shift_done:
-		if is_instance_valid(_target_marker) and absf(_player.global_position.x - _target_marker.global_position.x) < 2.5 and Input.is_action_just_pressed("interact"):
-			_finish_shift()
+		var near_target := is_instance_valid(_target_marker) and absf(_player.global_position.x - _target_marker.global_position.x) < 2.5
+		if near_target:
+			if not _target_prompt_shown:
+				_target_prompt_shown = true
+				_show_event("靠近封印终点：按 E 完成封印")
+			_target_auto_timer += delta
+			if Input.is_action_just_pressed("interact") or _target_auto_timer > 1.4:
+				_finish_shift()
 		elif _player.global_position.x > 17.0:
 			_finish_shift()
 	if Input.is_action_just_pressed("interact") and not (_boss_key_granted and absf(_player.global_position.x - 18.0) < 3.0):
@@ -194,6 +202,8 @@ func _activate_case(p_index: int) -> void:
 
 func _start_final_event() -> void:
 	_final_started = true
+	_boss_waiting_npc = false
+	_boss_revealed = true
 	var minion_styles: Array[String] = ["swipe", "pool", "shot"]
 	for index in range(FINAL_MINION_POS.size()):
 		var minion: TestGhost = GhostScript.new()
@@ -236,6 +246,8 @@ func _boss_cleared() -> void:
 	if _boss_key_granted:
 		return
 	_boss_key_granted = true
+	_target_prompt_shown = false
+	_target_auto_timer = 0.0
 	if is_instance_valid(_seal_gate):
 		_seal_gate.try_open({}, true)
 	_show_event("封印钥匙到手：封印终点已打开，走过去确认收工")
@@ -456,7 +468,7 @@ func _update_hud() -> void:
 		objective_text = "收工 Boss 现身：击败后取得封印钥匙"
 	elif _boss_key_granted:
 		objective_text = "封印终点：已打开，靠近金色柱按 E 确认"
-	_hud_label.text = "夜班派单 | 第 %s 单\n现场：%s\n目标：%s\n还能上班：%d/%d\n剩余闹事鬼：%d\n好评：%d\n清扫连锁：%d\n扫劲：%d/%d\n\nWASD 移动 | Tab 地图 | 空格 跳跃 | Shift 冲刺 | LMB 清扫 | RMB 短按横扫/长按陀螺 | 静止按住 X 回血 | E 互动/送走" % [
+	_hud_label.text = "夜班派单 | 第 %s 单\n现场：%s\n目标：%s\n还能上班：%d/%d\n剩余闹事鬼：%d\n好评：%d\n清扫连锁：%d\n扫劲：%d/%d\n\nWASD 移动 | Tab 地图 | 空格 跳跃 | Shift 冲刺(无消耗) | Q 撤步冲撞 | LMB 清扫 | RMB 短按横扫/长按陀螺 | 静止按住 X 回血 | E 互动/送走" % [
 		stage_text,
 		case_text,
 		objective_text,
