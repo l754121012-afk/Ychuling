@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1100" viewBox="0 0 1500 1100">
+  <rect width="1500" height="1100" fill="#0e1420"/>
+  <g font-family="sans-serif">
+    <text x="750" y="40" text-anchor="middle" fill="#dfe9ff" font-size="28">旧剧院与封门车站 / Rain Theatre and Terminal</text>
+    <text x="750" y="72" text-anchor="middle" fill="#8fa3c8" font-size="16">第二关：剧院回环、吊杆层、末班车 Boss、封印终点</text>
+
+    <rect x="120" y="120" width="260" height="150" rx="14" fill="#2b3b4f" stroke="#8aa8d0" stroke-width="3"/>
+    <text x="250" y="180" text-anchor="middle" fill="#cfe3ff" font-size="19">剧院侧门</text>
+    <text x="250" y="214" text-anchor="middle" fill="#9cb3cc" font-size="14">第一关入口 / 回环点</text>
+
+    <rect x="500" y="100" width="330" height="220" rx="16" fill="#2b2838" stroke="#a99fd8" stroke-width="3"/>
+    <text x="665" y="155" text-anchor="middle" fill="#e5d9ff" font-size="19">散场大厅</text>
+    <text x="665" y="195" text-anchor="middle" fill="#9d92c0" font-size="13">观众席 / 二层包厢跳台</text>
+    <text x="665" y="230" text-anchor="middle" fill="#8e84b2" font-size="12">楼梯可跳到包厢与后台</text>
+
+    <rect x="920" y="90" width="260" height="150" rx="14" fill="#452f31" stroke="#c77f8f" stroke-width="3"/>
+    <text x="1050" y="145" text-anchor="middle" fill="#ffd7dd" font-size="18">舞台池</text>
+    <text x="1050" y="178" text-anchor="middle" fill="#b9868d" font-size="13">中间 Boss：幕布幽灵</text>
+
+    <rect x="430" y="390" width="270" height="170" rx="16" fill="#332e43" stroke="#b49ce0" stroke-width="3"/>
+    <text x="565" y="450" text-anchor="middle" fill="#e5d8ff" font-size="18">后台化妆室</text>
+    <text x="565" y="488" text-anchor="middle" fill="#ad98d0" font-size="13">NPC：戏班主</text>
+    <text x="565" y="520" text-anchor="middle" fill="#c5aef2" font-size="12">戏票钥匙线索</text>
+
+    <rect x="800" y="390" width="250" height="170" rx="16" fill="#493443" stroke="#d09bc4" stroke-width="3"/>
+    <text x="925" y="450" text-anchor="middle" fill="#ffd7f2" font-size="18">放映间/幕布室</text>
+    <text x="925" y="490" text-anchor="middle" fill="#bc95b3" font-size="13">案件二：幕布歌声</text>
+
+    <rect x="1140" y="300" width="250" height="170" rx="16" fill="#253443" stroke="#7fa5d2" stroke-width="3"/>
+    <text x="1265" y="355" text-anchor="middle" fill="#c3e2ff" font-size="18">吊杆层</text>
+    <text x="1265" y="393" text-anchor="middle" fill="#93b4d8" font-size="13">移动布景杆平台</text>
+    <text x="1265" y="425" text-anchor="middle" fill="#b7d8f5" font-size="13">通往雨钟台</text>
+
+    <rect x="60" y="430" width="280" height="200" rx="16" fill="#28343e" stroke="#9dc4dd" stroke-width="3"/>
+    <text x="200" y="500" text-anchor="middle" fill="#d9f2ff" font-size="18">雨钟台</text>
+    <text x="200" y="540" text-anchor="middle" fill="#a4c3d6" font-size="13">露天雨台跳跃</text>
+    <text x="200" y="580" text-anchor="middle" fill="#9fd7f0" font-size="13">远眺封印终点</text>
+
+    <rect x="100" y="720" width="270" height="170" rx="16" fill="#2e2b45" stroke="#b18fe0" stroke-width="3"/>
+    <text x="235" y="785" text-anchor="middle" fill="#e6d5ff" font-size="18">寄存室</text>
+    <text x="235" y="822" text-anchor="middle" fill="#a895d2" font-size="13">案件三：呼吸柜</text>
+    <text x="235" y="852" text-anchor="middle" fill="#9d7fe0" font-size="12">需要戏票钥匙</text>
+
+    <rect x="500" y="720" width="320" height="220" rx="16" fill="#253849" stroke="#6fa6d8" stroke-width="3"/>
+    <text x="660" y="785" text-anchor="middle" fill="#c2e5ff" font-size="19">站台区</text>
+    <text x="660" y="825" text-anchor="middle" fill="#97b8d8" font-size="13">轨道两侧跳跃</text>
+    <text x="660" y="870" text-anchor="middle" fill="#8fb6dc" font-size="12">末班车 Boss 前</text>
+
+    <rect x="900" y="700" width="280" height="220" rx="16" fill="#45282b" stroke="#ff6d5a" stroke-width="3"/>
+    <text x="1040" y="775" text-anchor="middle" fill="#ffcdc3" font-size="19">末班车老板</text>
+    <text x="1040" y="820" text-anchor="middle" fill="#d9a29a" font-size="13">车灯扫射 / 车厢门砸击</text>
+    <text x="1040" y="860" text-anchor="middle" fill="#f0a79a" font-size="13">掉落封印钥匙</text>
+
+    <rect x="1270" y="680" width="180" height="230" rx="18" fill="#40391f" stroke="#ffe08a" stroke-width="4"/>
+    <text x="1360" y="770" text-anchor="middle" fill="#ffe9a8" font-size="19">封印终点</text>
+    <text x="1360" y="820" text-anchor="middle" fill="#d6c47e" font-size="13">按 E 完成</text>
+    <text x="1360" y="860" text-anchor="middle" fill="#ffe08a" font-size="13">封印钥匙开启</text>
+
+    <rect x="520" y="980" width="360" height="90" rx="14" fill="#222e3b" stroke="#8ab5d8" stroke-width="3"/>
+    <text x="700" y="1025" text-anchor="middle" fill="#b8d4f0" font-size="16">地下维修通道（捷径）</text>
+    <text x="700" y="1052" text-anchor="middle" fill="#7e9dbd" font-size="13">连接化妆室与站台</text>
+
+    <path d="M380 220 L500 220" stroke="#8aa8d0" stroke-width="4" fill="none"/>
+    <path d="M830 220 L920 220" stroke="#c77f8f" stroke-width="4" fill="none"/>
+    <path d="M665 320 L565 390" stroke="#b49ce0" stroke-width="4" stroke-dasharray="7 6" fill="none"/>
+    <path d="M950 400 L1260 400" stroke="#7fa5d2" stroke-width="4" stroke-dasharray="7 6" fill="none"/>
+    <path d="M220 390 L200 430" stroke="#9dc4dd" stroke-width="4" fill="none"/>
+    <path d="M565 560 L235 720" stroke="#b18fe0" stroke-width="4" stroke-dasharray="7 6" fill="none"/>
+    <path d="M660 940 L1040 940" stroke="#ff6d5a" stroke-width="4" fill="none"/>
+    <path d="M1180 920 L1360 900" stroke="#ffe08a" stroke-width="4" fill="none"/>
+    <path d="M700 980 L700 940" stroke="#8ab5d8" stroke-width="4" fill="none"/>
+    <path d="M1040 1050 L1040 940" stroke="#8ab5d8" stroke-width="4" fill="none"/>
+  </g>
+</svg>

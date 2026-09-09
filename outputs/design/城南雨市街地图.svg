@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1050" viewBox="0 0 1500 1050">
+  <rect width="1500" height="1050" fill="#0a1220"/>
+  <g font-family="sans-serif">
+    <text x="750" y="42" text-anchor="middle" fill="#dfe9ff" font-size="28">城南雨市街 / Downpour Market</text>
+    <text x="750" y="74" text-anchor="middle" fill="#8fa3c8" font-size="16">第一关地图：雨幕、摊位顶棚、排水渠、旧剧院侧门</text>
+
+    <rect x="60" y="110" width="230" height="120" rx="14" fill="#1f4a3c" stroke="#57d4a5" stroke-width="3"/>
+    <text x="175" y="160" text-anchor="middle" fill="#d9ffe9" font-size="19">夜巡司天台</text>
+    <text x="175" y="190" text-anchor="middle" fill="#9fdcc2" font-size="14">起点 / 休息点</text>
+
+    <rect x="85" y="300" width="230" height="410" rx="16" fill="#273448" stroke="#7b92b8" stroke-width="3"/>
+    <text x="200" y="345" text-anchor="middle" fill="#c6d8f2" font-size="18">雨帘长巷</text>
+    <text x="200" y="520" text-anchor="middle" fill="#7f9ac4" font-size="13" transform="rotate(-90 200 520)">纵向屋檐跳台</text>
+
+    <rect x="420" y="60" width="330" height="180" rx="16" fill="#2a3338" stroke="#b2c4d8" stroke-width="3"/>
+    <text x="585" y="115" text-anchor="middle" fill="#cfe4ff" font-size="19">摊位顶棚区</text>
+    <text x="585" y="150" text-anchor="middle" fill="#93a6b8" font-size="14">高层房顶捷径</text>
+    <circle cx="500" cy="190" r="12" fill="#6fd0ff"/>
+    <text x="500" y="196" text-anchor="middle" fill="#06222f" font-size="12">跳</text>
+
+    <rect x="400" y="310" width="340" height="300" rx="16" fill="#27342e" stroke="#82b596" stroke-width="3"/>
+    <text x="570" y="350" text-anchor="middle" fill="#cff4d9" font-size="19">收摊水街</text>
+    <text x="570" y="385" text-anchor="middle" fill="#7fa793" font-size="14">积水减速 / 瓦罐杂物</text>
+    <rect x="560" y="430" width="160" height="70" rx="10" fill="#3c4b42"/>
+    <text x="640" y="468" text-anchor="middle" fill="#dff7e5" font-size="14">炒粉灰影现场</text>
+    <circle cx="500" cy="440" r="9" fill="#ffb25b"/>
+    <text x="500" y="446" text-anchor="middle" fill="#231507" font-size="10">案1</text>
+
+    <rect x="815" y="330" width="210" height="130" rx="14" fill="#3b3245" stroke="#b59bd4" stroke-width="3"/>
+    <text x="920" y="385" text-anchor="middle" fill="#e8d9ff" font-size="18">灰影炒粉摊</text>
+    <text x="920" y="418" text-anchor="middle" fill="#9f8bb0" font-size="12">夜市事件一</text>
+
+    <rect x="330" y="690" width="180" height="120" rx="14" fill="#2c3c55" stroke="#8bb4e8" stroke-width="3"/>
+    <text x="420" y="740" text-anchor="middle" fill="#c9e1ff" font-size="18">巡夜员亭</text>
+    <text x="420" y="772" text-anchor="middle" fill="#86a9d8" font-size="13">NPC / 支线</text>
+
+    <rect x="590" y="660" width="210" height="150" rx="14" fill="#26354b" stroke="#ffe08a" stroke-width="3"/>
+    <text x="695" y="720" text-anchor="middle" fill="#ffe9a8" font-size="18">印章高台</text>
+    <text x="695" y="760" text-anchor="middle" fill="#e2c06d" font-size="13">能力：夜巡印章</text>
+
+    <rect x="875" y="520" width="230" height="160" rx="16" fill="#23303f" stroke="#7d94b5" stroke-width="3"/>
+    <text x="990" y="575" text-anchor="middle" fill="#cbdaf0" font-size="18">水洼后巷</text>
+    <text x="990" y="610" text-anchor="middle" fill="#8aa1bd" font-size="13">瓦罐 / 隐藏支路</text>
+
+    <rect x="80" y="820" width="230" height="160" rx="14" fill="#313a2a" stroke="#a6bd85" stroke-width="3"/>
+    <text x="195" y="875" text-anchor="middle" fill="#e3f2c0" font-size="18">旧药铺</text>
+    <text x="195" y="908" text-anchor="middle" fill="#9eb77e" font-size="13">支线房间</text>
+
+    <rect x="430" y="820" width="250" height="180" rx="16" fill="#472b2b" stroke="#ff6d5a" stroke-width="3"/>
+    <text x="555" y="880" text-anchor="middle" fill="#ffc9c0" font-size="19">排水渠 Boss</text>
+    <text x="555" y="925" text-anchor="middle" fill="#e4a39a" font-size="13">收伞人</text>
+    <text x="555" y="952" text-anchor="middle" fill="#ff8a6f" font-size="13">掉落：旧戏票</text>
+
+    <rect x="860" y="700" width="270" height="190" rx="16" fill="#443b22" stroke="#ffe08a" stroke-width="4"/>
+    <text x="995" y="765" text-anchor="middle" fill="#ffe9a8" font-size="19">老剧院侧门锁</text>
+    <text x="995" y="805" text-anchor="middle" fill="#d5c078" font-size="13">重要目标：可见但关闭</text>
+    <text x="995" y="840" text-anchor="middle" fill="#f2d77a" font-size="13">需要旧戏票</text>
+
+    <path d="M290 230 L200 300" stroke="#57d4a5" stroke-width="4" fill="none"/>
+    <path d="M330 420 L400 420" stroke="#82b596" stroke-width="4" fill="none"/>
+    <path d="M740 420 L815 420" stroke="#c98a4b" stroke-width="4" fill="none"/>
+    <path d="M740 520 L690 660" stroke="#ffe08a" stroke-width="4" stroke-dasharray="7 6" fill="none"/>
+    <path d="M450 700 L200 820" stroke="#a6bd85" stroke-width="4" stroke-dasharray="7 6" fill="none"/>
+    <path d="M750 780 L800 880 L680 900" stroke="#ff6d5a" stroke-width="4" fill="none"/>
+    <path d="M920 460 L990 520" stroke="#b59bd4" stroke-width="4" stroke-dasharray="7 6" fill="none"/>
+    <path d="M800 860 L860 790" stroke="#ffe08a" stroke-width="4" fill="none"/>
+
+    <text x="1140" y="120" fill="#e8efff" font-size="18">图例</text>
+    <rect x="1130" y="145" width="18" height="18" fill="#57d4a5"/><text x="1160" y="160" fill="#bcd9c8" font-size="14">房间/区域</text>
+    <rect x="1130" y="180" width="18" height="18" fill="#ffb25b"/><text x="1160" y="195" fill="#ffe6c0" font-size="14">案件事件</text>
+    <rect x="1130" y="215" width="18" height="18" fill="#ffe08a"/><text x="1160" y="230" fill="#f6e5b0" font-size="14">能力/重要门</text>
+    <rect x="1130" y="250" width="18" height="18" fill="#ff6d5a"/><text x="1160" y="265" fill="#ffc3b8" font-size="14">Boss</text>
+    <text x="1140" y="315" fill="#b5c9e0" font-size="14">实线=主路</text>
+    <text x="1140" y="345" fill="#b5c9e0" font-size="14">虚线=能力捷径</text>
+  </g>
+</svg>

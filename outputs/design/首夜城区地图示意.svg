@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="980" viewBox="0 0 1500 980">
+  <rect width="1500" height="980" fill="#0d131d"/>
+  <text x="750" y="46" text-anchor="middle" fill="#f4f7fb" font-size="32" font-family="sans-serif">首夜城区 / First Night District</text>
+
+  <g font-family="sans-serif">
+    <rect x="610" y="82" width="300" height="110" rx="14" fill="#24463b" stroke="#57d4a5" stroke-width="3"/>
+    <text x="760" y="124" text-anchor="middle" fill="#eafff3" font-size="22">夜巡司</text>
+    <text x="760" y="154" text-anchor="middle" fill="#9ed4c0" font-size="15">安全屋 / 休息点 / 支线台</text>
+
+    <rect x="100" y="300" width="360" height="300" rx="18" fill="#2e2a24" stroke="#c98a4b" stroke-width="3"/>
+    <text x="280" y="335" text-anchor="middle" fill="#ffd8a0" font-size="24">夜市街 A</text>
+    <text x="280" y="362" text-anchor="middle" fill="#b8a58c" font-size="16">摊位与遮雨棚高低跳跃</text>
+    <rect x="135" y="390" width="150" height="70" rx="10" fill="#3c3329"/>
+    <text x="210" y="427" text-anchor="middle" fill="#ffd8a0" font-size="15">案件1 炒粉灰影</text>
+    <rect x="330" y="390" width="110" height="70" rx="10" fill="#4b3f2d"/>
+    <text x="385" y="427" text-anchor="middle" fill="#ffe6b0" font-size="15">夜巡印章</text>
+
+    <rect x="640" y="300" width="360" height="310" rx="18" fill="#352531" stroke="#b0719e" stroke-width="3"/>
+    <text x="820" y="335" text-anchor="middle" fill="#f0c6df" font-size="24">旧戏院 B</text>
+    <text x="820" y="362" text-anchor="middle" fill="#c7a5b8" font-size="16">观众席 / 舞台 / 吊杆层</text>
+    <rect x="680" y="390" width="140" height="70" rx="10" fill="#4a2c43"/>
+    <text x="750" y="427" text-anchor="middle" fill="#f0c6df" font-size="15">案件2 幕布歌声</text>
+    <rect x="840" y="390" width="130" height="70" rx="10" fill="#6a3f5a"/>
+    <text x="905" y="427" text-anchor="middle" fill="#ffe0f0" font-size="15">戏票钥匙</text>
+
+    <rect x="1080" y="300" width="330" height="310" rx="18" fill="#1f3140" stroke="#6fa6d8" stroke-width="3"/>
+    <text x="1245" y="335" text-anchor="middle" fill="#bfe3ff" font-size="24">封门车站 C</text>
+    <text x="1245" y="362" text-anchor="middle" fill="#91adc4" font-size="16">大厅 / 站台 / 寄存室</text>
+    <rect x="1110" y="390" width="140" height="70" rx="10" fill="#27465a"/>
+    <text x="1180" y="427" text-anchor="middle" fill="#bfe3ff" font-size="15">案件3 衣柜呼吸</text>
+    <rect x="1270" y="390" width="110" height="70" rx="10" fill="#315f75"/>
+    <text x="1325" y="427" text-anchor="middle" fill="#e0f4ff" font-size="15">神秘鬼</text>
+
+    <rect x="640" y="760" width="260" height="130" rx="16" fill="#472b2b" stroke="#ff6d5a" stroke-width="3"/>
+    <text x="770" y="810" text-anchor="middle" fill="#ffd2c8" font-size="23">收工 Boss</text>
+    <text x="770" y="840" text-anchor="middle" fill="#d9a7a0" font-size="15">击败后获得封印钥匙</text>
+
+    <rect x="1040" y="750" width="260" height="150" rx="16" fill="#40391f" stroke="#ffe08a" stroke-width="4"/>
+    <text x="1170" y="810" text-anchor="middle" fill="#ffe9a8" font-size="23">封印终点</text>
+    <text x="1170" y="840" text-anchor="middle" fill="#e8d18a" font-size="15">可见但锁住，Boss后开启</text>
+
+    <path d="M760 192 L280 300" stroke="#57d4a5" stroke-width="4" stroke-dasharray="8 7" fill="none"/>
+    <path d="M760 192 L820 300" stroke="#57d4a5" stroke-width="4" stroke-dasharray="8 7" fill="none"/>
+    <path d="M460 420 L640 420" stroke="#ffd166" stroke-width="4" stroke-dasharray="8 7" fill="none"/>
+    <path d="M1000 420 L1080 420" stroke="#ffd166" stroke-width="4" stroke-dasharray="8 7" fill="none"/>
+    <path d="M820 610 L770 760" stroke="#ff6d5a" stroke-width="4" stroke-dasharray="8 7" fill="none"/>
+    <path d="M1170 610 L1170 750" stroke="#ffe08a" stroke-width="4" stroke-dasharray="8 7" fill="none"/>
+    <path d="M820 890 L1170 890" stroke="#6fa6d8" stroke-width="4" stroke-dasharray="8 7" fill="none"/>
+
+    <text x="530" y="400" text-anchor="middle" fill="#ffd166" font-size="17">夜巡印章门</text>
+    <text x="1045" y="400" text-anchor="middle" fill="#ffd166" font-size="17">戏票钥匙门</text>
+    <text x="760" y="680" text-anchor="middle" fill="#ff6d5a" font-size="17">神秘鬼揭示</text>
+    <text x="1300" y="665" text-anchor="middle" fill="#ffe08a" font-size="17">封印门</text>
+    <text x="990" y="915" text-anchor="middle" fill="#6fa6d8" font-size="17">下一区域入口（未开放）</text>
+  </g>
+</svg>
