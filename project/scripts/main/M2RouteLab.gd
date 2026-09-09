@@ -80,7 +80,7 @@ var _reward_pickup
 var _map_open := false
 var _map_layer: CanvasLayer
 var _map_current_label: Label
-var _zone_marker_labels: Array[Label] = []
+var _world_map: V2WorldMap
 var _npc_data: Array[Dictionary] = []
 var _region_gates: Dictionary = {}
 
@@ -708,7 +708,7 @@ func _setup_map_hud() -> void:
 	_map_layer.add_child(panel)
 
 	var title := Label.new()
-	title.text = "首夜城区地图"
+	title.text = "首夜城区·路网图"
 	title.position = Vector2(424.0, 146.0)
 	title.add_theme_color_override("font_color", Color("#f4f7fb"))
 	title.add_theme_font_size_override("font_size", 28)
@@ -720,24 +720,13 @@ func _setup_map_hud() -> void:
 	_map_current_label.add_theme_font_size_override("font_size", 20)
 	_map_layer.add_child(_map_current_label)
 
-	var zones := [
-		["夜巡司", -13.5, 0],
-		["案件1：沙发灰影", -8.0, 1],
-		["案件2：电视歌声", 0.0, 2],
-		["案件3：衣柜呼吸", 8.0, 3],
-		["Boss 收工区", 11.0, 4],
-		["封印终点", 18.0, 5],
-	]
-	for zone in zones:
-		var label := Label.new()
-		label.text = "%s" % zone[0]
-		label.add_theme_color_override("font_color", Color("#c9d6e5"))
-		label.add_theme_font_size_override("font_size", 18)
-		var map_x := 460.0 + (float(zone[1]) + 14.0) * 17.0
-		var map_y := 250.0 + float(int(zone[2]) % 2) * 34.0
-		label.position = Vector2(map_x, map_y)
-		_map_layer.add_child(label)
-		_zone_marker_labels.append(label)
+	# 用节点式世界地图替换旧“区域文字堆叠”——每个节点按 build state（未开始/正在做/已做）上色。
+	_world_map = V2WorldMap.new()
+	_world_map.name = "NightWatchRegionMap"
+	_world_map.position = Vector2(424.0, 232.0)
+	_world_map.size = Vector2(752.0, 430.0)
+	_world_map.load_from(V2WorldMap.seed_night_watch())
+	_map_layer.add_child(_world_map)
 
 	var map_hint := Label.new()
 	map_hint.text = "按 Tab 关闭地图"
@@ -755,30 +744,19 @@ func _toggle_map() -> void:
 
 
 func _update_map() -> void:
-	if not is_instance_valid(_map_current_label):
+	if not is_instance_valid(_map_current_label) or not is_instance_valid(_world_map):
 		return
-	var current := "夜巡司/案件区"
+	var current_id := ""
 	if is_instance_valid(_player):
-		var px := _player.global_position.x
-		if px > 17.0:
-			current = "封印终点"
-		elif px > 13.0:
-			current = "Boss 收工区"
-		elif px > 5.0:
-			current = "案件3：衣柜呼吸"
-		elif px > -3.0:
-			current = "案件2：电视歌声"
-		elif px > -10.0:
-			current = "案件1：沙发灰影"
+		current_id = _world_map.room_for_world_x(_player.global_position.x)
+	_world_map.set_current(current_id)
+	var current := "未定位"
+	if not current_id.is_empty():
+		current = str(_world_map.room(current_id).get("name", current_id))
 	_map_current_label.text = "当前位置：%s" % current
-	var endpoint_text := "封印终点：锁着"
+
+	# 封印终点随进度变色：拿到印章后可作为终结目标。
 	if _boss_key_granted:
-		endpoint_text = "封印终点：可交互"
-	for index in range(mini(_zone_marker_labels.size(), 6)):
-		if index == 5:
-			_zone_marker_labels[index].text = endpoint_text
-		elif index == 4:
-			if _boss_waiting_npc:
-				_zone_marker_labels[index].text = "Boss 收工区：找神秘鬼确认"
-			elif _final_started:
-				_zone_marker_labels[index].text = "Boss 收工区：现身"
+		_world_map.set_state("seal", V2WorldMap.STATE_DONE)
+	elif _final_started:
+		_world_map.set_state("seal", V2WorldMap.STATE_IN_PROGRESS)

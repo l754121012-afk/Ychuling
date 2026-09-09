@@ -14,7 +14,7 @@
 ## 脚本（scripts/）
 
 ### 玩法主控
-- `main/M2RouteLab.gd`（667L，大字）— V2 首夜路线总控。`_ready`(88) 建 world/player/camera/hud；`_build_region_world()`(373) 从 JSON 建区域；路线门(418)/案件(193)/休息(406)/事件(611)/地图HUD(698)/失败复活(565) 都在这里。
+- `main/M2RouteLab.gd`（762L，大字）— V2 首夜路线总控。`_ready`(88) 建 world/player/camera/hud；`_build_region_world()`(373) 从 JSON 建区域；路线门(418)/案件(193)/休息(406)/事件(611)/地图HUD(698：实例化 `V2WorldMap`)/地图刷新(746)/失败复活(565) 都在这里。
 - `main/MainLab.gd`（118L）— 早期实验室主控，V2 不用。
 
 ### 玩家 / 敌人
@@ -27,6 +27,9 @@
 - `v2/V2RegionBuilder.gd`（131L）— `build(parent, region)`(12) JSON→世界（zone floor/props/gates/decor）；`zone_id_at_x`(49)；`_build_zone`(70) 用 `min_x/max_x`，忽略 `span`。
 - `v2/V2RegionRuntime.gd`（75L）— 运行态门禁：`can_reach_zone`(41)/`can_open_gate`(52)/`collect_ability`(20)/`complete_quest`(27)/`build_save_data`(73)。
 - `v2/V2SaveSystem.gd`（59L）— `save_run`(7)/`load_run`(31)/`has_save`(61)/`clear_run`(65)。
+
+### v2 世界地图（Tab 覆盖层）
+- `v2/V2WorldMap.gd`（230L）— 节点式世界地图（`extends Control`）。构建状态配色：`LOCKED`(灰)/`IN_PROGRESS`(琥珀)/`DONE`(绿)。`seed_night_watch()`(66) 内置夜巡司区首图快照（12 房间+12 连接）；`load_from`(114) 重建节点图；`_draw`(120) 先画边再画节点；`room_for_world_x`(46) 依世界 X 找最近房间；`set_current`(39) 高亮_当前房间（软光晕+脉冲描边）；`set_state`(30) 改进度并刷新。集成点：`M2RouteLab.gd` 的 `_setup_map_hud`(698)——以此替换旧 `_zone_marker_labels` 区域文字层。
 
 ### v2 环境组件 / 门 / 拾取 / 可击破 / 仪式
 - `v2/V2EnvFactory.gd`（156L）— 环境组件 static 工厂：platform(5)/pillar(19)/plant(26)/waterfall(41)/zone_floor(49)/lamp(56)/window(71)/plaque(79)/spirit_fire(86)/mist(101)/pressure_plate(110)/pushable_box(129)/lift(148)/interactive_door(170)。
@@ -68,6 +71,7 @@
 | `v2_save_smoke.gd` | 26 | `V2_SAVE saved=... seed=... key=... rest=...` |
 | `v2_map_plan.gd` | 347 | 顶视施工图渲染（带窗口）→ `outputs/map-v2-plan.png` |
 | `v2_map_schematic.gd` / `v2_map_capture.gd` / `v2_map_organic.gd` | 175/107/245 | 其余地图渲染辅助，旧参考非基准 |
+| `v2_world_map_smoke.gd` | 64 | `V2_WORLDMAP rooms=12 edges=12 rest=DONE hub=IN_PROGRESS seal_init=LOCKED map@-13.5=rest map@-8=case_sofa map@11=boss seal_after=DONE current=case_sofa` |
 
 ## 权威地图数据
 

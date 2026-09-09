@@ -6,6 +6,7 @@
 
 - **本次：接管 FIVESTAR 旧项目 → 从地图“左下角区域”（西南角 = 夜巡司区）开始实现。**
 - 先决已做：完成上下文瘦身（新增 `outputs/CODE-INDEX.md`；本文件与 `AGENTS.md` 已去掉元叙述，只留状态与协议）。
+- 首刀已做：新增 `v2/V2WorldMap.gd`（节点式世界地图，`LOCKED/IN_PROGRESS/DONE` 三态配色），并集成进 Tab 地图（`M2RouteLab.gd` `_setup_map_hud` 以它替换旧区域文字层），含“当前位置”软光晕高亮；冒烟 `v2_world_map_smoke.gd` 通过。下一步：夜巡司区 3D 落位（休息/值房/线索/捷径门/案1连通/可击破物）。
 
 ## 项目定位
 
