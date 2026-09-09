@@ -53,6 +53,7 @@ Codex 单次会话的上下文是有限的。如果在一个长会话里反复�
 - 阶段：M2 行为循环白盒（V2）。
 - Godot：4.7.2（本机 `F:\Godot\4.7.2\Godot_v4.7.2-stable_win64.exe`）。
 - 主场景：`project` 下的 V2 首夜城区路线；Godot 工程根 = `...\3d-f-crypt-custodian-green-chs\project`。
+- 2026-09-10 顶视施工图已出 `outputs/map-v2-plan.png`（2000×1100，`project/tests/v2_map_plan.gd` 渲染，复跑日志 `PLAN saved=true err=0 size=2000x1100`，目检通过）。已按用户要求改成“可直接指导地编”的信息结构：4 块实体功能区+围墙（夜巡司蓝灰/居住区棕/旧剧场·电视台酒红/Boss 封印场墨绿）、区块间深色暗沟=不可走、房间隔墙+门洞、浅色主路+支路、金色挂锁（路由门 R1/R2、捷径门需夜巡印章、Boss 门、封印门）、每案 4 只怪红色出生点并标注攻击风格（挥/弹/冲/圈）、Boss 红锯环+杂兵、封印终点金柱、休息点黄绿/能力点亮金、平台高低差斜线、顶部标题+底部图例+右上指北+左下比例尺。旧的 `map-v2-organic.png`/`schematic/topdown*.png` 仍保留，但不作为交付基准。生图提示词 `outputs/map-v2-imagegen-prompt.md` 已同步为同方向的可读施工/顶视描述（实体分区、主路/支路、门锁、布怪、阻挡、图例；明确不要霓虹/发光/雾效）。
 - 已落地：互动光圈收束 + 冲天光柱演出（夜巡印章 / Boss 清除 / 封印终点 / 案件交付 / 能力门开门 / Boss 揭示）；通用地图组件（平台、柱子、可击破罐罐、装饰植物、瀑布、灯、窗、牌匾、灵火堆、雾区、压力机关、可推箱、升降平台）。
 - 地图数据化闭环已接通：`first_night_region.json` -> `V2RouteData.load_region` -> `V2RegionBuilder.build` -> `V2EnvFactory` 生成区域地板/组件；`M2RouteLab._build_region_world()` 已接入，旧的 `_build_v2_env_decor` 硬编码装饰已删除。
 - 首次区域分区已落地 4 个大区：夜巡司 / 居住区 / 旧剧场·电视台 / Boss 封印场（按 JSON 的 zones+props+decor 铺色块与组件，主路/案件/Boss/封印坐标未被遮挡）。
@@ -64,7 +65,7 @@ Codex 单次会话的上下文是有限的。如果在一个长会话里反复�
 
 ## 下一步
 
-- **首项（待用户确认设计后才动）：基于 `outputs/map-construction-blueprint.md` 出可视化地图图（约 2000×1100）**，把施工图里的 4 大区边界、案件/布怪、门、Boss/封印位置全画出来，并套 `map-style-notes.md` 的「有机手绘发光」风——近黑暗酒红角落、青绿发光有机岛屿、深窄暗运河、黑阴影团、金色挂锁、Boss 红锯齿环、金色标签、斜细雨丝；中文正常、不重叠。渲染带窗口（headless 下 `root.get_texture()` 为 null）。
+- **首项（已交付，待用户确认）：用户核对 `outputs/map-v2-plan.png`（顶视施工图）与 `outputs/map-v2-imagegen-prompt.md`（生图提示词）。** 若方向对，以此定稿并进入下一项（能力循环 E / Boss 战斗 F）；若不对，按用户反馈微调布局参数（区域比例/连接/可走不可走/怪物点位需保持与 `map-construction-blueprint.md` 一致）。
 - 该项只读「施工图 + `map-style-notes.md` + 缩略图」，**不要读原图**。出图后交用户确认结构与布局，用户点头再进入下一项（能力循环 E / Boss 战斗 F）。
 - 探索与能力循环（E）：地图上保留“可见不可达”目标；每个新能力至少改变一次旧区域路径/可击破物；死亡后能力按正式存档规则保留。
 - Boss 与战斗区域（F）：Boss 从 NPC 揭示后进入独立舞台，补战斗边界、阶段转场、受击演出（当前 Boss 仍在主走廊）。
