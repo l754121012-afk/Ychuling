@@ -5,6 +5,9 @@ const GhostScript := preload("res://scripts/actors/TestGhost.gd")
 const LiquidBarScript := preload("res://scripts/ui/LiquidHealthBar.gd")
 const GateScript := preload("res://scripts/v2/V2AbilityGate.gd")
 const PickupScript := preload("res://scripts/v2/V2AbilityPickup.gd")
+const RitualScript := preload("res://scripts/v2/V2RitualEffect.gd")
+const EnvFactory := preload("res://scripts/v2/V2EnvFactory.gd")
+const BreakableScript := preload("res://scripts/v2/V2Breakable.gd")
 
 const CAMERA_HEIGHT := 10.5
 const CAMERA_BACK := 5.0
@@ -93,6 +96,7 @@ func _ready() -> void:
 	_build_hud()
 	_setup_map_hud()
 	_build_v2_npcs()
+	_build_v2_env_decor()
 	_activate_case(_case_index)
 
 
@@ -175,6 +179,7 @@ func _on_ability_collected(p_ability_id: String) -> void:
 	_reward_pickup = null
 	if is_instance_valid(_player):
 		_player.set_base_sweep_damage(2)
+	_spawn_ritual(Vector3(-8.0, 0.0, -3.6), Color("#eaffc9"))
 	_open_route_gate(0)
 	_show_event("获得夜巡印章：清扫伤害提升，下一案件门已打开")
 	_case_index = 1
@@ -233,6 +238,8 @@ func _start_final_event() -> void:
 
 
 func _finish_shift() -> void:
+	if is_instance_valid(_target_marker):
+		_spawn_ritual(_target_marker.global_position, Color("#f2d77a"))
 	_shift_done = true
 	_review_count += 1
 	_set_pad_color(0, Color("#6fce8f"))
@@ -250,6 +257,7 @@ func _boss_cleared() -> void:
 	_target_auto_timer = 0.0
 	if is_instance_valid(_seal_gate):
 		_seal_gate.try_open({}, true)
+	_spawn_ritual(FINAL_POS, Color("#d9f6ff"))
 	_show_event("封印钥匙到手：封印终点已打开，走过去确认收工")
 	_update_hud()
 
@@ -283,6 +291,29 @@ func _build_v2_npcs() -> void:
 		var marker := PlaceholderKit.box("art_key_v2_npc_%s" % npc.id, Color("#57d4a5"), Vector3(0.8, 1.6, 0.8))
 		marker.position = npc.position + Vector3(0.0, 0.8, 0.0)
 		add_child(marker)
+
+
+func _build_v2_env_decor() -> void:
+	EnvFactory.waterfall(self, Vector3(-13.0, 0.0, -5.4), 3.0, 7.0)
+	EnvFactory.plant(self, Vector3(-11.5, 0.0, 4.5))
+	EnvFactory.plant(self, Vector3(-7.0, 0.0, -4.7))
+	EnvFactory.plant(self, Vector3(2.0, 0.0, 4.5))
+	EnvFactory.plant(self, Vector3(8.5, 0.0, -4.5))
+	EnvFactory.pillar(self, Vector3(-9.2, 0.0, 4.6), 0.45, 3.4)
+	EnvFactory.pillar(self, Vector3(1.2, 0.0, -4.7), 0.45, 3.8)
+	EnvFactory.pillar(self, Vector3(10.2, 0.0, 4.5), 0.6, 5.0)
+	for index in range(3):
+		var jar: StaticBody3D = BreakableScript.new()
+		jar.set("breakable_id", "night_jar_%d" % index)
+		add_child(jar)
+		jar.position = Vector3(-6.5 + index * 0.8, 0.0, 4.0)
+
+
+func _spawn_ritual(p_position: Vector3, p_color: Color = Color("#ffe08a")) -> void:
+	var effect: Node3D = RitualScript.new()
+	add_child(effect)
+	effect.global_position = p_position
+	effect.call("play", p_color)
 
 
 func _try_v2_npc() -> void:
