@@ -1,0 +1,3771 @@
+{
+	"counts": {
+		"boss": 1,
+		"breakable": 5,
+		"case": 3,
+		"decor": 27,
+		"floor": 5,
+		"gate": 2,
+		"nav": 1,
+		"objective": 1,
+		"prop": 12,
+		"region": 1,
+		"rest": 3,
+		"route_gate": 2,
+		"spawn": 1,
+		"trigger": 2,
+		"zone": 4
+	},
+	"generated_at": "2026-09-10T13:23:15",
+	"object_count": 70,
+	"objects": [
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.region",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.region_generated"
+			],
+			"kind": "region",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_REGION_FIRST_NIGHT",
+			"node_path": ".",
+			"params": {
+				"region_name": "首夜城区"
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "first_night",
+			"tags": [
+				"authored"
+			],
+			"transform": {
+				"global_position": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"local_position": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": ""
+		},
+		{
+			"behavior": "boss",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.boss",
+				"fs.zone.first_night",
+				"fs.behavior.boss",
+				"fs.tag.authored",
+				"fs.tag.boss",
+				"fs.region_generated"
+			],
+			"kind": "boss",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_BOSS_BOSS_ROOM",
+			"node_path": "FS_BOSS_BOSS_ROOM",
+			"params": {
+				"id": "boss_room",
+				"type": "boss",
+				"x": 11.0,
+				"z": 0.0
+			},
+			"runtime_support": "marker",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "boss_room",
+			"tags": [
+				"authored",
+				"boss"
+			],
+			"transform": {
+				"global_position": [
+					11.0,
+					0.0,
+					0.0
+				],
+				"local_position": [
+					11.0,
+					0.0,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "first_night"
+		},
+		{
+			"behavior": "case",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.case",
+				"fs.zone.first_night",
+				"fs.behavior.case",
+				"fs.tag.authored",
+				"fs.tag.case",
+				"fs.region_generated"
+			],
+			"kind": "case",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_CASE_CASE_SOFA",
+			"node_path": "FS_CASE_CASE_SOFA",
+			"params": {
+				"id": "case_sofa",
+				"type": "case",
+				"x": -8.0,
+				"z": 0.0
+			},
+			"runtime_support": "marker",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "case_sofa",
+			"tags": [
+				"authored",
+				"case"
+			],
+			"transform": {
+				"global_position": [
+					-8.0,
+					0.0,
+					0.0
+				],
+				"local_position": [
+					-8.0,
+					0.0,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "first_night"
+		},
+		{
+			"behavior": "case",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.case",
+				"fs.zone.first_night",
+				"fs.behavior.case",
+				"fs.tag.authored",
+				"fs.tag.case",
+				"fs.region_generated"
+			],
+			"kind": "case",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_CASE_CASE_TV",
+			"node_path": "FS_CASE_CASE_TV",
+			"params": {
+				"id": "case_tv",
+				"type": "case",
+				"x": 0.0,
+				"z": 0.0
+			},
+			"runtime_support": "marker",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "case_tv",
+			"tags": [
+				"authored",
+				"case"
+			],
+			"transform": {
+				"global_position": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"local_position": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "first_night"
+		},
+		{
+			"behavior": "case",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.case",
+				"fs.zone.first_night",
+				"fs.behavior.case",
+				"fs.tag.authored",
+				"fs.tag.case",
+				"fs.region_generated"
+			],
+			"kind": "case",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_CASE_CASE_WARDROBE",
+			"node_path": "FS_CASE_CASE_WARDROBE",
+			"params": {
+				"id": "case_wardrobe",
+				"type": "case",
+				"x": 8.0,
+				"z": 0.0
+			},
+			"runtime_support": "marker",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "case_wardrobe",
+			"tags": [
+				"authored",
+				"case"
+			],
+			"transform": {
+				"global_position": [
+					8.0,
+					0.0,
+					0.0
+				],
+				"local_position": [
+					8.0,
+					0.0,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "first_night"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.floor",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.route",
+				"fs.region_generated"
+			],
+			"kind": "floor",
+			"links": [],
+			"node_class": "StaticBody3D",
+			"node_name": "FS_FLOOR_ROUTE_FLOOR",
+			"node_path": "FS_FLOOR_ROUTE_FLOOR",
+			"params": {
+				"size": [
+					40.0,
+					1.0,
+					16.0
+				]
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "route_floor",
+			"tags": [
+				"authored",
+				"route"
+			],
+			"transform": {
+				"global_position": [
+					0.0,
+					-0.5,
+					0.0
+				],
+				"local_position": [
+					0.0,
+					-0.5,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": ""
+		},
+		{
+			"behavior": "gate",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.gate",
+				"fs.behavior.gate",
+				"fs.tag.authored",
+				"fs.region_generated"
+			],
+			"kind": "gate",
+			"links": [
+				"seal_endpoint"
+			],
+			"node_class": "StaticBody3D",
+			"node_name": "FS_GATE_SEAL_DOOR",
+			"node_path": "FS_GATE_SEAL_DOOR",
+			"params": {
+				"kind": "boss",
+				"prompt": "封印之门",
+				"required_ability": "",
+				"required_boss": "seal_boss",
+				"required_quest": ""
+			},
+			"runtime_support": "runtime",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "seal_door",
+			"tags": [
+				"authored"
+			],
+			"transform": {
+				"global_position": [
+					15.399999618530273,
+					0.0,
+					0.0
+				],
+				"local_position": [
+					15.399999618530273,
+					0.0,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": ""
+		},
+		{
+			"behavior": "gate",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.gate",
+				"fs.behavior.gate",
+				"fs.tag.authored",
+				"fs.region_generated"
+			],
+			"kind": "gate",
+			"links": [
+				"shortcut_east"
+			],
+			"node_class": "StaticBody3D",
+			"node_name": "FS_GATE_SHORTCUT_GATE",
+			"node_path": "FS_GATE_SHORTCUT_GATE",
+			"params": {
+				"kind": "ability",
+				"prompt": "夜巡印章捷径门",
+				"required_ability": "night_stamp",
+				"required_boss": "",
+				"required_quest": ""
+			},
+			"runtime_support": "runtime",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "shortcut_gate",
+			"tags": [
+				"authored"
+			],
+			"transform": {
+				"global_position": [
+					-10.300000190734863,
+					0.0,
+					-4.0
+				],
+				"local_position": [
+					-10.300000190734863,
+					0.0,
+					-4.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": ""
+		},
+		{
+			"behavior": "trigger",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.nav",
+				"fs.zone.first_night",
+				"fs.behavior.trigger",
+				"fs.tag.authored",
+				"fs.tag.path",
+				"fs.region_generated"
+			],
+			"kind": "nav",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_NAV_SHORTCUT_EAST",
+			"node_path": "FS_NAV_SHORTCUT_EAST",
+			"params": {
+				"id": "shortcut_east",
+				"type": "path",
+				"x": -4.0,
+				"z": 4.0
+			},
+			"runtime_support": "marker",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "shortcut_east",
+			"tags": [
+				"authored",
+				"path"
+			],
+			"transform": {
+				"global_position": [
+					-4.0,
+					0.0,
+					4.0
+				],
+				"local_position": [
+					-4.0,
+					0.0,
+					4.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "first_night"
+		},
+		{
+			"behavior": "objective",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.objective",
+				"fs.zone.first_night",
+				"fs.behavior.objective",
+				"fs.tag.authored",
+				"fs.tag.objective",
+				"fs.region_generated"
+			],
+			"kind": "objective",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_OBJECTIVE_SEAL_ENDPOINT",
+			"node_path": "FS_OBJECTIVE_SEAL_ENDPOINT",
+			"params": {
+				"id": "seal_endpoint",
+				"type": "objective",
+				"x": 18.2,
+				"z": 0.0
+			},
+			"runtime_support": "marker",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "seal_endpoint",
+			"tags": [
+				"authored",
+				"objective"
+			],
+			"transform": {
+				"global_position": [
+					18.200000762939453,
+					0.0,
+					0.0
+				],
+				"local_position": [
+					18.200000762939453,
+					0.0,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "first_night"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.prop",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.route",
+				"fs.tag.boundary",
+				"fs.region_generated"
+			],
+			"kind": "prop",
+			"links": [],
+			"node_class": "StaticBody3D",
+			"node_name": "FS_PROP_ROUTE_WALL_EAST",
+			"node_path": "FS_PROP_ROUTE_WALL_EAST",
+			"params": {
+				"size": "(0.6, 2.6, 18.0)"
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "route_wall_east",
+			"tags": [
+				"authored",
+				"route",
+				"boundary"
+			],
+			"transform": {
+				"global_position": [
+					20.5,
+					1.2999999523162842,
+					0.0
+				],
+				"local_position": [
+					20.5,
+					1.2999999523162842,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": ""
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.prop",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.route",
+				"fs.tag.boundary",
+				"fs.region_generated"
+			],
+			"kind": "prop",
+			"links": [],
+			"node_class": "StaticBody3D",
+			"node_name": "FS_PROP_ROUTE_WALL_NORTH",
+			"node_path": "FS_PROP_ROUTE_WALL_NORTH",
+			"params": {
+				"size": "(40.0, 2.6, 0.6)"
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "route_wall_north",
+			"tags": [
+				"authored",
+				"route",
+				"boundary"
+			],
+			"transform": {
+				"global_position": [
+					0.0,
+					1.2999999523162842,
+					-8.5
+				],
+				"local_position": [
+					0.0,
+					1.2999999523162842,
+					-8.5
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": ""
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.prop",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.route",
+				"fs.tag.boundary",
+				"fs.region_generated"
+			],
+			"kind": "prop",
+			"links": [],
+			"node_class": "StaticBody3D",
+			"node_name": "FS_PROP_ROUTE_WALL_SOUTH",
+			"node_path": "FS_PROP_ROUTE_WALL_SOUTH",
+			"params": {
+				"size": "(40.0, 2.6, 0.6)"
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "route_wall_south",
+			"tags": [
+				"authored",
+				"route",
+				"boundary"
+			],
+			"transform": {
+				"global_position": [
+					0.0,
+					1.2999999523162842,
+					8.5
+				],
+				"local_position": [
+					0.0,
+					1.2999999523162842,
+					8.5
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": ""
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.prop",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.route",
+				"fs.tag.boundary",
+				"fs.region_generated"
+			],
+			"kind": "prop",
+			"links": [],
+			"node_class": "StaticBody3D",
+			"node_name": "FS_PROP_ROUTE_WALL_WEST",
+			"node_path": "FS_PROP_ROUTE_WALL_WEST",
+			"params": {
+				"size": "(0.6, 2.6, 18.0)"
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "route_wall_west",
+			"tags": [
+				"authored",
+				"route",
+				"boundary"
+			],
+			"transform": {
+				"global_position": [
+					-20.5,
+					1.2999999523162842,
+					0.0
+				],
+				"local_position": [
+					-20.5,
+					1.2999999523162842,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": ""
+		},
+		{
+			"behavior": "rest",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.rest",
+				"fs.zone.first_night",
+				"fs.behavior.rest",
+				"fs.tag.authored",
+				"fs.tag.rest",
+				"fs.region_generated"
+			],
+			"kind": "rest",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_REST_REST_0",
+			"node_path": "FS_REST_REST_0",
+			"params": {
+				"id": "rest_0",
+				"type": "rest",
+				"x": -13.5,
+				"y": 0.9,
+				"z": 0.0
+			},
+			"runtime_support": "marker",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "rest_0",
+			"tags": [
+				"authored",
+				"rest"
+			],
+			"transform": {
+				"global_position": [
+					-13.5,
+					0.8999999761581421,
+					0.0
+				],
+				"local_position": [
+					-13.5,
+					0.8999999761581421,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "first_night"
+		},
+		{
+			"behavior": "rest",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.rest",
+				"fs.zone.first_night",
+				"fs.behavior.rest",
+				"fs.tag.authored",
+				"fs.tag.rest",
+				"fs.region_generated"
+			],
+			"kind": "rest",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_REST_REST_1",
+			"node_path": "FS_REST_REST_1",
+			"params": {
+				"id": "rest_1",
+				"type": "rest",
+				"x": -3.6,
+				"y": 0.9,
+				"z": 0.0
+			},
+			"runtime_support": "marker",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "rest_1",
+			"tags": [
+				"authored",
+				"rest"
+			],
+			"transform": {
+				"global_position": [
+					-3.5999999046325684,
+					0.8999999761581421,
+					0.0
+				],
+				"local_position": [
+					-3.5999999046325684,
+					0.8999999761581421,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "first_night"
+		},
+		{
+			"behavior": "rest",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.rest",
+				"fs.zone.first_night",
+				"fs.behavior.rest",
+				"fs.tag.authored",
+				"fs.tag.rest",
+				"fs.region_generated"
+			],
+			"kind": "rest",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_REST_REST_2",
+			"node_path": "FS_REST_REST_2",
+			"params": {
+				"id": "rest_2",
+				"type": "rest",
+				"x": 4.4,
+				"y": 0.9,
+				"z": 0.0
+			},
+			"runtime_support": "marker",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "rest_2",
+			"tags": [
+				"authored",
+				"rest"
+			],
+			"transform": {
+				"global_position": [
+					4.400000095367432,
+					0.8999999761581421,
+					0.0
+				],
+				"local_position": [
+					4.400000095367432,
+					0.8999999761581421,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "first_night"
+		},
+		{
+			"behavior": "route_gate",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.route_gate",
+				"fs.behavior.route_gate",
+				"fs.tag.authored",
+				"fs.tag.route",
+				"fs.region_generated"
+			],
+			"kind": "route_gate",
+			"links": [],
+			"node_class": "StaticBody3D",
+			"node_name": "FS_ROUTE_GATE_ROUTE_GATE_0",
+			"node_path": "FS_ROUTE_GATE_ROUTE_GATE_0",
+			"params": {
+				"index": 0
+			},
+			"runtime_support": "runtime",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "route_gate_0",
+			"tags": [
+				"authored",
+				"route"
+			],
+			"transform": {
+				"global_position": [
+					-4.0,
+					1.5,
+					0.0
+				],
+				"local_position": [
+					-4.0,
+					1.5,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": ""
+		},
+		{
+			"behavior": "route_gate",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.route_gate",
+				"fs.behavior.route_gate",
+				"fs.tag.authored",
+				"fs.tag.route",
+				"fs.region_generated"
+			],
+			"kind": "route_gate",
+			"links": [],
+			"node_class": "StaticBody3D",
+			"node_name": "FS_ROUTE_GATE_ROUTE_GATE_1",
+			"node_path": "FS_ROUTE_GATE_ROUTE_GATE_1",
+			"params": {
+				"index": 1
+			},
+			"runtime_support": "runtime",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "route_gate_1",
+			"tags": [
+				"authored",
+				"route"
+			],
+			"transform": {
+				"global_position": [
+					4.0,
+					1.5,
+					0.0
+				],
+				"local_position": [
+					4.0,
+					1.5,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": ""
+		},
+		{
+			"behavior": "spawn",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.spawn",
+				"fs.behavior.spawn",
+				"fs.tag.authored",
+				"fs.tag.route",
+				"fs.region_generated"
+			],
+			"kind": "spawn",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_SPAWN_SPAWN",
+			"node_path": "FS_SPAWN_SPAWN",
+			"params": {},
+			"runtime_support": "marker",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "spawn",
+			"tags": [
+				"authored",
+				"route"
+			],
+			"transform": {
+				"global_position": [
+					-14.600000381469727,
+					0.8999999761581421,
+					0.0
+				],
+				"local_position": [
+					-14.600000381469727,
+					0.8999999761581421,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": ""
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.zone",
+				"fs.zone.district_nightwatch",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.region_generated"
+			],
+			"kind": "zone",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_ZONE_DISTRICT_NIGHTWATCH",
+			"node_path": "FS_ZONE_DISTRICT_NIGHTWATCH",
+			"params": {
+				"depth": 16.0,
+				"max_x": -10.0,
+				"min_x": -19.5,
+				"name": "夜巡司"
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_nightwatch",
+			"tags": [
+				"authored"
+			],
+			"transform": {
+				"global_position": [
+					-14.75,
+					0.0,
+					0.0
+				],
+				"local_position": [
+					-14.75,
+					0.0,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_nightwatch"
+		},
+		{
+			"behavior": "breakable",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.breakable",
+				"fs.zone.district_nightwatch",
+				"fs.behavior.breakable",
+				"fs.tag.authored",
+				"fs.tag.breakable",
+				"fs.region_generated"
+			],
+			"kind": "breakable",
+			"links": [],
+			"node_class": "StaticBody3D",
+			"node_name": "FS_BREAKABLE_NIGHT_JAR",
+			"node_path": "FS_ZONE_DISTRICT_NIGHTWATCH/FS_BREAKABLE_NIGHT_JAR",
+			"params": {
+				"id": "night_jar",
+				"type": "breakable",
+				"x": -16.5,
+				"z": 5.6
+			},
+			"runtime_support": "runtime",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "night_jar",
+			"tags": [
+				"authored",
+				"breakable"
+			],
+			"transform": {
+				"global_position": [
+					-16.5,
+					0.0,
+					5.599999904632568
+				],
+				"local_position": [
+					-1.75,
+					0.0,
+					5.599999904632568
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_nightwatch"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_nightwatch",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.waterfall",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "MeshInstance3D",
+			"node_name": "FS_DECOR_DISTRICT_NIGHTWATCH_DECOR_0",
+			"node_path": "FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_DISTRICT_NIGHTWATCH_DECOR_0",
+			"params": {
+				"h": 7.0,
+				"type": "waterfall",
+				"w": 3.0,
+				"x": -13.0,
+				"z": -5.4
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_nightwatch_decor_0",
+			"tags": [
+				"authored",
+				"waterfall"
+			],
+			"transform": {
+				"global_position": [
+					-13.0,
+					3.5,
+					-5.400000095367432
+				],
+				"local_position": [
+					1.75,
+					3.5,
+					-5.400000095367432
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_nightwatch"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_nightwatch",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.plant",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_DECOR_DISTRICT_NIGHTWATCH_DECOR_1",
+			"node_path": "FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_DISTRICT_NIGHTWATCH_DECOR_1",
+			"params": {
+				"type": "plant",
+				"x": -11.5,
+				"z": 4.5
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_nightwatch_decor_1",
+			"tags": [
+				"authored",
+				"plant"
+			],
+			"transform": {
+				"global_position": [
+					-11.5,
+					0.0,
+					4.5
+				],
+				"local_position": [
+					3.25,
+					0.0,
+					4.5
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_nightwatch"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_nightwatch",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.lamp",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_DECOR_DISTRICT_NIGHTWATCH_DECOR_2",
+			"node_path": "FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_DISTRICT_NIGHTWATCH_DECOR_2",
+			"params": {
+				"r": 0.65,
+				"type": "lamp",
+				"x": -17.0,
+				"z": 5.6
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_nightwatch_decor_2",
+			"tags": [
+				"authored",
+				"lamp"
+			],
+			"transform": {
+				"global_position": [
+					-17.0,
+					0.0,
+					5.599999904632568
+				],
+				"local_position": [
+					-2.25,
+					0.0,
+					5.599999904632568
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_nightwatch"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_nightwatch",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.plaque",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "MeshInstance3D",
+			"node_name": "FS_DECOR_DISTRICT_NIGHTWATCH_DECOR_3",
+			"node_path": "FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_DISTRICT_NIGHTWATCH_DECOR_3",
+			"params": {
+				"type": "plaque",
+				"x": -15.0,
+				"z": 6.2
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_nightwatch_decor_3",
+			"tags": [
+				"authored",
+				"plaque"
+			],
+			"transform": {
+				"global_position": [
+					-15.0,
+					0.0,
+					6.199999809265137
+				],
+				"local_position": [
+					-0.25,
+					0.0,
+					6.199999809265137
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_nightwatch"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_nightwatch",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.spirit_fire",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_DECOR_DISTRICT_NIGHTWATCH_DECOR_4",
+			"node_path": "FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_DISTRICT_NIGHTWATCH_DECOR_4",
+			"params": {
+				"type": "spirit_fire",
+				"x": -12.0,
+				"z": -5.5
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_nightwatch_decor_4",
+			"tags": [
+				"authored",
+				"spirit_fire"
+			],
+			"transform": {
+				"global_position": [
+					-12.0,
+					0.0,
+					-5.5
+				],
+				"local_position": [
+					2.75,
+					0.0,
+					-5.5
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_nightwatch"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_nightwatch",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.mist",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "MeshInstance3D",
+			"node_name": "FS_DECOR_DISTRICT_NIGHTWATCH_DECOR_5",
+			"node_path": "FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_DISTRICT_NIGHTWATCH_DECOR_5",
+			"params": {
+				"sd": 2.4,
+				"sw": 4.0,
+				"type": "mist",
+				"x": -14.0,
+				"z": 6.5
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_nightwatch_decor_5",
+			"tags": [
+				"authored",
+				"mist"
+			],
+			"transform": {
+				"global_position": [
+					-14.0,
+					0.05000000074505806,
+					6.5
+				],
+				"local_position": [
+					0.75,
+					0.05000000074505806,
+					6.5
+				],
+				"rotation_degrees": [
+					-90.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_nightwatch"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_nightwatch",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.lamp",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_DECOR_DISTRICT_NIGHTWATCH_PROP_4",
+			"node_path": "FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_DISTRICT_NIGHTWATCH_PROP_4",
+			"params": {
+				"r": 0.55,
+				"type": "lamp",
+				"x": -16.0,
+				"z": -1.3
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_nightwatch_prop_4",
+			"tags": [
+				"authored",
+				"lamp"
+			],
+			"transform": {
+				"global_position": [
+					-16.0,
+					0.0,
+					-1.2999999523162842
+				],
+				"local_position": [
+					-1.25,
+					0.0,
+					-1.2999999523162842
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_nightwatch"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_nightwatch",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.lamp",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_DECOR_DISTRICT_NIGHTWATCH_PROP_5",
+			"node_path": "FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_DISTRICT_NIGHTWATCH_PROP_5",
+			"params": {
+				"r": 0.55,
+				"type": "lamp",
+				"x": -13.4,
+				"z": -1.3
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_nightwatch_prop_5",
+			"tags": [
+				"authored",
+				"lamp"
+			],
+			"transform": {
+				"global_position": [
+					-13.399999618530273,
+					0.0,
+					-1.2999999523162842
+				],
+				"local_position": [
+					1.3500003814697266,
+					0.0,
+					-1.2999999523162842
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_nightwatch"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_nightwatch",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.lamp",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_DECOR_DISTRICT_NIGHTWATCH_PROP_7",
+			"node_path": "FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_DISTRICT_NIGHTWATCH_PROP_7",
+			"params": {
+				"r": 0.5,
+				"type": "lamp",
+				"x": -11.6,
+				"z": -1.5
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_nightwatch_prop_7",
+			"tags": [
+				"authored",
+				"lamp"
+			],
+			"transform": {
+				"global_position": [
+					-11.600000381469727,
+					0.0,
+					-1.5
+				],
+				"local_position": [
+					3.1499996185302734,
+					0.0,
+					-1.5
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_nightwatch"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.floor",
+				"fs.zone.district_nightwatch",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.region_generated"
+			],
+			"kind": "floor",
+			"links": [],
+			"node_class": "MeshInstance3D",
+			"node_name": "FS_FLOOR_DISTRICT_NIGHTWATCH_FLOOR",
+			"node_path": "FS_ZONE_DISTRICT_NIGHTWATCH/FS_FLOOR_DISTRICT_NIGHTWATCH_FLOOR",
+			"params": {
+				"color": "2b3a4e"
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_nightwatch_floor",
+			"tags": [
+				"authored"
+			],
+			"transform": {
+				"global_position": [
+					-14.75,
+					0.019999999552965164,
+					0.0
+				],
+				"local_position": [
+					0.0,
+					0.019999999552965164,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_nightwatch"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.prop",
+				"fs.zone.district_nightwatch",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.pillar",
+				"fs.region_generated"
+			],
+			"kind": "prop",
+			"links": [],
+			"node_class": "MeshInstance3D",
+			"node_name": "FS_PROP_DISTRICT_NIGHTWATCH_PROP_2",
+			"node_path": "FS_ZONE_DISTRICT_NIGHTWATCH/FS_PROP_DISTRICT_NIGHTWATCH_PROP_2",
+			"params": {
+				"color": "#5d6b80",
+				"h": 3.2,
+				"r": 0.32,
+				"type": "pillar",
+				"x": -16.5,
+				"z": -3.0
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_nightwatch_prop_2",
+			"tags": [
+				"authored",
+				"pillar"
+			],
+			"transform": {
+				"global_position": [
+					-16.5,
+					1.600000023841858,
+					-3.0
+				],
+				"local_position": [
+					-1.75,
+					1.600000023841858,
+					-3.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_nightwatch"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.prop",
+				"fs.zone.district_nightwatch",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.pillar",
+				"fs.region_generated"
+			],
+			"kind": "prop",
+			"links": [],
+			"node_class": "MeshInstance3D",
+			"node_name": "FS_PROP_DISTRICT_NIGHTWATCH_PROP_3",
+			"node_path": "FS_ZONE_DISTRICT_NIGHTWATCH/FS_PROP_DISTRICT_NIGHTWATCH_PROP_3",
+			"params": {
+				"color": "#5d6b80",
+				"h": 3.2,
+				"r": 0.32,
+				"type": "pillar",
+				"x": -13.1,
+				"z": -3.0
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_nightwatch_prop_3",
+			"tags": [
+				"authored",
+				"pillar"
+			],
+			"transform": {
+				"global_position": [
+					-13.100000381469727,
+					1.600000023841858,
+					-3.0
+				],
+				"local_position": [
+					1.6499996185302734,
+					1.600000023841858,
+					-3.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_nightwatch"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.prop",
+				"fs.zone.district_nightwatch",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.platform",
+				"fs.region_generated"
+			],
+			"kind": "prop",
+			"links": [],
+			"node_class": "StaticBody3D",
+			"node_name": "FS_PROP_NW_CLUE_DESK",
+			"node_path": "FS_ZONE_DISTRICT_NIGHTWATCH/FS_PROP_NW_CLUE_DESK",
+			"params": {
+				"color": "#31405a",
+				"id": "nw_clue_desk",
+				"sx": 1.6,
+				"sy": 0.42,
+				"sz": 1.2,
+				"type": "platform",
+				"x": -11.6,
+				"z": -3.0
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "nw_clue_desk",
+			"tags": [
+				"authored",
+				"platform"
+			],
+			"transform": {
+				"global_position": [
+					-11.600000381469727,
+					0.0,
+					-3.0
+				],
+				"local_position": [
+					3.1499996185302734,
+					0.0,
+					-3.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_nightwatch"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.prop",
+				"fs.zone.district_nightwatch",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.platform",
+				"fs.region_generated"
+			],
+			"kind": "prop",
+			"links": [],
+			"node_class": "StaticBody3D",
+			"node_name": "FS_PROP_NW_COUNTER",
+			"node_path": "FS_ZONE_DISTRICT_NIGHTWATCH/FS_PROP_NW_COUNTER",
+			"params": {
+				"color": "#31405a",
+				"id": "nw_counter",
+				"sx": 3.0,
+				"sy": 0.42,
+				"sz": 1.5,
+				"type": "platform",
+				"x": -14.8,
+				"z": -3.0
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "nw_counter",
+			"tags": [
+				"authored",
+				"platform"
+			],
+			"transform": {
+				"global_position": [
+					-14.800000190734863,
+					0.0,
+					-3.0
+				],
+				"local_position": [
+					-0.05000019073486328,
+					0.0,
+					-3.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_nightwatch"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.zone",
+				"fs.zone.district_residential",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.region_generated"
+			],
+			"kind": "zone",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_ZONE_DISTRICT_RESIDENTIAL",
+			"node_path": "FS_ZONE_DISTRICT_RESIDENTIAL",
+			"params": {
+				"depth": 16.0,
+				"max_x": 4.5,
+				"min_x": -10.0,
+				"name": "居住区"
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_residential",
+			"tags": [
+				"authored"
+			],
+			"transform": {
+				"global_position": [
+					-2.75,
+					0.0,
+					0.0
+				],
+				"local_position": [
+					-2.75,
+					0.0,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_residential"
+		},
+		{
+			"behavior": "breakable",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.breakable",
+				"fs.zone.district_residential",
+				"fs.behavior.breakable",
+				"fs.tag.authored",
+				"fs.tag.breakable",
+				"fs.region_generated"
+			],
+			"kind": "breakable",
+			"links": [],
+			"node_class": "StaticBody3D",
+			"node_name": "FS_BREAKABLE_NIGHT_JAR_0",
+			"node_path": "FS_ZONE_DISTRICT_RESIDENTIAL/FS_BREAKABLE_NIGHT_JAR_0",
+			"params": {
+				"id": "night_jar_0",
+				"type": "breakable",
+				"x": -6.5,
+				"z": 4.0
+			},
+			"runtime_support": "runtime",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "night_jar_0",
+			"tags": [
+				"authored",
+				"breakable"
+			],
+			"transform": {
+				"global_position": [
+					-6.5,
+					0.0,
+					4.0
+				],
+				"local_position": [
+					-3.75,
+					0.0,
+					4.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_residential"
+		},
+		{
+			"behavior": "breakable",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.breakable",
+				"fs.zone.district_residential",
+				"fs.behavior.breakable",
+				"fs.tag.authored",
+				"fs.tag.breakable",
+				"fs.region_generated"
+			],
+			"kind": "breakable",
+			"links": [],
+			"node_class": "StaticBody3D",
+			"node_name": "FS_BREAKABLE_NIGHT_JAR_1",
+			"node_path": "FS_ZONE_DISTRICT_RESIDENTIAL/FS_BREAKABLE_NIGHT_JAR_1",
+			"params": {
+				"id": "night_jar_1",
+				"type": "breakable",
+				"x": -5.7,
+				"z": 4.0
+			},
+			"runtime_support": "runtime",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "night_jar_1",
+			"tags": [
+				"authored",
+				"breakable"
+			],
+			"transform": {
+				"global_position": [
+					-5.699999809265137,
+					0.0,
+					4.0
+				],
+				"local_position": [
+					-2.9499998092651367,
+					0.0,
+					4.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_residential"
+		},
+		{
+			"behavior": "breakable",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.breakable",
+				"fs.zone.district_residential",
+				"fs.behavior.breakable",
+				"fs.tag.authored",
+				"fs.tag.breakable",
+				"fs.region_generated"
+			],
+			"kind": "breakable",
+			"links": [],
+			"node_class": "StaticBody3D",
+			"node_name": "FS_BREAKABLE_NIGHT_JAR_2",
+			"node_path": "FS_ZONE_DISTRICT_RESIDENTIAL/FS_BREAKABLE_NIGHT_JAR_2",
+			"params": {
+				"id": "night_jar_2",
+				"type": "breakable",
+				"x": -4.9,
+				"z": 4.0
+			},
+			"runtime_support": "runtime",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "night_jar_2",
+			"tags": [
+				"authored",
+				"breakable"
+			],
+			"transform": {
+				"global_position": [
+					-4.900000095367432,
+					0.0,
+					4.0
+				],
+				"local_position": [
+					-2.1500000953674316,
+					0.0,
+					4.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_residential"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_residential",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.plant",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_DECOR_DISTRICT_RESIDENTIAL_DECOR_0",
+			"node_path": "FS_ZONE_DISTRICT_RESIDENTIAL/FS_DECOR_DISTRICT_RESIDENTIAL_DECOR_0",
+			"params": {
+				"type": "plant",
+				"x": -7.0,
+				"z": -4.7
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_residential_decor_0",
+			"tags": [
+				"authored",
+				"plant"
+			],
+			"transform": {
+				"global_position": [
+					-7.0,
+					0.0,
+					-4.699999809265137
+				],
+				"local_position": [
+					-4.25,
+					0.0,
+					-4.699999809265137
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_residential"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_residential",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.plant",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_DECOR_DISTRICT_RESIDENTIAL_DECOR_1",
+			"node_path": "FS_ZONE_DISTRICT_RESIDENTIAL/FS_DECOR_DISTRICT_RESIDENTIAL_DECOR_1",
+			"params": {
+				"type": "plant",
+				"x": 2.0,
+				"z": 4.5
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_residential_decor_1",
+			"tags": [
+				"authored",
+				"plant"
+			],
+			"transform": {
+				"global_position": [
+					2.0,
+					0.0,
+					4.5
+				],
+				"local_position": [
+					4.75,
+					0.0,
+					4.5
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_residential"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_residential",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.pillar",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "MeshInstance3D",
+			"node_name": "FS_DECOR_DISTRICT_RESIDENTIAL_DECOR_2",
+			"node_path": "FS_ZONE_DISTRICT_RESIDENTIAL/FS_DECOR_DISTRICT_RESIDENTIAL_DECOR_2",
+			"params": {
+				"h": 3.4,
+				"r": 0.45,
+				"type": "pillar",
+				"x": -9.2,
+				"z": 4.6
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_residential_decor_2",
+			"tags": [
+				"authored",
+				"pillar"
+			],
+			"transform": {
+				"global_position": [
+					-9.199999809265137,
+					1.7000000476837158,
+					4.599999904632568
+				],
+				"local_position": [
+					-6.449999809265137,
+					1.7000000476837158,
+					4.599999904632568
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_residential"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_residential",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.pillar",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "MeshInstance3D",
+			"node_name": "FS_DECOR_DISTRICT_RESIDENTIAL_DECOR_3",
+			"node_path": "FS_ZONE_DISTRICT_RESIDENTIAL/FS_DECOR_DISTRICT_RESIDENTIAL_DECOR_3",
+			"params": {
+				"h": 3.8,
+				"r": 0.45,
+				"type": "pillar",
+				"x": 1.2,
+				"z": -4.7
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_residential_decor_3",
+			"tags": [
+				"authored",
+				"pillar"
+			],
+			"transform": {
+				"global_position": [
+					1.2000000476837158,
+					1.899999976158142,
+					-4.699999809265137
+				],
+				"local_position": [
+					3.950000047683716,
+					1.899999976158142,
+					-4.699999809265137
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_residential"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_residential",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.window",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "MeshInstance3D",
+			"node_name": "FS_DECOR_DISTRICT_RESIDENTIAL_DECOR_4",
+			"node_path": "FS_ZONE_DISTRICT_RESIDENTIAL/FS_DECOR_DISTRICT_RESIDENTIAL_DECOR_4",
+			"params": {
+				"h": 1.6,
+				"type": "window",
+				"w": 1.0,
+				"x": -5.0,
+				"z": 5.6
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_residential_decor_4",
+			"tags": [
+				"authored",
+				"window"
+			],
+			"transform": {
+				"global_position": [
+					-5.0,
+					0.0,
+					5.599999904632568
+				],
+				"local_position": [
+					-2.25,
+					0.0,
+					5.599999904632568
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_residential"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_residential",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.lamp",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_DECOR_DISTRICT_RESIDENTIAL_DECOR_5",
+			"node_path": "FS_ZONE_DISTRICT_RESIDENTIAL/FS_DECOR_DISTRICT_RESIDENTIAL_DECOR_5",
+			"params": {
+				"r": 0.6,
+				"type": "lamp",
+				"x": 3.0,
+				"z": -5.6
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_residential_decor_5",
+			"tags": [
+				"authored",
+				"lamp"
+			],
+			"transform": {
+				"global_position": [
+					3.0,
+					0.0,
+					-5.599999904632568
+				],
+				"local_position": [
+					5.75,
+					0.0,
+					-5.599999904632568
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_residential"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_residential",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.spirit_fire",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_DECOR_DISTRICT_RESIDENTIAL_DECOR_6",
+			"node_path": "FS_ZONE_DISTRICT_RESIDENTIAL/FS_DECOR_DISTRICT_RESIDENTIAL_DECOR_6",
+			"params": {
+				"type": "spirit_fire",
+				"x": 0.5,
+				"z": 6.0
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_residential_decor_6",
+			"tags": [
+				"authored",
+				"spirit_fire"
+			],
+			"transform": {
+				"global_position": [
+					0.5,
+					0.0,
+					6.0
+				],
+				"local_position": [
+					3.25,
+					0.0,
+					6.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_residential"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.floor",
+				"fs.zone.district_residential",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.region_generated"
+			],
+			"kind": "floor",
+			"links": [],
+			"node_class": "MeshInstance3D",
+			"node_name": "FS_FLOOR_DISTRICT_RESIDENTIAL_FLOOR",
+			"node_path": "FS_ZONE_DISTRICT_RESIDENTIAL/FS_FLOOR_DISTRICT_RESIDENTIAL_FLOOR",
+			"params": {
+				"color": "4a3b2e"
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_residential_floor",
+			"tags": [
+				"authored"
+			],
+			"transform": {
+				"global_position": [
+					-2.75,
+					0.019999999552965164,
+					0.0
+				],
+				"local_position": [
+					0.0,
+					0.019999999552965164,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_residential"
+		},
+		{
+			"behavior": "pushable",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.prop",
+				"fs.zone.district_residential",
+				"fs.behavior.pushable",
+				"fs.tag.authored",
+				"fs.tag.box",
+				"fs.region_generated"
+			],
+			"kind": "prop",
+			"links": [],
+			"node_class": "RigidBody3D",
+			"node_name": "FS_PROP_DISTRICT_RESIDENTIAL_PROP_1",
+			"node_path": "FS_ZONE_DISTRICT_RESIDENTIAL/FS_PROP_DISTRICT_RESIDENTIAL_PROP_1",
+			"params": {
+				"size": 1.0,
+				"type": "box",
+				"x": -1.5,
+				"z": -6.0
+			},
+			"runtime_support": "native",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_residential_prop_1",
+			"tags": [
+				"authored",
+				"box"
+			],
+			"transform": {
+				"global_position": [
+					-1.5,
+					0.0,
+					-6.0
+				],
+				"local_position": [
+					1.25,
+					0.0,
+					-6.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_residential"
+		},
+		{
+			"behavior": "pressure_plate",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.trigger",
+				"fs.zone.district_residential",
+				"fs.behavior.pressure_plate",
+				"fs.tag.authored",
+				"fs.tag.pressure",
+				"fs.region_generated"
+			],
+			"kind": "trigger",
+			"links": [],
+			"node_class": "Area3D",
+			"node_name": "FS_TRIGGER_DISTRICT_RESIDENTIAL_PROP_0",
+			"node_path": "FS_ZONE_DISTRICT_RESIDENTIAL/FS_TRIGGER_DISTRICT_RESIDENTIAL_PROP_0",
+			"params": {
+				"size": 1.4,
+				"type": "pressure",
+				"x": 2.5,
+				"z": 6.0
+			},
+			"runtime_support": "pending",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_residential_prop_0",
+			"tags": [
+				"authored",
+				"pressure"
+			],
+			"transform": {
+				"global_position": [
+					2.5,
+					0.0,
+					6.0
+				],
+				"local_position": [
+					5.25,
+					0.0,
+					6.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_residential"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.zone",
+				"fs.zone.district_seal",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.region_generated"
+			],
+			"kind": "zone",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_ZONE_DISTRICT_SEAL",
+			"node_path": "FS_ZONE_DISTRICT_SEAL",
+			"params": {
+				"depth": 16.0,
+				"max_x": 20.0,
+				"min_x": 10.5,
+				"name": "Boss 封印场"
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_seal",
+			"tags": [
+				"authored"
+			],
+			"transform": {
+				"global_position": [
+					15.25,
+					0.0,
+					0.0
+				],
+				"local_position": [
+					15.25,
+					0.0,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_seal"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_seal",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.pillar",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "MeshInstance3D",
+			"node_name": "FS_DECOR_DISTRICT_SEAL_DECOR_0",
+			"node_path": "FS_ZONE_DISTRICT_SEAL/FS_DECOR_DISTRICT_SEAL_DECOR_0",
+			"params": {
+				"h": 6.0,
+				"r": 0.7,
+				"type": "pillar",
+				"x": 12.5,
+				"z": 5.0
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_seal_decor_0",
+			"tags": [
+				"authored",
+				"pillar"
+			],
+			"transform": {
+				"global_position": [
+					12.5,
+					3.0,
+					5.0
+				],
+				"local_position": [
+					-2.75,
+					3.0,
+					5.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_seal"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_seal",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.pillar",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "MeshInstance3D",
+			"node_name": "FS_DECOR_DISTRICT_SEAL_DECOR_1",
+			"node_path": "FS_ZONE_DISTRICT_SEAL/FS_DECOR_DISTRICT_SEAL_DECOR_1",
+			"params": {
+				"h": 6.0,
+				"r": 0.7,
+				"type": "pillar",
+				"x": 18.0,
+				"z": -5.0
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_seal_decor_1",
+			"tags": [
+				"authored",
+				"pillar"
+			],
+			"transform": {
+				"global_position": [
+					18.0,
+					3.0,
+					-5.0
+				],
+				"local_position": [
+					2.75,
+					3.0,
+					-5.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_seal"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_seal",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.lamp",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_DECOR_DISTRICT_SEAL_DECOR_2",
+			"node_path": "FS_ZONE_DISTRICT_SEAL/FS_DECOR_DISTRICT_SEAL_DECOR_2",
+			"params": {
+				"r": 0.7,
+				"type": "lamp",
+				"x": 16.0,
+				"z": 5.6
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_seal_decor_2",
+			"tags": [
+				"authored",
+				"lamp"
+			],
+			"transform": {
+				"global_position": [
+					16.0,
+					0.0,
+					5.599999904632568
+				],
+				"local_position": [
+					0.75,
+					0.0,
+					5.599999904632568
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_seal"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_seal",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.spirit_fire",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_DECOR_DISTRICT_SEAL_DECOR_3",
+			"node_path": "FS_ZONE_DISTRICT_SEAL/FS_DECOR_DISTRICT_SEAL_DECOR_3",
+			"params": {
+				"type": "spirit_fire",
+				"x": 19.0,
+				"z": 5.5
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_seal_decor_3",
+			"tags": [
+				"authored",
+				"spirit_fire"
+			],
+			"transform": {
+				"global_position": [
+					19.0,
+					0.0,
+					5.5
+				],
+				"local_position": [
+					3.75,
+					0.0,
+					5.5
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_seal"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_seal",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.waterfall",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "MeshInstance3D",
+			"node_name": "FS_DECOR_DISTRICT_SEAL_DECOR_4",
+			"node_path": "FS_ZONE_DISTRICT_SEAL/FS_DECOR_DISTRICT_SEAL_DECOR_4",
+			"params": {
+				"h": 6.0,
+				"type": "waterfall",
+				"w": 2.5,
+				"x": 14.0,
+				"z": -5.4
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_seal_decor_4",
+			"tags": [
+				"authored",
+				"waterfall"
+			],
+			"transform": {
+				"global_position": [
+					14.0,
+					3.0,
+					-5.400000095367432
+				],
+				"local_position": [
+					-1.25,
+					3.0,
+					-5.400000095367432
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_seal"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.floor",
+				"fs.zone.district_seal",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.region_generated"
+			],
+			"kind": "floor",
+			"links": [],
+			"node_class": "MeshInstance3D",
+			"node_name": "FS_FLOOR_DISTRICT_SEAL_FLOOR",
+			"node_path": "FS_ZONE_DISTRICT_SEAL/FS_FLOOR_DISTRICT_SEAL_FLOOR",
+			"params": {
+				"color": "2f4a40"
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_seal_floor",
+			"tags": [
+				"authored"
+			],
+			"transform": {
+				"global_position": [
+					15.25,
+					0.019999999552965164,
+					0.0
+				],
+				"local_position": [
+					0.0,
+					0.019999999552965164,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_seal"
+		},
+		{
+			"behavior": "pushable",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.prop",
+				"fs.zone.district_seal",
+				"fs.behavior.pushable",
+				"fs.tag.authored",
+				"fs.tag.box",
+				"fs.region_generated"
+			],
+			"kind": "prop",
+			"links": [],
+			"node_class": "RigidBody3D",
+			"node_name": "FS_PROP_DISTRICT_SEAL_PROP_1",
+			"node_path": "FS_ZONE_DISTRICT_SEAL/FS_PROP_DISTRICT_SEAL_PROP_1",
+			"params": {
+				"size": 1.1,
+				"type": "box",
+				"x": 13.0,
+				"z": 5.6
+			},
+			"runtime_support": "native",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_seal_prop_1",
+			"tags": [
+				"authored",
+				"box"
+			],
+			"transform": {
+				"global_position": [
+					13.0,
+					0.0,
+					5.599999904632568
+				],
+				"local_position": [
+					-2.25,
+					0.0,
+					5.599999904632568
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_seal"
+		},
+		{
+			"behavior": "lift",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.prop",
+				"fs.zone.district_seal",
+				"fs.behavior.lift",
+				"fs.tag.authored",
+				"fs.tag.lift",
+				"fs.region_generated"
+			],
+			"kind": "prop",
+			"links": [],
+			"node_class": "AnimatableBody3D",
+			"node_name": "FS_PROP_DISTRICT_SEAL_PROP_2",
+			"node_path": "FS_ZONE_DISTRICT_SEAL/FS_PROP_DISTRICT_SEAL_PROP_2",
+			"params": {
+				"dur": 2.8,
+				"lift": 2.4,
+				"type": "lift",
+				"x": 17.5,
+				"z": -6.0
+			},
+			"runtime_support": "runtime",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_seal_prop_2",
+			"tags": [
+				"authored",
+				"lift"
+			],
+			"transform": {
+				"global_position": [
+					17.5,
+					0.0,
+					-6.0
+				],
+				"local_position": [
+					2.25,
+					0.0,
+					-6.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_seal"
+		},
+		{
+			"behavior": "pressure_plate",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.trigger",
+				"fs.zone.district_seal",
+				"fs.behavior.pressure_plate",
+				"fs.tag.authored",
+				"fs.tag.pressure",
+				"fs.region_generated"
+			],
+			"kind": "trigger",
+			"links": [],
+			"node_class": "Area3D",
+			"node_name": "FS_TRIGGER_DISTRICT_SEAL_PROP_0",
+			"node_path": "FS_ZONE_DISTRICT_SEAL/FS_TRIGGER_DISTRICT_SEAL_PROP_0",
+			"params": {
+				"size": 1.6,
+				"type": "pressure",
+				"x": 12.0,
+				"z": -5.6
+			},
+			"runtime_support": "pending",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_seal_prop_0",
+			"tags": [
+				"authored",
+				"pressure"
+			],
+			"transform": {
+				"global_position": [
+					12.0,
+					0.0,
+					-5.599999904632568
+				],
+				"local_position": [
+					-3.25,
+					0.0,
+					-5.599999904632568
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_seal"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.zone",
+				"fs.zone.district_theater",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.region_generated"
+			],
+			"kind": "zone",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_ZONE_DISTRICT_THEATER",
+			"node_path": "FS_ZONE_DISTRICT_THEATER",
+			"params": {
+				"depth": 16.0,
+				"max_x": 10.5,
+				"min_x": 4.5,
+				"name": "旧剧场·电视台"
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_theater",
+			"tags": [
+				"authored"
+			],
+			"transform": {
+				"global_position": [
+					7.5,
+					0.0,
+					0.0
+				],
+				"local_position": [
+					7.5,
+					0.0,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_theater"
+		},
+		{
+			"behavior": "breakable",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.breakable",
+				"fs.zone.district_theater",
+				"fs.behavior.breakable",
+				"fs.tag.authored",
+				"fs.tag.breakable",
+				"fs.region_generated"
+			],
+			"kind": "breakable",
+			"links": [],
+			"node_class": "StaticBody3D",
+			"node_name": "FS_BREAKABLE_THEATER_JAR",
+			"node_path": "FS_ZONE_DISTRICT_THEATER/FS_BREAKABLE_THEATER_JAR",
+			"params": {
+				"id": "theater_jar",
+				"type": "breakable",
+				"x": 9.5,
+				"z": 5.5
+			},
+			"runtime_support": "runtime",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "theater_jar",
+			"tags": [
+				"authored",
+				"breakable"
+			],
+			"transform": {
+				"global_position": [
+					9.5,
+					0.0,
+					5.5
+				],
+				"local_position": [
+					2.0,
+					0.0,
+					5.5
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_theater"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_theater",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.plant",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_DECOR_DISTRICT_THEATER_DECOR_0",
+			"node_path": "FS_ZONE_DISTRICT_THEATER/FS_DECOR_DISTRICT_THEATER_DECOR_0",
+			"params": {
+				"type": "plant",
+				"x": 8.5,
+				"z": -4.5
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_theater_decor_0",
+			"tags": [
+				"authored",
+				"plant"
+			],
+			"transform": {
+				"global_position": [
+					8.5,
+					0.0,
+					-4.5
+				],
+				"local_position": [
+					1.0,
+					0.0,
+					-4.5
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_theater"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_theater",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.pillar",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "MeshInstance3D",
+			"node_name": "FS_DECOR_DISTRICT_THEATER_DECOR_1",
+			"node_path": "FS_ZONE_DISTRICT_THEATER/FS_DECOR_DISTRICT_THEATER_DECOR_1",
+			"params": {
+				"h": 5.0,
+				"r": 0.6,
+				"type": "pillar",
+				"x": 10.2,
+				"z": 4.5
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_theater_decor_1",
+			"tags": [
+				"authored",
+				"pillar"
+			],
+			"transform": {
+				"global_position": [
+					10.199999809265137,
+					2.5,
+					4.5
+				],
+				"local_position": [
+					2.6999998092651367,
+					2.5,
+					4.5
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_theater"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_theater",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.lamp",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_DECOR_DISTRICT_THEATER_DECOR_2",
+			"node_path": "FS_ZONE_DISTRICT_THEATER/FS_DECOR_DISTRICT_THEATER_DECOR_2",
+			"params": {
+				"r": 0.65,
+				"type": "lamp",
+				"x": 5.5,
+				"z": 5.6
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_theater_decor_2",
+			"tags": [
+				"authored",
+				"lamp"
+			],
+			"transform": {
+				"global_position": [
+					5.5,
+					0.0,
+					5.599999904632568
+				],
+				"local_position": [
+					-2.0,
+					0.0,
+					5.599999904632568
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_theater"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_theater",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.window",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "MeshInstance3D",
+			"node_name": "FS_DECOR_DISTRICT_THEATER_DECOR_3",
+			"node_path": "FS_ZONE_DISTRICT_THEATER/FS_DECOR_DISTRICT_THEATER_DECOR_3",
+			"params": {
+				"h": 1.8,
+				"type": "window",
+				"w": 1.2,
+				"x": 9.0,
+				"z": 5.6
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_theater_decor_3",
+			"tags": [
+				"authored",
+				"window"
+			],
+			"transform": {
+				"global_position": [
+					9.0,
+					0.0,
+					5.599999904632568
+				],
+				"local_position": [
+					1.5,
+					0.0,
+					5.599999904632568
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_theater"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_theater",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.spirit_fire",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "Node3D",
+			"node_name": "FS_DECOR_DISTRICT_THEATER_DECOR_4",
+			"node_path": "FS_ZONE_DISTRICT_THEATER/FS_DECOR_DISTRICT_THEATER_DECOR_4",
+			"params": {
+				"type": "spirit_fire",
+				"x": 7.0,
+				"z": -5.5
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_theater_decor_4",
+			"tags": [
+				"authored",
+				"spirit_fire"
+			],
+			"transform": {
+				"global_position": [
+					7.0,
+					0.0,
+					-5.5
+				],
+				"local_position": [
+					-0.5,
+					0.0,
+					-5.5
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_theater"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.decor",
+				"fs.zone.district_theater",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.tag.plaque",
+				"fs.region_generated"
+			],
+			"kind": "decor",
+			"links": [],
+			"node_class": "MeshInstance3D",
+			"node_name": "FS_DECOR_DISTRICT_THEATER_DECOR_5",
+			"node_path": "FS_ZONE_DISTRICT_THEATER/FS_DECOR_DISTRICT_THEATER_DECOR_5",
+			"params": {
+				"type": "plaque",
+				"x": 5.5,
+				"z": -6.0
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_theater_decor_5",
+			"tags": [
+				"authored",
+				"plaque"
+			],
+			"transform": {
+				"global_position": [
+					5.5,
+					0.0,
+					-6.0
+				],
+				"local_position": [
+					-2.0,
+					0.0,
+					-6.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_theater"
+		},
+		{
+			"behavior": "none",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.floor",
+				"fs.zone.district_theater",
+				"fs.behavior.none",
+				"fs.tag.authored",
+				"fs.region_generated"
+			],
+			"kind": "floor",
+			"links": [],
+			"node_class": "MeshInstance3D",
+			"node_name": "FS_FLOOR_DISTRICT_THEATER_FLOOR",
+			"node_path": "FS_ZONE_DISTRICT_THEATER/FS_FLOOR_DISTRICT_THEATER_FLOOR",
+			"params": {
+				"color": "4a2c3c"
+			},
+			"runtime_support": "none",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_theater_floor",
+			"tags": [
+				"authored"
+			],
+			"transform": {
+				"global_position": [
+					7.5,
+					0.019999999552965164,
+					0.0
+				],
+				"local_position": [
+					0.0,
+					0.019999999552965164,
+					0.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_theater"
+		},
+		{
+			"behavior": "lift",
+			"groups": [
+				"fs.semantic",
+				"fs.kind.prop",
+				"fs.zone.district_theater",
+				"fs.behavior.lift",
+				"fs.tag.authored",
+				"fs.tag.lift",
+				"fs.region_generated"
+			],
+			"kind": "prop",
+			"links": [],
+			"node_class": "AnimatableBody3D",
+			"node_name": "FS_PROP_DISTRICT_THEATER_PROP_0",
+			"node_path": "FS_ZONE_DISTRICT_THEATER/FS_PROP_DISTRICT_THEATER_PROP_0",
+			"params": {
+				"dur": 2.4,
+				"lift": 2.0,
+				"type": "lift",
+				"x": 6.0,
+				"z": -6.0
+			},
+			"runtime_support": "runtime",
+			"scene_file_path": "",
+			"script_class": "",
+			"semantic_id": "district_theater_prop_0",
+			"tags": [
+				"authored",
+				"lift"
+			],
+			"transform": {
+				"global_position": [
+					6.0,
+					0.0,
+					-6.0
+				],
+				"local_position": [
+					-1.5,
+					0.0,
+					-6.0
+				],
+				"rotation_degrees": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				]
+			},
+			"zone_id": "district_theater"
+		}
+	],
+	"region_id": "first_night",
+	"scene_path": "res://authoring/scenes/first_night_authoring.tscn",
+	"schema_version": 1,
+	"validation": {
+		"errors": [],
+		"warnings": []
+	}
+}

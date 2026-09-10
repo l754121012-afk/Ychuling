@@ -13,11 +13,21 @@ signal opened(gate_id: String)
 var quest_flags: Dictionary = {}
 
 var _opened := false
+var _collision_built := false
+var _visual_built := false
 
 
 func _ready() -> void:
-	_build_collision()
-	_build_visual()
+	runtime_initialize()
+
+
+func runtime_initialize() -> void:
+	if not _collision_built:
+		_build_collision()
+		_collision_built = true
+	if not _visual_built:
+		_build_visual()
+		_visual_built = true
 
 
 func can_open(p_abilities: Dictionary, p_boss_defeated: bool) -> bool:
@@ -67,15 +77,28 @@ func _open_now() -> void:
 
 
 func _build_collision() -> void:
+	if _has_direct_child_of_type(CollisionShape3D):
+		return
 	var shape := BoxShape3D.new()
 	shape.size = Vector3(0.5, 3.2, 2.0)
 	var collision := CollisionShape3D.new()
+	collision.name = "GateCollision"
 	collision.shape = shape
 	collision.position.y = 1.6
 	add_child(collision)
 
 
 func _build_visual() -> void:
+	if _has_direct_child_of_type(MeshInstance3D):
+		return
 	var visual := PlaceholderKit.box("art_key_v2_gate_%s" % gate_id, Color("#6a4352"), Vector3(0.5, 3.2, 2.0))
+	visual.name = "GateVisual"
 	visual.position.y = 1.6
 	add_child(visual)
+
+
+func _has_direct_child_of_type(p_type: Variant) -> bool:
+	for child in get_children():
+		if is_instance_of(child, p_type):
+			return true
+	return false

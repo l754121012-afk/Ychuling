@@ -5,6 +5,7 @@
 1. 只读 `outputs/SESSION-HANDOFF.md` + 本文件。不要从聊天记录恢复；可复用事实都在交接簿。
 2. 脚本/测试导航看 `outputs/CODE-INDEX.md`，按“要改的功能”跳 文件+行。
 3. 只执行交接簿“当前任务”里列的事；本次任务之外不碰。
+4. 作者场景类任务只读 `outputs/AUTHORING-WORKFLOW.md` + Manifest；用户已手调后禁止重建作者场景。
 
 ## 上下文卫生（防压缩 / 防重做）
 
@@ -21,6 +22,10 @@
 - 输入语义无歧义：点按/长按/满蓄/松手/静止显式判定且互斥。
 - 改参数必须同步视觉表现、命中盒、弧光；改动要能被看见。
 - Godot 渲染**必须带窗口**（headless 下 `root.get_texture()` 为 null）；headless 只跑 smoke。
+- 作者场景真源：`project/authoring/scenes/<region>_authoring.tscn`；功能识别只认 `semantic_id`/`kind`/`behavior`/`runtime_support`，不按 Mesh 名或截图猜。
+- 作者命名：节点名可含中文 `display_name` 便于查找，但脚本/链接/分组只认 ASCII `semantic_id`；`VISUAL_<model_id>` 只是可视壳，绝不能登记语义或成为行为分支依据。
+- 编辑器观察：作者插件 `观察视图` 用 `Ctrl+Alt+1` 从选中物件切入实际游戏视角，`Ctrl+Alt+2` 恢复原编辑视角；共享参数在 `scripts/authoring/FSGameView.gd`，不得只改运行相机造成观察值分叉。
+- 构建试玩：默认 `F5` 只加载作者场景、临时 `y=0` 碰撞地面、玩家和相机；完整玩法由 Dock“F5 运行模式”显式切换。模式写入 `fivestar_authoring/playtest_mode`，切换后如仍运行旧值需完全重开项目。
 
 ## 收尾
 

@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Material" path="res://authoring/assets/components/water/water_flow_material.tres" id="1_water"]
+[ext_resource type="Material" path="res://authoring/assets/components/water/foam_material.tres" id="2_foam"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_water"]
+size = Vector3(10, 0.045, 10)
+
+[sub_resource type="BoxMesh" id="BoxMesh_highlight"]
+size = Vector3(6.5, 0.025, 0.12)
+
+[node name="WaterSurface" type="Node3D"]
+
+[node name="Water" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_water")
+material_override = ExtResource("1_water")
+
+[node name="HighlightA" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 0.035, -1.2)
+mesh = SubResource("BoxMesh_highlight")
+material_override = ExtResource("2_foam")
+
+[node name="HighlightB" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.92, 0, 0.38, 0, 1, 0, -0.38, 0, 0.92, 1.5, 0.036, 1.6)
+mesh = SubResource("BoxMesh_highlight")
+material_override = ExtResource("2_foam")

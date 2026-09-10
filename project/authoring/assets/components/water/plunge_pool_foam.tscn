@@ -1,0 +1,52 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Material" path="res://authoring/assets/components/water/water_flow_material.tres" id="1_water"]
+[ext_resource type="Material" path="res://authoring/assets/components/water/foam_material.tres" id="2_foam"]
+[ext_resource type="Material" path="res://authoring/assets/components/water/wet_stone_material.tres" id="3_stone"]
+
+[sub_resource type="CylinderMesh" id="Cylinder_water"]
+top_radius = 2.0
+bottom_radius = 2.0
+height = 0.08
+radial_segments = 32
+
+[sub_resource type="TorusMesh" id="Torus_foam"]
+inner_radius = 1.18
+outer_radius = 1.82
+rings = 32
+ring_segments = 10
+
+[sub_resource type="CylinderMesh" id="Cylinder_foam"]
+top_radius = 0.48
+bottom_radius = 0.36
+height = 0.24
+radial_segments = 12
+
+[sub_resource type="BoxMesh" id="BoxMesh_lip"]
+size = Vector3(3.2, 0.26, 0.42)
+
+[node name="PlungePoolFoam" type="Node3D"]
+
+[node name="Water" type="MeshInstance3D" parent="."]
+mesh = SubResource("Cylinder_water")
+material_override = ExtResource("1_water")
+
+[node name="OuterFoam" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.07, 0)
+mesh = SubResource("Torus_foam")
+material_override = ExtResource("2_foam")
+
+[node name="FoamA" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.02, 0.18, 0.78)
+mesh = SubResource("Cylinder_foam")
+material_override = ExtResource("2_foam")
+
+[node name="FoamB" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.9, 0, -0.43, 0, 1, 0, 0.43, 0, 0.9, 1.0, 0.18, -0.55)
+mesh = SubResource("Cylinder_foam")
+material_override = ExtResource("2_foam")
+
+[node name="StoneLip" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 2.18)
+mesh = SubResource("BoxMesh_lip")
+material_override = ExtResource("3_stone")

@@ -8,24 +8,27 @@ const PickupScript := preload("res://scripts/v2/V2AbilityPickup.gd")
 const RitualScript := preload("res://scripts/v2/V2RitualEffect.gd")
 const V2RouteData := preload("res://scripts/v2/V2RouteData.gd")
 const V2RegionBuilder := preload("res://scripts/v2/V2RegionBuilder.gd")
-
-const CAMERA_HEIGHT := 10.5
-const CAMERA_BACK := 5.0
+const FSAuthoringRuntime := preload("res://scripts/authoring/FSAuthoringRuntime.gd")
+const GameView := preload("res://scripts/authoring/FSGameView.gd")
+const PlaytestMode := preload("res://scripts/authoring/FSPlaytestMode.gd")
 
 const CASES: Array[Dictionary] = [
 	{
+		"route_id": "case_sofa",
 		"title": "沙发下的灰影",
 		"zone_x": -8.0,
 		"ghost_positions": [Vector3(-9.6, 0.0, -1.7), Vector3(-8.3, 0.0, -0.7), Vector3(-8.1, 0.0, 0.9), Vector3(-6.7, 0.0, 1.5)],
 		"ghost_styles": ["swipe", "shot", "pool", "lunge"],
 	},
 	{
+		"route_id": "case_tv",
 		"title": "电视里的歌声",
 		"zone_x": 0.0,
 		"ghost_positions": [Vector3(-1.7, 0.0, -1.5), Vector3(-0.7, 0.0, -0.7), Vector3(0.7, 0.0, 0.8), Vector3(1.5, 0.0, 1.5)],
 		"ghost_styles": ["shot", "pool", "lunge", "swipe"],
 	},
 	{
+		"route_id": "case_wardrobe",
 		"title": "衣柜里的呼吸声",
 		"zone_x": 8.0,
 		"ghost_positions": [Vector3(6.8, 0.0, -1.6), Vector3(7.7, 0.0, -0.7), Vector3(8.5, 0.0, 0.8), Vector3(9.4, 0.0, 1.6)],
@@ -83,16 +86,30 @@ var _map_current_label: Label
 var _world_map: V2WorldMap
 var _npc_data: Array[Dictionary] = []
 var _region_gates: Dictionary = {}
+var _region_handle: Dictionary = {}
+var _using_authored_region := false
+var _case_origins: Array[Vector3] = []
+var _rest_points: Array[Vector3] = []
+var _spawn_position := Vector3(-14.6, 0.9, 0.0)
+var _boss_position := FINAL_POS
+var _playtest_mode := false
 
 
 func _ready() -> void:
+	_playtest_mode = PlaytestMode.is_enabled()
+	if _playtest_mode:
+		_build_playtest()
+		return
 	_build_environment()
-	_build_route_floor()
 	_build_region_world()
+	if _using_authored_region:
+		_adopt_authored_region()
+	else:
+		_build_route_floor()
+		_build_case_pads()
+		_build_rest_markers()
+		_build_route_gates()
 	_build_shortcut_gate_marker()
-	_build_case_pads()
-	_build_rest_markers()
-	_build_route_gates()
 	_build_v2_seal_end()
 	_build_player()
 	_build_camera()
@@ -105,14 +122,14 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if not _player or not _camera:
 		return
+	if _playtest_mode:
+		_update_follow_camera(delta)
+		return
 	if Input.is_action_just_pressed("map"):
 		_toggle_map()
 	if _map_open:
 		_update_map()
-	var camera_target := _player.global_position + Vector3(0.0, CAMERA_HEIGHT, CAMERA_BACK)
-	var blend := 1.0 - exp(-6.5 * delta)
-	_camera.global_position = _camera.global_position.lerp(camera_target, blend)
-	_camera.look_at(_player.global_position + Vector3.UP, Vector3.UP)
+	_update_follow_camera(delta)
 	if _boss_key_granted and not _shift_done:
 		var near_target := is_instance_valid(_target_marker) and absf(_player.global_position.x - _target_marker.global_position.x) < 2.5
 		if near_target:
@@ -122,9 +139,11 @@ func _process(delta: float) -> void:
 			_target_auto_timer += delta
 			if Input.is_action_just_pressed("interact") or _target_auto_timer > 1.4:
 				_finish_shift()
-		elif _player.global_position.x > 17.0:
+		elif is_instance_valid(_target_marker) and _player.global_position.x > _target_marker.global_position.x - 1.2:
 			_finish_shift()
-	if Input.is_action_just_pressed("interact") and not (_boss_key_granted and absf(_player.global_position.x - 18.0) < 3.0):
+	var near_authored_target := is_instance_valid(_target_marker) \
+		and absf(_player.global_position.x - _target_marker.global_position.x) < 3.0
+	if Input.is_action_just_pressed("interact") and not (_boss_key_granted and near_authored_target):
 		if not _try_region_gate():
 			_try_v2_npc()
 
@@ -144,7 +163,7 @@ func _on_ghost_sent(ghost: TestGhost) -> void:
 
 func _complete_current_case() -> void:
 	_review_count += 1
-	var case_pos: Vector3 = Vector3(float(CASES[_case_index]["zone_x"]), 0.0, 0.0)
+	var case_pos := _case_origin(_case_index)
 	_set_pad_color(_case_index, Color("#6fce8f"))
 	if _case_index == 0 and not _has_night_stamp:
 		_spawn_stamp_reward()
@@ -172,7 +191,7 @@ func _spawn_stamp_reward() -> void:
 	_reward_pickup = PickupScript.new()
 	_reward_pickup.set("ability_id", "night_stamp")
 	_reward_pickup.set("ability_name", "夜巡印章")
-	_reward_pickup.position = Vector3(-8.0, 0.0, -3.6)
+	_reward_pickup.position = _case_origin(0) + Vector3(0.0, 0.0, -3.6)
 	add_child(_reward_pickup)
 	_reward_pickup.collected.connect(_on_ability_collected)
 
@@ -184,7 +203,7 @@ func _on_ability_collected(p_ability_id: String) -> void:
 	_reward_pickup = null
 	if is_instance_valid(_player):
 		_player.set_base_sweep_damage(2)
-	_spawn_ritual(Vector3(-8.0, 0.0, -3.6), Color("#eaffc9"))
+	_spawn_ritual(_case_origin(0) + Vector3(0.0, 0.0, -3.6), Color("#eaffc9"))
 	_open_route_gate(0)
 	_show_event("获得夜巡印章：清扫伤害提升，下一案件门已打开")
 	_case_index = 1
@@ -197,10 +216,13 @@ func _activate_case(p_index: int) -> void:
 	var data: Dictionary = CASES[p_index]
 	var positions: Array = data.ghost_positions
 	var styles: Array = data.ghost_styles
+	var case_origin := _case_origin(p_index)
+	var authored_origin_x := float(data["zone_x"])
 	for ghost_index in range(positions.size()):
 		var ghost: TestGhost = GhostScript.new()
 		ghost.name = "CaseGhost_%d_%d" % [p_index, ghost_index]
-		ghost.position = positions[ghost_index]
+		var source: Vector3 = positions[ghost_index]
+		ghost.position = case_origin + (source - Vector3(authored_origin_x, 0.0, 0.0))
 		ghost.configure_attack_style(str(styles[ghost_index]))
 		add_child(ghost)
 		ghost.sent_off.connect(_on_ghost_sent)
@@ -210,11 +232,19 @@ func _activate_case(p_index: int) -> void:
 	_update_hud()
 
 
+func _case_origin(p_index: int) -> Vector3:
+	if p_index >= 0 and p_index < _case_origins.size():
+		return _case_origins[p_index]
+	if p_index >= 0 and p_index < CASES.size():
+		return Vector3(float(CASES[p_index]["zone_x"]), 0.0, 0.0)
+	return Vector3.ZERO
+
+
 func _start_final_event() -> void:
 	_final_started = true
 	_boss_waiting_npc = false
 	_boss_revealed = true
-	_spawn_ritual(FINAL_POS, Color("#c9f2ff"))
+	_spawn_ritual(_boss_position, Color("#c9f2ff"))
 	var minion_styles: Array[String] = ["swipe", "pool", "shot"]
 	for index in range(FINAL_MINION_POS.size()):
 		var minion: TestGhost = GhostScript.new()
@@ -222,7 +252,7 @@ func _start_final_event() -> void:
 		minion.hits_to_stagger = 4
 		minion.art_scale = 0.8
 		minion.configure_attack_style(minion_styles[index])
-		minion.position = FINAL_MINION_POS[index]
+		minion.position = _boss_position + (FINAL_MINION_POS[index] - FINAL_POS)
 		add_child(minion)
 		minion.sent_off.connect(_on_ghost_sent)
 		minion.chain_triggered.connect(_on_chain_triggered)
@@ -234,7 +264,7 @@ func _start_final_event() -> void:
 	big_ghost.art_scale = 2.9
 	big_ghost.configure_attack_style("boss")
 	big_ghost.can_use_pool = false
-	big_ghost.position = FINAL_POS
+	big_ghost.position = _boss_position
 	add_child(big_ghost)
 	big_ghost.sent_off.connect(_on_ghost_sent)
 	big_ghost.chain_triggered.connect(_on_chain_triggered)
@@ -281,9 +311,11 @@ func _build_v2_seal_end() -> void:
 	if is_instance_valid(_seal_gate):
 		_seal_gate.opened.connect(_on_seal_gate_opened)
 
-	_target_marker = PlaceholderKit.box("art_key_v2_seal_target", Color("#f2d77a"), Vector3(1.2, 4.0, 1.2))
-	_target_marker.position = Vector3(18.2, 2.0, 0.0)
-	add_child(_target_marker)
+	_target_marker = _marker_visual(_authored_marker_node("seal_endpoint"))
+	if _target_marker == null:
+		_target_marker = PlaceholderKit.box("art_key_v2_seal_target", Color("#f2d77a"), Vector3(1.2, 4.0, 1.2))
+		_target_marker.position = Vector3(18.2, 2.0, 0.0)
+		add_child(_target_marker)
 
 
 func _on_seal_gate_opened(_gate_id: String) -> void:
@@ -408,6 +440,49 @@ func _build_environment() -> void:
 	add_child(light)
 
 
+func _build_playtest() -> void:
+	_build_environment()
+	_build_playtest_region()
+	_build_playtest_ground()
+	_build_player()
+	_build_camera()
+
+
+func _build_playtest_region() -> void:
+	var region: Dictionary = V2RouteData.load_region()
+	if region.is_empty():
+		return
+	var region_id := str(region.get("region_id", "first_night"))
+	var scene_path := FSAuthoringRuntime.scene_path_for_region(region_id)
+	var handle: Dictionary = FSAuthoringRuntime.build(self, region, scene_path)
+	if handle.is_empty():
+		return
+	_region_handle = handle
+	_using_authored_region = true
+
+	var focus := Vector3.ZERO
+	var spawn := _authored_marker_node("spawn")
+	if not is_instance_valid(spawn):
+		var spawns := _authored_marker_nodes_by_kind("spawn")
+		if not spawns.is_empty():
+			spawn = spawns[0]
+	if is_instance_valid(spawn):
+		focus = spawn.global_position
+	_spawn_position = Vector3(focus.x, 4.0, focus.z)
+
+
+func _build_playtest_ground() -> void:
+	var body := StaticBody3D.new()
+	body.name = "PlaytestGround"
+	var shape := BoxShape3D.new()
+	shape.size = Vector3(120.0, 1.0, 120.0)
+	var collision := CollisionShape3D.new()
+	collision.shape = shape
+	collision.position.y = -0.5
+	body.add_child(collision)
+	add_child(body)
+
+
 func _build_route_floor() -> void:
 	var body := StaticBody3D.new()
 	body.name = "RouteFloor"
@@ -436,9 +511,93 @@ func _build_region_world() -> void:
 	var region: Dictionary = V2RouteData.load_region()
 	if region.is_empty():
 		return
-	var handle: Dictionary = V2RegionBuilder.build(self, region)
+	var handle: Dictionary = FSAuthoringRuntime.build(self, region)
+	if not handle.is_empty():
+		_using_authored_region = true
+	else:
+		handle = V2RegionBuilder.build(self, region)
+	_region_handle = handle
 	var gates: Dictionary = handle.get("gates", {})
 	_region_gates = gates
+
+
+func _adopt_authored_region() -> void:
+	_case_origins.clear()
+	_rest_points.clear()
+	for index in range(CASES.size()):
+		var case_node := _authored_marker_node(str(CASES[index].get("route_id", "case_%d" % index)))
+		var origin := Vector3(float(CASES[index]["zone_x"]), 0.0, 0.0)
+		if is_instance_valid(case_node):
+			origin = case_node.global_position
+			origin.y = 0.0
+		_case_origins.append(origin)
+		var pad := _marker_visual(case_node)
+		if pad == null:
+			pad = PlaceholderKit.box("art_key_case_pad_%d" % index, Color("#425065"), Vector3(4.4, 0.1, 4.6))
+			pad.position = origin + Vector3(0.0, 0.05, 0.0)
+			add_child(pad)
+		_case_pads.append(pad)
+		_set_pad_color(index, Color("#425065"))
+
+	var authored_rests := _authored_marker_nodes_by_kind("rest")
+	for node in authored_rests:
+		_rest_points.append(node.global_position)
+	if _rest_points.is_empty():
+		_rest_points.assign(REST_POINTS)
+
+	var spawn_node := _authored_marker_node("spawn")
+	if is_instance_valid(spawn_node):
+		_spawn_position = spawn_node.global_position
+	var boss_node := _authored_marker_node("boss_room")
+	if is_instance_valid(boss_node):
+		_boss_position = boss_node.global_position
+
+	for index in range(2):
+		var route_gate := _authored_route_gate("route_gate_%d" % index)
+		if not is_instance_valid(route_gate):
+			continue
+		_route_gates.append(route_gate)
+		var visual := _direct_mesh_child(route_gate)
+		if visual:
+			_gate_visuals.append(visual)
+
+
+func _authored_marker_node(p_id: String) -> Node3D:
+	var nodes: Dictionary = _region_handle.get("marker_nodes", {})
+	var node: Node = nodes.get(p_id)
+	return node as Node3D
+
+
+func _authored_marker_nodes_by_kind(p_kind: String) -> Array[Node3D]:
+	var result: Array[Node3D] = []
+	var markers: Dictionary = _region_handle.get("markers", {})
+	var nodes: Dictionary = _region_handle.get("marker_nodes", {})
+	for semantic_id in markers:
+		var data: Dictionary = markers[semantic_id]
+		if str(data.get("kind", "")) != p_kind:
+			continue
+		var node: Node = nodes.get(semantic_id)
+		if node is Node3D:
+			result.append(node)
+	return result
+
+
+func _authored_route_gate(p_id: String) -> StaticBody3D:
+	var gates: Dictionary = _region_handle.get("route_gates", {})
+	return gates.get(p_id) as StaticBody3D
+
+
+func _marker_visual(p_node: Node) -> MeshInstance3D:
+	if not is_instance_valid(p_node):
+		return null
+	return p_node.get_node_or_null("AuthoringMarker") as MeshInstance3D
+
+
+func _direct_mesh_child(p_node: Node) -> MeshInstance3D:
+	for child in p_node.get_children():
+		if child is MeshInstance3D:
+			return child
+	return null
 
 
 func _add_boundary_wall(p_name: String, p_size: Vector3, p_position: Vector3) -> void:
@@ -456,8 +615,11 @@ func _add_boundary_wall(p_name: String, p_size: Vector3, p_position: Vector3) ->
 
 
 func _build_case_pads() -> void:
+	_case_origins.clear()
+	_case_pads.clear()
 	for index in range(CASES.size()):
 		var zone_x: float = CASES[index]["zone_x"]
+		_case_origins.append(Vector3(zone_x, 0.0, 0.0))
 		var pad := PlaceholderKit.box("art_key_case_pad_%d" % index, Color("#425065"), Vector3(4.4, 0.1, 4.6))
 		pad.position = Vector3(zone_x, 0.05, 0.0)
 		add_child(pad)
@@ -466,6 +628,7 @@ func _build_case_pads() -> void:
 
 
 func _build_rest_markers() -> void:
+	_rest_points.assign(REST_POINTS)
 	for index in [0, REST_POINTS.size() - 1]:
 		var marker := PlaceholderKit.box("art_key_rest_marker_%d" % index, Color("#57d4a5"), Vector3(1.2, 0.07, 1.2))
 		marker.position = Vector3(REST_POINTS[index].x, 0.04, REST_POINTS[index].z)
@@ -478,6 +641,8 @@ func _set_pad_color(p_index: int, p_color: Color) -> void:
 
 
 func _build_route_gates() -> void:
+	_route_gates.clear()
+	_gate_visuals.clear()
 	for gate_x in [-4.0, 4.0]:
 		var body := StaticBody3D.new()
 		body.name = "RouteGate_%s" % str(gate_x).replace(".0", "")
@@ -505,7 +670,7 @@ func _open_route_gate(p_index: int) -> void:
 func _build_player() -> void:
 	_player = PlayerScript.new()
 	_player.name = "Player"
-	_player.position = Vector3(-14.6, 0.9, 0.0)
+	_player.position = _spawn_position
 	_player.spawn_point = _player.position
 	add_child(_player)
 	_player.health_changed.connect(_on_player_health_changed)
@@ -524,10 +689,15 @@ func _build_player() -> void:
 
 func _build_camera() -> void:
 	_camera = Camera3D.new()
-	_camera.fov = 52.0
 	add_child(_camera)
-	_camera.global_position = _player.global_position + Vector3(0.0, CAMERA_HEIGHT, CAMERA_BACK)
-	_camera.look_at(_player.global_position + Vector3.UP, Vector3.UP)
+	GameView.apply_to_camera(_camera, _player.global_position)
+
+
+func _update_follow_camera(delta: float) -> void:
+	var camera_target := GameView.camera_position_for_focus(_player.global_position)
+	var blend := 1.0 - exp(-6.5 * delta)
+	_camera.global_position = _camera.global_position.lerp(camera_target, blend)
+	_camera.look_at(GameView.look_target_for_focus(_player.global_position), Vector3.UP)
 
 
 func _build_hud() -> void:
@@ -645,9 +815,9 @@ func _handle_player_defeat() -> void:
 		_player.reset_momentum()
 	_player_momentum = 0
 
-	var rest_position := REST_POINTS[0]
+	var rest_position := _rest_position(0)
 	if _final_started:
-		rest_position = REST_POINTS[REST_POINTS.size() - 1]
+		rest_position = _rest_position(_rest_points.size() - 1)
 		_start_final_event()
 	else:
 		_case_index = 0
@@ -660,6 +830,14 @@ func _handle_player_defeat() -> void:
 	if is_instance_valid(_player):
 		_player.revive(rest_position)
 	_update_hud()
+
+
+func _rest_position(p_index: int) -> Vector3:
+	if p_index >= 0 and p_index < _rest_points.size():
+		return _rest_points[p_index]
+	if p_index >= 0 and p_index < REST_POINTS.size():
+		return REST_POINTS[p_index]
+	return REST_POINTS[0]
 
 
 func _close_all_route_gates() -> void:

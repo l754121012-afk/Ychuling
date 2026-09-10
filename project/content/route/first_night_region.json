@@ -3,7 +3,9 @@
   "region_name": "首夜城区",
   "dispatch_case_ids": ["case_sofa", "case_tv", "case_wardrobe"],
   "rest_points": [
-    {"x": -13.5, "y": 0.9, "z": 0.0}
+    {"x": -13.5, "y": 0.9, "z": 0.0},
+    {"x": -3.6, "y": 0.9, "z": 0.0},
+    {"x": 4.4, "y": 0.9, "z": 0.0}
   ],
   "zones": [
     {
@@ -118,7 +120,7 @@
     {"id": "case_tv", "type": "case", "x": 0.0, "z": 0.0},
     {"id": "case_wardrobe", "type": "case", "x": 8.0, "z": 0.0},
     {"id": "boss_room", "type": "boss", "x": 11.0, "z": 0.0},
-    {"id": "seal_endpoint", "type": "objective", "x": 16.0, "z": 0.0}
+    {"id": "seal_endpoint", "type": "objective", "x": 18.2, "z": 0.0}
   ],
   "ability_gates": [
     {"id": "shortcut_gate", "required_ability": "night_stamp", "unlocks_zone": "shortcut_east", "world": true, "x": -10.3, "z": -4.0, "kind": "ability", "prompt": "夜巡印章捷径门"},

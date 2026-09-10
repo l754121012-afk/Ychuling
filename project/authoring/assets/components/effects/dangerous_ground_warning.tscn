@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://authoring/assets/components/effects/fs_authoring_effect.gd" id="1_effect"]
+
+[node name="DangerousGroundWarning" type="Node3D"]
+script = ExtResource("1_effect")
+effect_id = "dangerous_ground_warning"

@@ -1,0 +1,157 @@
+[gd_scene format=3 uid="uid://c4opt7iw5p1qv"]
+
+[ext_resource type="PackedScene" uid="uid://dceldin5pxbjf" path="res://assets/vendor/kenney/mini_dungeon/Models/dirt.glb" id="1_gl8ts"]
+[ext_resource type="PackedScene" uid="uid://d0rgfoft3d5bw" path="res://assets/vendor/kenney/mini_dungeon/Models/floor-detail.glb" id="2_yma1l"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_build_plane"]
+albedo_color = Color(0.18, 0.22, 0.27, 1)
+roughness = 0.96
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_build_plane"]
+size = Vector2(120, 120)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_yma1l"]
+size = Vector3(0.98, 0.25, 0.98)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dh0b2"]
+size = Vector3(0.98, 0.08, 0.98)
+
+[node name="FS_REGION_FIRST_NIGHT" type="Node3D" unique_id=2145368658]
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "",
+"kind": "region",
+"links": Array[String]([]),
+"params": {
+"region_name": "首夜城区",
+"visual": {
+"fit_mode": "contain",
+"fit_scale": [1.0, 1.0, 1.0],
+"fitted_size": [0.100000024, 1.0, 1.0],
+"label": "简易木门",
+"model_id": "simple_door",
+"path": "res://assets/vendor/kenney/fantasy_town/Models/wall-door.glb",
+"placement": "ground",
+"repeat_along_longest": false,
+"repeat_count": 1,
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+}
+},
+"semantic_id": "first_night",
+"tags": Array[String](["authored"]),
+"zone_id": ""
+}
+
+[node name="FS_FLOOR_构建地面_BUILD_PLANE_0" type="MeshInstance3D" parent="." unique_id=570057360]
+material_override = SubResource("StandardMaterial3D_build_plane")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_build_plane")
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "构建地面",
+"kind": "floor",
+"links": Array[String]([]),
+"params": {
+"build_height": 0.0,
+"size": [120.0, 120.0]
+},
+"semantic_id": "build_plane_0",
+"tags": Array[String](["authored", "build_plane", "zero_height"]),
+"zone_id": ""
+}
+
+[node name="FS_DECOR_地牢泥土地面_VISUAL_DUNGEON_DIRT_1" type="Node3D" parent="." unique_id=781590501]
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "地牢泥土地面",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"visual": {
+"fit_mode": "contain",
+"fit_scale": [1.0, 1.0, 1.0],
+"fitted_size": [1.0, 0.9, 1.0],
+"label": "地牢泥土地面",
+"model_id": "dungeon_dirt",
+"path": "res://assets/vendor/kenney/mini_dungeon/Models/dirt.glb",
+"placement": "ground",
+"repeat_along_longest": false,
+"repeat_count": 1,
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"support_profile": "floor",
+"y_offset": 0.0
+}
+},
+"semantic_id": "visual_dungeon_dirt_1",
+"tags": Array[String](["新增模型", "地形与平台"]),
+"zone_id": ""
+}
+
+[node name="VISUAL_dungeon_dirt" type="Node3D" parent="FS_DECOR_地牢泥土地面_VISUAL_DUNGEON_DIRT_1" unique_id=1404554266]
+
+[node name="Model" type="Node3D" parent="FS_DECOR_地牢泥土地面_VISUAL_DUNGEON_DIRT_1/VISUAL_dungeon_dirt" unique_id=117822517 instance=ExtResource("1_gl8ts")]
+
+[node name="SUPPORT_floor" type="StaticBody3D" parent="FS_DECOR_地牢泥土地面_VISUAL_DUNGEON_DIRT_1" unique_id=1127058089]
+metadata/__fs_auto_support_collision = true
+metadata/__fs_support_profile = "floor"
+
+[node name="SUPPORT_floor" type="CollisionShape3D" parent="FS_DECOR_地牢泥土地面_VISUAL_DUNGEON_DIRT_1/SUPPORT_floor" unique_id=864514403]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.775, 0)
+shape = SubResource("BoxShape3D_yma1l")
+metadata/__fs_auto_support_collision = true
+metadata/__fs_support_profile = "floor"
+
+[node name="FS_DECOR_地牢花纹地板_VISUAL_DUNGEON_FLOOR_DETAIL_1" type="Node3D" parent="." unique_id=1603303951]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.239542, 0.13203716, 0)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "地牢花纹地板",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"visual": {
+"fit_mode": "contain",
+"fit_scale": [1.0, 1.0, 1.0],
+"fitted_size": [1.0, 0.05, 1.0],
+"label": "地牢花纹地板",
+"model_id": "dungeon_floor_detail",
+"path": "res://assets/vendor/kenney/mini_dungeon/Models/floor-detail.glb",
+"placement": "ground",
+"repeat_along_longest": false,
+"repeat_count": 1,
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"support_profile": "floor",
+"y_offset": 0.0
+}
+},
+"semantic_id": "visual_dungeon_floor_detail_1",
+"tags": Array[String](["新增模型", "地形与平台"]),
+"zone_id": ""
+}
+
+[node name="VISUAL_dungeon_floor_detail" type="Node3D" parent="FS_DECOR_地牢花纹地板_VISUAL_DUNGEON_FLOOR_DETAIL_1" unique_id=1664819642]
+
+[node name="Model" type="Node3D" parent="FS_DECOR_地牢花纹地板_VISUAL_DUNGEON_FLOOR_DETAIL_1/VISUAL_dungeon_floor_detail" unique_id=536723015 instance=ExtResource("2_yma1l")]
+
+[node name="SUPPORT_floor" type="StaticBody3D" parent="FS_DECOR_地牢花纹地板_VISUAL_DUNGEON_FLOOR_DETAIL_1" unique_id=1604821620]
+metadata/__fs_auto_support_collision = true
+metadata/__fs_support_profile = "floor"
+
+[node name="SUPPORT_floor" type="CollisionShape3D" parent="FS_DECOR_地牢花纹地板_VISUAL_DUNGEON_FLOOR_DETAIL_1/SUPPORT_floor" unique_id=1407063111]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.010000002, 0)
+shape = SubResource("BoxShape3D_dh0b2")
+metadata/__fs_auto_support_collision = true
+metadata/__fs_support_profile = "floor"
+
+[node name="ENVIRONMENT_成片雨幕_RAIN_SHEET_01" type="Node3D" parent="." unique_id=995285261]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5165448, 4.1199183, -4.3436956)
+metadata/__fs_environment_effect = {
+"category": "天气",
+"effect_id": "rain_sheet",
+"label": "成片雨幕",
+"tags": ["雨", "雨幕", "天气", "成片"]
+}

@@ -25,6 +25,14 @@ GameBootstrap="*res://scripts/systems/GameBootstrap.gd"
 window/size/viewport_width=1600
 window/size/viewport_height=900
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/fivestar_authoring/plugin.cfg")
+
+[fivestar_authoring]
+
+playtest_mode=true
+
 [rendering]
 
 anti_aliasing/quality/msaa_3d=2

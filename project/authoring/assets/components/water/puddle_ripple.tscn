@@ -1,0 +1,38 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Material" path="res://authoring/assets/components/water/water_flow_material.tres" id="1_water"]
+[ext_resource type="Material" path="res://authoring/assets/components/water/foam_material.tres" id="2_foam"]
+
+[sub_resource type="CylinderMesh" id="Cylinder_water"]
+top_radius = 1.15
+bottom_radius = 1.15
+height = 0.025
+radial_segments = 32
+
+[sub_resource type="TorusMesh" id="Torus_inner"]
+inner_radius = 0.6
+outer_radius = 0.68
+rings = 28
+ring_segments = 8
+
+[sub_resource type="TorusMesh" id="Torus_outer"]
+inner_radius = 0.92
+outer_radius = 1.0
+rings = 28
+ring_segments = 8
+
+[node name="PuddleRipple" type="Node3D"]
+
+[node name="Water" type="MeshInstance3D" parent="."]
+mesh = SubResource("Cylinder_water")
+material_override = ExtResource("1_water")
+
+[node name="RippleInner" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0)
+mesh = SubResource("Torus_inner")
+material_override = ExtResource("2_foam")
+
+[node name="RippleOuter" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.026, 0)
+mesh = SubResource("Torus_outer")
+material_override = ExtResource("2_foam")

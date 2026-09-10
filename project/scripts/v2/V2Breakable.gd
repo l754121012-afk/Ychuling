@@ -3,12 +3,22 @@ extends StaticBody3D
 
 @export var breakable_id := ""
 
+var _runtime_initialized := false
+
 
 func _ready() -> void:
-	if get_child_count() == 0:
+	runtime_initialize()
+
+
+func runtime_initialize() -> void:
+	if _runtime_initialized:
+		return
+	_runtime_initialized = true
+	if not _has_direct_child_of_type(CollisionShape3D):
 		var shape := SphereShape3D.new()
 		shape.radius = 0.55
 		var collision := CollisionShape3D.new()
+		collision.name = "BreakableCollision"
 		collision.shape = shape
 		collision.position.y = 0.55
 		add_child(collision)
@@ -18,7 +28,7 @@ func _ready() -> void:
 # 可击破物目前只有碰撞球、没有可见网格，玩家在场景里看不见罐子。这里补一个占位罐体，
 # 让“可击破罐”成为可读的实体（颜色/形状后续可直接换美术，不影响判定）。
 func _build_visible_jar() -> void:
-	if get_node_or_null("JarBody") != null:
+	if _has_direct_child_of_type(MeshInstance3D):
 		return
 	var body := PlaceholderKit.box("JarBody", Color("#b08d5f"), Vector3(0.62, 0.78, 0.62))
 	body.position.y = 0.42
@@ -27,6 +37,13 @@ func _build_visible_jar() -> void:
 	rim.position.y = 0.96
 	rim.material_override = PlaceholderKit.emissive_material(Color("#c9a05e"), 1.0)
 	add_child(rim)
+
+
+func _has_direct_child_of_type(p_type: Variant) -> bool:
+	for child in get_children():
+		if is_instance_of(child, p_type):
+			return true
+	return false
 
 
 func on_cleaned(_p_by: Node, _p_is_sweep: bool = false, _p_damage: int = 1) -> void:

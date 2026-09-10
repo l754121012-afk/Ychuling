@@ -26,6 +26,48 @@ Q 键撤步冲撞会消耗 1 点体力；Shift 冲刺改为不消耗体力。靠
 & 'F:\Godot\4.7.2\Godot_v4.7.2-stable_win64.exe' -e --path 'C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs\project'
 ```
 
+## 作者场景接管
+
+打开编辑器后使用右侧 `FIVESTAR 场景语义工具`。正式作者场景是 `res://authoring/scenes/first_night_authoring.tscn`；用户负责布局、模型和视觉，Codex 通过 `semantic_id`、`kind`、`behavior`、`links`、`params` 和 `runtime_support` 实现功能。
+
+当前作者场景已重置为从零搭建状态，只保留 `FS_REGION_FIRST_NIGHT` 和位于 `y=0` 的 `120 x 120` 构建平面 `FS_FLOOR_构建地面_BUILD_PLANE_0`。清场前布局在 `first_night_authoring.tscn.pre-reset-20260910-225140.bak`；不要自动恢复，也不要运行首次生成工具覆盖用户之后的手调内容。
+
+构建阶段按 `F5` 默认进入“构建试玩”：只加载作者场景、临时 `y=0` 碰撞地面、玩家和实际跟随相机，不生成 HUD、地图、案件、鬼、NPC 或 Boss。玩家会从空中落到临时地面，便于检查比例、碰撞和实际玩家视角。需要运行完整 V2 玩法时，在右侧 Dock 的“F5 运行模式”点击“F5：完整游戏”，再按 `F5`；切换后若编辑器仍使用旧模式，完全关闭并重新打开 Godot 项目一次。
+
+操作顺序：
+
+1. 打开作者场景，选中行为宿主节点。
+2. 填写 `semantic_id`、中文显示名、kind、behavior 等语义字段并点击“应用语义 / 改名”；复制节点后必须改唯一 `semantic_id`。
+3. 手搭布局时按 `Shift+F` 可像 Blender 聚焦一样，按选中物件的包围盒舒适聚焦，并从约 36° 斜上方观察；多选会整体取景。聚焦后中键环绕、滚轮缩放会按当前模型尺寸限制在近距舒适范围，小物件也不会一步甩得过远。按 `Ctrl+Alt+1` 可从当前选中单一 `Node3D` 切入实际游戏视角，按 `Ctrl+Alt+2` 恢复进入前的编辑视角；Dock 的“观察视图”区也有同功能按钮。没有选中物件时会优先观察 `spawn` / 出生点，再回退场景原点；此操作不会修改或保存场景。
+4. 在“可视模型（已导入）”中用固定高度列表搜索并选择模型，右侧预览始终保留；不必先选中场景节点。双击列表项，或填写中文名后点“创建选中模型为新物件”，可直接放入场景。要替换已有宿主时先选中宿主，再看预览并点“应用/替换模型”；应用会清理同一宿主下旧 `VISUAL_*`，不会把两个外观叠在一起。点“打开模型总览”会在只读 UI 浏览器中打开左侧列表和右侧实时预览。
+5. 也可点击“一键区分未配模型”先给空白宿主补推荐原型和中文名。该操作会进入 `ZONE` / `REGION` 分组查找未登记物件，并把无法识别的名字列在校验输出。
+6. 需要喷泉、瀑布、河流、河岸、水面或水车时点击“水体 / 喷泉”，在列表中选择模型；需要归到某个区域时先选中区域节点，再点“创建选中模型为新物件”直接放入该区域。
+7. 选中语义宿主，在“事件特效（不替换模型）”中选择案件、能力、门锁、目标、休息、机关或危险提示并应用；事件特效与模型可同时存在。
+8. 在“环境特效”中选灯光、雾、云、火焰、雨幕、风线或尘埃效果并点“创建环境特效”。它生成独立 `ENVIRONMENT_*` 节点，同类可重复创建并单独移动、调参或删除；不影响模型和事件特效。
+9. 需要频繁搭地板、道路、平台、楼梯、坡道、墙、柱或岩石时，先切到“地形与平台”。带承托类型的模型会自动生成 `SUPPORT_*` 碰撞，地板至少保留 `0.08` 米厚度；用户手搭碰撞不会被覆盖。
+10. 若发现旧模型仍漂浮，点“修正场景模型落地”。普通模型会对齐宿主地面；水面、涟漪、泡沫和云会按显式浮动规则跳过。
+11. 点击“校验当前场景”，处理到错误为 0；列表里若还有“剩余未登记节点”，选中后手动应用语义和模型。
+12. 模型/特效/环境/落地/批量操作会尝试自动保存并显示结果；普通手改后按 `Ctrl+S`。插件脚本更新后先完全关闭并重新打开 Godot 项目，Dock 标题显示 `0.3.2` 表示已加载本轮修复；只重开场景不等于重载插件。右侧 Dock 与主画面之间的竖向分隔条可直接拖拽，模型/特效长名称不会再撑大最小宽度。
+13. 点击“导出并发布”，生成 Manifest/Markdown 和运行时绑定。随后在面板“工作流”区按节点提示确认；每个节点确认前都会弹窗。
+
+作者系统 smoke：
+
+```powershell
+& 'F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs\project' --script 'res://tests/v2_authoring_smoke.gd'
+```
+
+预期输出：`V2_AUTHORING objects=71 errors=0 warnings=0 route_gates=2 markers=10 authored=true`。这里的 `objects=71` 来自 smoke 内部构建的临时完整测试脚手架，不是当前空作者场景的对象数；当前作者场景应只有区域根节点和构建平面。
+
+F5 构建试玩 smoke：
+
+```powershell
+& 'F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs\project' --script 'res://tests/v2_authoring_playtest_smoke.gd'
+```
+
+预期输出：`V2_AUTHORING_PLAYTEST grounded=true start_y=3.81 player_y=0.90 authored=true clean=true`。它确认玩家从空中落到 `y=0` 临时地面、作者场景已加载且没有生成完整玩法节点。
+
+注意：`tools/fs_build_authoring_scene.gd` 只用于首次生成或明确要求重置作者场景；用户开始手调后禁止运行，否则会覆盖布局和模型。完整流程见 [AUTHORING-WORKFLOW.md](./AUTHORING-WORKFLOW.md)。
+
 ## 自动 smoke
 
 ```powershell

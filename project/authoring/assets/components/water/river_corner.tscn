@@ -1,0 +1,45 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Material" path="res://authoring/assets/components/water/water_flow_material.tres" id="1_water"]
+[ext_resource type="Material" path="res://authoring/assets/components/water/wet_stone_material.tres" id="2_stone"]
+[ext_resource type="Material" path="res://authoring/assets/components/water/foam_material.tres" id="3_foam"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_water_x"]
+size = Vector3(6, 0.08, 2.6)
+
+[sub_resource type="BoxMesh" id="BoxMesh_water_z"]
+size = Vector3(2.6, 0.08, 6)
+
+[sub_resource type="BoxMesh" id="BoxMesh_bank"]
+size = Vector3(6, 0.24, 0.38)
+
+[sub_resource type="TorusMesh" id="Torus_foam"]
+inner_radius = 0.62
+outer_radius = 0.82
+rings = 24
+ring_segments = 8
+
+[node name="RiverCorner" type="Node3D"]
+
+[node name="WaterX" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_water_x")
+material_override = ExtResource("1_water")
+
+[node name="WaterZ" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_water_z")
+material_override = ExtResource("1_water")
+
+[node name="OuterBankX" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -1.65)
+mesh = SubResource("BoxMesh_bank")
+material_override = ExtResource("2_stone")
+
+[node name="OuterBankZ" type="MeshInstance3D" parent="."]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -1.65, 0.04, 0)
+mesh = SubResource("BoxMesh_bank")
+material_override = ExtResource("2_stone")
+
+[node name="TurnFoam" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
+mesh = SubResource("Torus_foam")
+material_override = ExtResource("3_foam")

@@ -1,0 +1,51 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Material" path="res://authoring/assets/components/water/water_flow_material.tres" id="1_water"]
+[ext_resource type="Material" path="res://authoring/assets/components/water/wet_stone_material.tres" id="2_stone"]
+[ext_resource type="Material" path="res://authoring/assets/components/water/dark_material.tres" id="3_dark"]
+[ext_resource type="Material" path="res://authoring/assets/components/water/foam_material.tres" id="4_foam"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_slab"]
+size = Vector3(2.8, 2.0, 0.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_opening"]
+size = Vector3(1.65, 0.95, 0.22)
+
+[sub_resource type="CylinderMesh" id="Cylinder_drain"]
+top_radius = 0.48
+bottom_radius = 0.48
+height = 0.9
+radial_segments = 20
+
+[sub_resource type="BoxMesh" id="BoxMesh_drip"]
+size = Vector3(0.34, 0.95, 0.14)
+
+[sub_resource type="BoxMesh" id="BoxMesh_foam"]
+size = Vector3(1.35, 0.12, 0.62)
+
+[node name="DrainOutfall" type="Node3D"]
+
+[node name="StoneSlab" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+mesh = SubResource("BoxMesh_slab")
+material_override = ExtResource("2_stone")
+
+[node name="DarkOpening" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, -0.27)
+mesh = SubResource("BoxMesh_opening")
+material_override = ExtResource("3_dark")
+
+[node name="Pipe" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 1.0, -0.38)
+mesh = SubResource("Cylinder_drain")
+material_override = ExtResource("2_stone")
+
+[node name="WaterDrip" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -0.43)
+mesh = SubResource("BoxMesh_drip")
+material_override = ExtResource("1_water")
+
+[node name="Foam" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, -0.45)
+mesh = SubResource("BoxMesh_foam")
+material_override = ExtResource("4_foam")

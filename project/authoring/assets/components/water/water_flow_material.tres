@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://authoring/assets/components/water/water_flow.gdshader" id="1_water"]
+
+[resource]
+render_priority = 1
+shader = ExtResource("1_water")
+shader_parameter/water_color = Color(0.08, 0.42, 0.58, 0.72)
+shader_parameter/foam_color = Color(0.76, 0.94, 1, 0.88)
+shader_parameter/flow_speed = 0.35
+shader_parameter/band_scale = 9.0
+shader_parameter/foam_amount = 0.28

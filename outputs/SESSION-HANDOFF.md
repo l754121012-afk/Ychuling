@@ -4,17 +4,32 @@
 
 ## 当前任务
 
-- **本次：接管 FIVESTAR 旧项目 → 从地图“左下角区域”（西南角 = 夜巡司区）开始实现，按区域逐一做完一块就喊用户进游戏测试验证。**
-- 先决已做：完成上下文瘦身（新增 `outputs/CODE-INDEX.md`；本文件与 `AGENTS.md` 已去掉元叙述，只留状态与协议）。
-- 上一刀：新增 `v2/V2WorldMap.gd`（节点式世界地图，`LOCKED/IN_PROGRESS/DONE` 三态配色），集成进 Tab 地图（`M2RouteLab.gd` `_setup_map_hud` 以它替换旧区域文字层），含“当前位置”软光晕高亮；冒烟 `v2_world_map_smoke.gd` 通过。
-- 本轮已做（R1 夜巡司区收尾）：`v2/V2Breakable.gd` 补可见罐体（`JarBody`+`JarRim`，原只有碰撞球）；`first_night_region.json` 夜巡司区 +7 个值房物件（柜台/两立柱/三灯/线索档案桌），`shortcut_gate` 由数据层改为带世界坐标实体门 `(-10.3,-4)`；`M2RouteLab.gd` 新增 `_build_shortcut_gate_marker`（顶上金锁）、`_try_region_gate`（靠近按 E：满足条件开、否则给对应锁提示）、`_on_shortcut_gate_opened`（仪式光柱+翻地图状态）、线索档案 NPC（读档翻 `nw_clue` DONE），并把主 `_process` 的 E 互动改为“先 `_try_region_gate`，失败再 `_try_v2_npc`”。新增冒烟 `v2_r1_nightwatch_smoke.gd`（实体+地图态）与 `v2_r1_runtime_smoke.gd`（互动路径），均通过。
-- **关键修复**：`M2RouteLab.gd` `_try_region_gate` 里误用 `Node.get("属性", 默认值)` 两参调用（Godot `Object.get` 只接受 1 参），导致加载主场景即 `Parse Error: Too many arguments for "get()"`。已改为单参 `gate.get("属性")`（属性由 `V2AbilityGate` `@export` 保证存在）。此前只跑静态冒烟没加载主场景故未暴露；已用真实场景加载 smoke（`m2_q_tech_smoke`）验证并修复。
-- 验证：既有完整冒烟（`v2_world_map` / `v2_region_build` / `v2_region_runtime` / `v2_env_components` / `v2_save` / `v2_route_data` / `v2_gate_pickup` 与全部 m2_*、真实场景 `m2_q_tech`）全部 EXIT=0。`v2_map_organic` 为地图截图导出，headless 无真实渲染器必然失败，属既有特性非回归。
-- 下一步：喊用户进游戏（带窗口上帝视角，见 M1-RUN「直接运行白盒」）验证夜巡司区：出生在夜巡司能看见值房柜台/线索档案桌/锁住的捷径门金锁/可击破罐；按 E 读线索档案；拿夜巡印章后回来按 E 开捷径门；按 Tab 看 R1 状态色（夜巡司区应在标记为“正在做/已做”）。
+- **本次：建立“用户手调作者场景 + Codex 语义接管”的长期工作流，解决 Codex 对模型/布局还原不准和会话上下文压力。**
+- 作者场景：`project/authoring/scenes/first_night_authoring.tscn` 已按用户要求重置为从零搭建状态，当前只有 `FS_REGION_FIRST_NIGHT` 和位于 `y=0` 的 `120 x 120` 构建平面 `FS_FLOOR_构建地面_BUILD_PLANE_0`；旧布局备份为 `*.pre-reset-20260910-225140.bak`，不要自动恢复或重建。
+- 已实现：右侧 Dock `FIVESTAR 场景语义工具` 可登记中文显示名/分组/校验/导出/发布；Manifest 每物件带 `display_name`、`visual` 和 `runtime_support`。
+- 可视原型：`project/authoring/assets/model_catalog.json` 收录 131 个精选中文模型项，插件自动扫描全部已导入 GLB 后当前合计 288 个；支持搜索/分类/实时三维预览/应用/替换/移除，并可“一键区分未配模型”，只补空白宿主，不覆盖已有模型、碰撞或自定义显示名。
+- 模型总览：`project/authoring/scenes/model_gallery.tscn` 现在是只读 UI 浏览器，不再是 288 个实体模型节点。左侧为搜索、分类和文字列表，右侧为独立 `SubViewport` 三维实时预览、自动旋转、模型 ID、资源路径、复制 ID 和文件定位；Dock 的固定高度模型列表下方也有同一套实时预览。
+- 模型创建易用性：Dock 模型选择已从会遮住预览的 `OptionButton` 改为固定 `170px` 高度的可滚动 `ItemList`，列表和 `190px` 预览同时可见。没有选中节点时也会保留模型搜索/分类/列表；选中模型即可使用“创建选中模型为新物件”，双击列表项同效。创建区新增“新物件中文名（可选）”，留空时仍使用模型中文名；创建后节点名包含中文显示名与稳定 ASCII `semantic_id`。现有物件改中文名后点“应用语义 / 改名”。
+- 观察视图：Dock 新增“观察视图”，`Shift+F` 按当前选中 `Node3D` 的世界包围盒舒适聚焦，从约 36° 斜上方看向物件中心，多选可整体取景；聚焦后中键环绕、滚轮缩放按当前模型半径限制在近距微调范围，避免小物件旋转或缩放一步跨得过远。`Ctrl+Alt+1` 从当前选中单一 `Node3D` 切入实际游戏视角，`Ctrl+Alt+2` 恢复进入前保存的编辑视角；没有选中物件时优先找 `spawn` / 出生点，再回退场景原点。参数由 `scripts/authoring/FSGameView.gd` 与运行相机共用，只移动编辑器摄像机，不写入作者场景。
+- F5 构建试玩：默认 `F5` 只加载已发布作者场景、临时 `y=0` 碰撞地面、玩家和实际跟随相机；不生成 HUD、地图、案件、鬼、NPC 或 Boss。玩家从约 `y=4` 下落并落到临时地面，适合检查正在手搭场景的比例、碰撞和玩家视角。Dock 的“F5 运行模式”可切到“完整游戏”，再按 `F5` 运行现有 V2 流程；设置保存在 `project.godot` 的 `fivestar_authoring/playtest_mode`。
+- 雨城水文：`project/authoring/assets/components/water/` 提供瀑布、直河、河角、河岸、水面、水坑涟漪和排水口；长墙/河流支持重复拼片，空壳或零尺寸旧 `VISUAL_*` 会被批量修复。
+- 地形与承托：精选目录新增 24 个“地形与平台”高频搭建件，覆盖道路、木板、平台、石阶、坡道、墙、柱体、岩石、地牢地板、半高墙和碎石障碍。这些条目带 `floor/platform/wall/stairs/column/obstacle` 承托类型，应用后自动生成 `SUPPORT_*` 碰撞；地板至少 `0.08` 米厚，用户手搭碰撞不会被覆盖。
+- 环境表现：新增 9 种可叠加环境特效（暖色灯笼光、冷色聚光、月光、地面雾、低云层、火焰与动态光、成片雨幕、环境风线、尘埃微粒）。它们使用独立 `ENVIRONMENT_*` 节点，可与 8 种事件特效同时存在，并可单独移动、调参和删除。
+- 本轮修复：批量识别可进入 `ZONE` / `REGION` 查找新加的柱子、墙、门、悬浮平台、建筑和水体，同时仍跳过行为宿主内部的生成视觉子节点；无法识别的剩余节点会列在校验输出。单点建筑挂模型时排除 `AuthoringMarker` 尺寸，不再被缩成不可见大小。模型替换改为先构建新模型、成功后再清理旧 `VISUAL_*` 和旧式嵌套模型，宝箱/水车等不会继续叠在同一个语义宿主上。
+- 分配报错修复：旧版 `apply_model` 会递归改写 GLB 预制体内部节点的 `owner`，保存后把门、动画等内部节点重复序列化。`0.2.3` 只让 `VISUAL_*` 外壳和预制体实例根归作者场景持有；`tools/fs_repair_owner_duplicates.gd` 已修复旧场景，删除重复内部节点 55 个，复检 `remaining=0`，原文件备份为 `*.owner-fix.bak`。当前插件为 `0.3.2`：固定高度模型列表与实时预览、无宿主直接创建/中文命名、UI 模型浏览器、模型/事件/环境三层分离、批量落地修正、8 种事件特效、9 种环境特效、近距尺寸自适应聚焦、新建后只选父语义层、编辑/游戏观察视角切换和 F5 构建试玩/完整游戏切换；普通模型默认贴地，只有水面/涟漪/泡沫/云显式浮动。模型和特效控件不再按最长条目撑大 Dock 最小宽度，右侧面板可以拖窄。
+- 接管边界：代码只认 ASCII `semantic_id`/`kind`/`behavior`/`links`/`params` 与运行分组；节点名中的中文只作查找，GLB 只作可视壳。`VISUAL_<model_id>` 子节点永远不得登记语义。
+- 七节点工作流：规格确认 → 场景手调 → 语义校验 → 导出并发布 → 功能实现 → 试玩验收 → 交接回填。每节点有负责人、说明、确认提示和二次确认框。
+- 当前状态：`project/authoring/workflows/first_night.json` 仍是 `current_step=0`，七个节点全 `PENDING`，明确等待用户确认第 1 节点；不要替用户静默确认。
+- 清单状态：清场前留下的历史发布清单为 70 个对象，`runtime=11 native=2 marker=10 pending=2 none=45`；它不代表当前空场景。用户重搭并重新导出前，不要把它当作当前真源，也不要用它判断功能物件是否还存在。
+- 本轮验证：全工程 headless 编辑器解析通过；`v2_authoring_smoke.gd` 输出 `V2_AUTHORING objects=71 errors=0 warnings=0 route_gates=2 markers=10 authored=true`。这里的 `71` 来自 smoke 内部临时搭建的完整测试脚手架，不是当前作者场景对象数；smoke 另断言 131 项目录、24 个地形/平台件、6 类承托 profile、自动承托碰撞和用户碰撞保留、9 种环境特效可重复叠加与单独删除、近距缩放/小步环绕，以及新建后只选中父语义层。`v2_authoring_playtest_smoke.gd` 输出 `V2_AUTHORING_PLAYTEST grounded=true start_y=3.81 player_y=0.90 authored=true clean=true`，确认作者场景已加载、玩家从空中落地且没有生成 HUD/地图/鬼。旧 `v2_r1_runtime_smoke` 因当前作者场景仅有构建平面、缺少路线 marker 而输出未通过；这是清场后的预期基线变化，不要为跑通该旧 smoke 自动重建场景。
+- 保存语义：模型创建/应用/替换/移除、批量补模型、落地修正和事件特效操作会尝试自动保存，状态栏会明确报告保存结果；普通手改和“应用语义 / 改名”仍按 Godot 的未保存状态处理，必要时按 `Ctrl+S`。若状态栏提示自动保存失败，必须先按 `Ctrl+S` 再继续。
+- 重载语义：修改插件脚本后需完全关闭并重新打开 Godot 项目；只重开场景不算重载插件，未重开时右侧 Dock 可能仍运行旧逻辑。Dock 标题显示 `0.3.2` 表示本轮修复已加载；Dock 更新不等于场景已保存。F5 模式写入项目设置后，若编辑器进程仍使用旧值，同样完全重开项目一次。
+- 下一步：用户确认第 1 节点规格后，从 `build_plane_0` 开始手搭场景。一旦开始编辑，禁止再运行 `tools/fs_build_authoring_scene.gd`，否则会覆盖手调内容。
+- 文档入口：`outputs/AUTHORING-WORKFLOW.md`（七节点、手调登记、中文命名、模型目录、接管分类、失败回退、AI 接手指令）。
 
 ## 项目定位
 
-- 工程：`C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs`；分支 `v2`（HEAD `db489e2`）；`master` 冻结于 tag `v1.0-basic-stable`。
+- 工程：`C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs`；分支 `v2`（HEAD `90e5377`，本轮作者系统改动尚未提交）；`master` 冻结于 tag `v1.0-basic-stable`。
 - 框架：Godot 4.7.2。本机：`F:\Godot\4.7.2\Godot_v4.7.2-stable_win64.exe`（渲染**必须带窗口**）；`..._console.exe`（headless 跑 smoke）。
 - 工程根：`...\project`；主场景 `res://scenes/main/V2FirstLoop.tscn`（根脚本 `M2RouteLab.gd`）。
 - 阶段：V2 行为循环白盒（不换美术资产，不做 Demo/盈利验证）。红/金/白黄绿视觉规则与输入语义见 `AGENTS.md`。
@@ -22,6 +37,7 @@
 ## 读取攻略（坚决避免二次整读）
 
 - 脚本/测试：先查 `outputs/CODE-INDEX.md` 定位 文件+行，再用 `rg`/行范围局部读；**不要整读 >300 行的大脚本**。
+- 作者场景/功能接管：先读 `outputs/AUTHORING-WORKFLOW.md` 与 `project/authoring/manifests/<region>.manifest.json`；用户已手调后禁止重建作者场景。
 - 地图怎么搭/布怪/门锁/颜色 → 只读 `outputs/map-construction-blueprint.md`（权威施工图）。
 - 视觉风格 → 只读 `outputs/map-style-notes.md` + 缩略图 `outputs/reference-map-thumb.png`（512×241）。**大参考图永不整读。**
 - 顶视施工图 → `outputs/map-v2-plan.png`；生图提示词 → `outputs/map-v2-imagegen-prompt.md`。

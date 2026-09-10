@@ -1,0 +1,3171 @@
+[gd_scene format=3 uid="uid://c4opt7iw5p1qv"]
+
+[ext_resource type="PackedScene" uid="uid://bdqcwmy4lkm1p" path="res://assets/vendor/kenney/fantasy_town/Models/wall.glb" id="1_e78ot"]
+[ext_resource type="PackedScene" uid="uid://dscfjrdsh8sjk" path="res://assets/vendor/kenney/graveyard/Models/crypt-door.glb" id="1_p3dt8"]
+[ext_resource type="PackedScene" uid="uid://8r3hhw12phu7" path="res://assets/vendor/kenney/mini_dungeon/Models/gate.glb" id="3_0oujd"]
+[ext_resource type="PackedScene" uid="uid://lyyu5am1pt48" path="res://assets/vendor/kenney/fantasy_town/Models/fountain-round.glb" id="3_kwtuh"]
+[ext_resource type="PackedScene" uid="uid://c6me6pfdn874x" path="res://assets/vendor/kenney/fantasy_town/Models/fountain-center.glb" id="4_0oujd"]
+[ext_resource type="PackedScene" uid="uid://6j0vnfk7cwm0" path="res://assets/vendor/kenney/graveyard/Models/urn-round.glb" id="5_34ste"]
+[ext_resource type="PackedScene" uid="uid://clsu233fkbecm" path="res://assets/vendor/kenney/fantasy_town/Models/watermill.glb" id="6_p3dt8"]
+[ext_resource type="PackedScene" uid="uid://c7ki5dv5o530u" path="res://assets/vendor/kenney/fantasy_town/Models/fountain-square.glb" id="6_u6m03"]
+[ext_resource type="PackedScene" uid="uid://fogtspwrqtut" path="res://assets/vendor/kenney/mini_dungeon/Models/chest.glb" id="6_uqruc"]
+[ext_resource type="PackedScene" uid="uid://cxhsmwsk04lwx" path="res://assets/vendor/kenney/graveyard/Models/lightpost-single.glb" id="7_2cnho"]
+[ext_resource type="PackedScene" uid="uid://btmuyltas284v" path="res://assets/vendor/kenney/graveyard/Models/grave.glb" id="8_fa0jg"]
+[ext_resource type="PackedScene" uid="uid://y4ak7kwrah4s" path="res://assets/vendor/kenney/graveyard/Models/pine.glb" id="9_1dy2c"]
+[ext_resource type="PackedScene" uid="uid://e4hvitwg1xs1" path="res://assets/vendor/kenney/graveyard/Models/fire-basket.glb" id="10_lmw76"]
+[ext_resource type="PackedScene" uid="uid://na8wsa8xotrg" path="res://assets/vendor/kenney/fantasy_town/Models/planks.glb" id="10_p3dt8"]
+[ext_resource type="PackedScene" uid="uid://df1hc2pba8uki" path="res://assets/vendor/kenney/fantasy_town/Models/cart.glb" id="11_laxmx"]
+[ext_resource type="PackedScene" uid="uid://bvcxcmpqrcu8e" path="res://assets/vendor/kenney/graveyard/Models/altar-wood.glb" id="13_a40rw"]
+[ext_resource type="PackedScene" uid="uid://dbbgjac2tgn3n" path="res://assets/vendor/kenney/graveyard/Models/altar-stone.glb" id="14_f6yt6"]
+[ext_resource type="PackedScene" uid="uid://dilo3ne7atnpg" path="res://assets/vendor/kenney/graveyard/Models/crypt-small.glb" id="15_linwr"]
+[ext_resource type="PackedScene" uid="uid://g7jebu4lf04h" path="res://assets/vendor/kenney/graveyard/Models/crypt-large-door.glb" id="16_atlk1"]
+[ext_resource type="PackedScene" uid="uid://b80aalu8csl0k" path="res://assets/vendor/kenney/graveyard/Models/character-vampire.glb" id="19_34ste"]
+[ext_resource type="PackedScene" path="res://authoring/assets/components/effects/case_gold_beacon.tscn" id="20_2cnho"]
+[ext_resource type="Script" uid="uid://cp6i1hlf7apyu" path="res://authoring/assets/components/effects/fs_authoring_effect.gd" id="21_fa0jg"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rq18n"]
+size = Vector3(40, 1, 16)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gl8ts"]
+albedo_color = Color(0.22352941, 0.2784314, 0.3647059, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_yma1l"]
+size = Vector3(40, 1, 16)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dh0b2"]
+size = Vector3(40, 2.6, 0.6)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ch3kp"]
+albedo_color = Color(0.2627451, 0.3137255, 0.39607844, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_3drgm"]
+size = Vector3(40, 2.6, 0.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rpwam"]
+size = Vector3(40, 2.6, 0.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_g8cbt"]
+size = Vector3(0.6, 2.6, 18)
+
+[sub_resource type="BoxMesh" id="BoxMesh_6jlkp"]
+size = Vector3(0.6, 2.6, 18)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_16eu1"]
+size = Vector3(0.6, 2.6, 18)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_s8tf1"]
+albedo_color = Color(0.70980394, 0.54509807, 0.2901961, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_3a506"]
+size = Vector3(2, 0.08, 3.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ogfnv"]
+albedo_color = Color(0.9490196, 0.84313726, 0.47843137, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_53oon"]
+size = Vector3(0.8, 0.08, 0.8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_crp8i"]
+size = Vector3(0.28, 3, 16.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e78ot"]
+albedo_color = Color(0.42745098, 0.47843137, 0.5647059, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_p3dt8"]
+size = Vector3(0.28, 3, 16.4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kwtuh"]
+size = Vector3(0.28, 3, 16.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0oujd"]
+albedo_color = Color(0.16862746, 0.22745098, 0.30588236, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_u6m03"]
+size = Vector3(9.5, 0.04, 16)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_34ste"]
+radius = 0.55
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uqruc"]
+albedo_color = Color(0.6901961, 0.5529412, 0.37254903, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_2cnho"]
+size = Vector3(0.62, 0.78, 0.62)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fa0jg"]
+albedo_color = Color(0.7882353, 0.627451, 0.36862746, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_1dy2c"]
+size = Vector3(0.42, 0.26, 0.42)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lmw76"]
+size = Vector3(3, 0.42, 1.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_laxmx"]
+albedo_color = Color(0.19215687, 0.2509804, 0.3529412, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_mnh1i"]
+size = Vector3(3, 0.42, 1.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_f6yt6"]
+size = Vector3(0.64, 3.2, 0.64)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a40rw"]
+albedo_color = Color(0.3647059, 0.41960785, 0.5019608, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_linwr"]
+albedo_color = Color(0.54509807, 0.5882353, 0.65882355, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_atlk1"]
+size = Vector3(0.14, 2.6, 0.14)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3u20a"]
+albedo_color = Color(1, 0.8509804, 0.5411765, 1)
+roughness = 0.85
+emission_enabled = true
+emission = Color(1, 0.8509804, 0.5411765, 1)
+emission_energy_multiplier = 1.8
+
+[sub_resource type="BoxMesh" id="BoxMesh_axi2h"]
+size = Vector3(0.77, 0.55, 0.77)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hxtu8"]
+size = Vector3(1.6, 0.42, 1.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_hh5id"]
+size = Vector3(1.6, 0.42, 1.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_bxocb"]
+size = Vector3(0.7, 0.5, 0.7)
+
+[sub_resource type="BoxMesh" id="BoxMesh_icf71"]
+size = Vector3(0.6, 7, 3)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kwk13"]
+albedo_color = Color(0.4745098, 0.78039217, 0.8392157, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x3vml"]
+albedo_color = Color(0.30980393, 0.56078434, 0.3882353, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_mua6g"]
+size = Vector3(0.12, 1, 0.12)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_roj50"]
+albedo_color = Color(0.54509807, 0.76862746, 0.47843137, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_4ad10"]
+size = Vector3(0.7, 0.12, 0.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_jmth6"]
+size = Vector3(0.91, 0.65, 0.91)
+
+[sub_resource type="BoxMesh" id="BoxMesh_2hmf8"]
+size = Vector3(0.9, 0.5, 0.24)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6guqi"]
+albedo_color = Color(0.28235295, 0.3254902, 0.30980393, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_6g1nj"]
+size = Vector3(0.8, 0.16, 0.8)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cfcyl"]
+albedo_color = Color(0.47843137, 0.84313726, 0.8117647, 1)
+roughness = 0.85
+emission_enabled = true
+emission = Color(0.47843137, 0.84313726, 0.8117647, 1)
+emission_energy_multiplier = 2.4
+
+[sub_resource type="BoxMesh" id="BoxMesh_l3jda"]
+size = Vector3(0.5, 0.9, 0.5)
+
+[sub_resource type="QuadMesh" id="QuadMesh_mfu5b"]
+size = Vector2(4, 2.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7hbxj"]
+transparency = 1
+albedo_color = Color(0.62352943, 0.72156864, 0.8117647, 0.26)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fovh4"]
+albedo_color = Color(0.2901961, 0.23137255, 0.18039216, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_1uv40"]
+size = Vector3(14.5, 0.04, 16)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_44it3"]
+size = Vector3(1.4, 0.24, 1.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_msoqg"]
+albedo_color = Color(0.7882353, 0.7058824, 0.3529412, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_8smt6"]
+size = Vector3(1.4, 0.1, 1.4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5jrxs"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_38ryx"]
+albedo_color = Color(0.49803922, 0.43137255, 0.3137255, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_wdcf4"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ijyx3"]
+radius = 0.55
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_8ypve"]
+radius = 0.55
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_jk8ee"]
+radius = 0.55
+
+[sub_resource type="BoxMesh" id="BoxMesh_enryy"]
+size = Vector3(0.9, 3.4, 0.9)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qexu7"]
+albedo_color = Color(0.4862745, 0.5411765, 0.6039216, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_4bogo"]
+size = Vector3(0.9, 3.8, 0.9)
+
+[sub_resource type="BoxMesh" id="BoxMesh_30cka"]
+size = Vector3(1, 1.6, 0.16)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5axvi"]
+transparency = 1
+albedo_color = Color(0.62352943, 0.84705883, 1, 0.55)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_8xgs0"]
+size = Vector3(0.84, 0.6, 0.84)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n5ubk"]
+albedo_color = Color(0.2901961, 0.17254902, 0.23529412, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_8gldd"]
+size = Vector3(6, 0.04, 16)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ai80s"]
+size = Vector3(2.4, 0.3, 2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8c88e"]
+albedo_color = Color(0.24705882, 0.42745098, 0.54901963, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_wkxib"]
+size = Vector3(2.4, 0.3, 2)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_m2vdq"]
+radius = 0.55
+
+[sub_resource type="BoxMesh" id="BoxMesh_vjnrx"]
+size = Vector3(1.2, 5, 1.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_v0p5g"]
+size = Vector3(1.2, 1.8, 0.16)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7ls52"]
+albedo_color = Color(0.18431373, 0.2901961, 0.2509804, 1)
+roughness = 0.85
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_204ij"]
+size = Vector3(1.6, 0.24, 1.6)
+
+[sub_resource type="BoxMesh" id="BoxMesh_f0iqp"]
+size = Vector3(1.6, 0.1, 1.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_u4fuk"]
+size = Vector3(1.1, 1.1, 1.1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_7qaiv"]
+size = Vector3(1.1, 1.1, 1.1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_falat"]
+size = Vector3(2.4, 0.3, 2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_t4rr3"]
+size = Vector3(1.4, 6, 1.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_qwtkp"]
+size = Vector3(0.98, 0.7, 0.98)
+
+[sub_resource type="BoxMesh" id="BoxMesh_g8l6s"]
+size = Vector3(0.5, 6, 2.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r5r35"]
+albedo_color = Color(0.47843137, 0.84313726, 0.8117647, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_jonac"]
+size = Vector3(1.2, 0.12, 1.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_432vr"]
+albedo_color = Color(1, 0.81960785, 0.4, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_m0d7t"]
+size = Vector3(4.4, 0.1, 4.6)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_t70yp"]
+albedo_color = Color(0.9372549, 0.35686275, 0.35686275, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fwe5k"]
+albedo_color = Color(0.95686275, 0.7882353, 0.3647059, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_jtt3k"]
+size = Vector3(1.2, 4, 1.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4cajb"]
+albedo_color = Color(0.34117648, 0.83137256, 0.64705884, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_dnmb0"]
+size = Vector3(1.2, 0.07, 1.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wv4lf"]
+size = Vector3(0.5, 3.2, 2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_06rq6"]
+albedo_color = Color(0.41568628, 0.2627451, 0.32156864, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_lqxtb"]
+size = Vector3(0.5, 3.2, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1ocqh"]
+size = Vector3(0.5, 3.2, 2)
+
+[node name="FS_REGION_FIRST_NIGHT" type="Node3D" unique_id=1312512885]
+metadata/fivestar_semantic = {
+"behavior": "none",
+"kind": "region",
+"links": Array[String]([]),
+"params": {
+"region_name": "首夜城区"
+},
+"semantic_id": "first_night",
+"tags": Array[String](["authored"]),
+"zone_id": ""
+}
+
+[node name="FS_FLOOR_ROUTE_FLOOR" type="StaticBody3D" parent="." unique_id=253266843]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"kind": "floor",
+"links": Array[String]([]),
+"params": {
+"size": [40.0, 1.0, 16.0]
+},
+"semantic_id": "route_floor",
+"tags": Array[String](["authored", "route"]),
+"zone_id": ""
+}
+
+[node name="@CollisionShape3D@3" type="CollisionShape3D" parent="FS_FLOOR_ROUTE_FLOOR" unique_id=1202316315]
+shape = SubResource("BoxShape3D_rq18n")
+
+[node name="art_key_route_floor" type="MeshInstance3D" parent="FS_FLOOR_ROUTE_FLOOR" unique_id=1371068210]
+material_override = SubResource("StandardMaterial3D_gl8ts")
+mesh = SubResource("BoxMesh_yma1l")
+
+[node name="FS_PROP_城镇石墙_ROUTE_WALL_NORTH" type="StaticBody3D" parent="." unique_id=368371261]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, -8.5)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "城镇石墙",
+"kind": "prop",
+"links": Array[String]([]),
+"params": {
+"size": Vector3(40, 2.6, 0.6),
+"visual": {
+"fit_mode": "repeat_longest",
+"fit_scale": [5.999997, 2.6, 2.6666667],
+"fitted_size": [40.0, 2.6, 0.5999999],
+"label": "城镇石墙",
+"model_id": "town_wall",
+"path": "res://assets/vendor/kenney/fantasy_town/Models/wall.glb",
+"repeat_along_longest": true,
+"repeat_count": 15,
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+}
+},
+"semantic_id": "route_wall_north",
+"tags": Array[String](["authored", "route", "boundary"]),
+"zone_id": ""
+}
+
+[node name="@CollisionShape3D@5" type="CollisionShape3D" parent="FS_PROP_城镇石墙_ROUTE_WALL_NORTH" unique_id=332351820]
+shape = SubResource("BoxShape3D_dh0b2")
+
+[node name="art_key_route_wall_north" type="MeshInstance3D" parent="FS_PROP_城镇石墙_ROUTE_WALL_NORTH" unique_id=1825154281]
+visible = false
+material_override = SubResource("StandardMaterial3D_ch3kp")
+mesh = SubResource("BoxMesh_3drgm")
+metadata/__fs_visual_hidden_visible = true
+
+[node name="VISUAL_town_wall" type="Node3D" parent="FS_PROP_城镇石墙_ROUTE_WALL_NORTH" unique_id=1654940636]
+
+[node name="Tile_00" parent="FS_PROP_城镇石墙_ROUTE_WALL_NORTH/VISUAL_town_wall" unique_id=657509384 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, -18.666666, -1.3, 2.6999986)
+
+[node name="Tile_01" parent="FS_PROP_城镇石墙_ROUTE_WALL_NORTH/VISUAL_town_wall" unique_id=256616401 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, -16, -1.3, 2.6999986)
+
+[node name="Tile_02" parent="FS_PROP_城镇石墙_ROUTE_WALL_NORTH/VISUAL_town_wall" unique_id=1868672075 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, -13.333333, -1.3, 2.6999986)
+
+[node name="Tile_03" parent="FS_PROP_城镇石墙_ROUTE_WALL_NORTH/VISUAL_town_wall" unique_id=2052637835 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, -10.666667, -1.3, 2.6999986)
+
+[node name="Tile_04" parent="FS_PROP_城镇石墙_ROUTE_WALL_NORTH/VISUAL_town_wall" unique_id=253840879 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, -8, -1.3, 2.6999986)
+
+[node name="Tile_05" parent="FS_PROP_城镇石墙_ROUTE_WALL_NORTH/VISUAL_town_wall" unique_id=859854339 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, -5.3333335, -1.3, 2.6999986)
+
+[node name="Tile_06" parent="FS_PROP_城镇石墙_ROUTE_WALL_NORTH/VISUAL_town_wall" unique_id=1045031345 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, -2.6666665, -1.3, 2.6999986)
+
+[node name="Tile_07" parent="FS_PROP_城镇石墙_ROUTE_WALL_NORTH/VISUAL_town_wall" unique_id=779816795 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, 1.1920929e-07, -1.3, 2.6999986)
+
+[node name="Tile_08" parent="FS_PROP_城镇石墙_ROUTE_WALL_NORTH/VISUAL_town_wall" unique_id=149921316 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, 2.666667, -1.3, 2.6999986)
+
+[node name="Tile_09" parent="FS_PROP_城镇石墙_ROUTE_WALL_NORTH/VISUAL_town_wall" unique_id=36866824 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, 5.3333335, -1.3, 2.6999986)
+
+[node name="Tile_10" parent="FS_PROP_城镇石墙_ROUTE_WALL_NORTH/VISUAL_town_wall" unique_id=1702359850 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, 8, -1.3, 2.6999986)
+
+[node name="Tile_11" parent="FS_PROP_城镇石墙_ROUTE_WALL_NORTH/VISUAL_town_wall" unique_id=375738716 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, 10.666667, -1.3, 2.6999986)
+
+[node name="Tile_12" parent="FS_PROP_城镇石墙_ROUTE_WALL_NORTH/VISUAL_town_wall" unique_id=1100160347 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, 13.333333, -1.3, 2.6999986)
+
+[node name="Tile_13" parent="FS_PROP_城镇石墙_ROUTE_WALL_NORTH/VISUAL_town_wall" unique_id=2054545665 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, 16, -1.3, 2.6999986)
+
+[node name="Tile_14" parent="FS_PROP_城镇石墙_ROUTE_WALL_NORTH/VISUAL_town_wall" unique_id=1044728065 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, 18.666666, -1.3, 2.6999986)
+
+[node name="FS_PROP_城镇石墙_ROUTE_WALL_SOUTH" type="StaticBody3D" parent="." unique_id=1342004472]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 8.5)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "城镇石墙",
+"kind": "prop",
+"links": Array[String]([]),
+"params": {
+"size": Vector3(40, 2.6, 0.6),
+"visual": {
+"fit_mode": "repeat_longest",
+"fit_scale": [5.999997, 2.6, 2.6666667],
+"fitted_size": [40.0, 2.6, 0.5999999],
+"label": "城镇石墙",
+"model_id": "town_wall",
+"path": "res://assets/vendor/kenney/fantasy_town/Models/wall.glb",
+"repeat_along_longest": true,
+"repeat_count": 15,
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+}
+},
+"semantic_id": "route_wall_south",
+"tags": Array[String](["authored", "route", "boundary"]),
+"zone_id": ""
+}
+
+[node name="@CollisionShape3D@7" type="CollisionShape3D" parent="FS_PROP_城镇石墙_ROUTE_WALL_SOUTH" unique_id=2038251642]
+shape = SubResource("BoxShape3D_rpwam")
+
+[node name="art_key_route_wall_south" type="MeshInstance3D" parent="FS_PROP_城镇石墙_ROUTE_WALL_SOUTH" unique_id=721548788]
+visible = false
+material_override = SubResource("StandardMaterial3D_ch3kp")
+mesh = SubResource("BoxMesh_3drgm")
+metadata/__fs_visual_hidden_visible = true
+
+[node name="VISUAL_town_wall" type="Node3D" parent="FS_PROP_城镇石墙_ROUTE_WALL_SOUTH" unique_id=1728013827]
+
+[node name="Tile_00" parent="FS_PROP_城镇石墙_ROUTE_WALL_SOUTH/VISUAL_town_wall" unique_id=489630741 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, -18.666666, -1.3, 2.6999986)
+
+[node name="Tile_01" parent="FS_PROP_城镇石墙_ROUTE_WALL_SOUTH/VISUAL_town_wall" unique_id=309406511 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, -16, -1.3, 2.6999986)
+
+[node name="Tile_02" parent="FS_PROP_城镇石墙_ROUTE_WALL_SOUTH/VISUAL_town_wall" unique_id=2080637476 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, -13.333333, -1.3, 2.6999986)
+
+[node name="Tile_03" parent="FS_PROP_城镇石墙_ROUTE_WALL_SOUTH/VISUAL_town_wall" unique_id=1552199357 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, -10.666667, -1.3, 2.6999986)
+
+[node name="Tile_04" parent="FS_PROP_城镇石墙_ROUTE_WALL_SOUTH/VISUAL_town_wall" unique_id=2042406810 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, -8, -1.3, 2.6999986)
+
+[node name="Tile_05" parent="FS_PROP_城镇石墙_ROUTE_WALL_SOUTH/VISUAL_town_wall" unique_id=2091446840 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, -5.3333335, -1.3, 2.6999986)
+
+[node name="Tile_06" parent="FS_PROP_城镇石墙_ROUTE_WALL_SOUTH/VISUAL_town_wall" unique_id=2036043568 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, -2.6666665, -1.3, 2.6999986)
+
+[node name="Tile_07" parent="FS_PROP_城镇石墙_ROUTE_WALL_SOUTH/VISUAL_town_wall" unique_id=217981234 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, 1.1920929e-07, -1.3, 2.6999986)
+
+[node name="Tile_08" parent="FS_PROP_城镇石墙_ROUTE_WALL_SOUTH/VISUAL_town_wall" unique_id=1759122024 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, 2.666667, -1.3, 2.6999986)
+
+[node name="Tile_09" parent="FS_PROP_城镇石墙_ROUTE_WALL_SOUTH/VISUAL_town_wall" unique_id=945178728 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, 5.3333335, -1.3, 2.6999986)
+
+[node name="Tile_10" parent="FS_PROP_城镇石墙_ROUTE_WALL_SOUTH/VISUAL_town_wall" unique_id=1663985522 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, 8, -1.3, 2.6999986)
+
+[node name="Tile_11" parent="FS_PROP_城镇石墙_ROUTE_WALL_SOUTH/VISUAL_town_wall" unique_id=479793728 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, 10.666667, -1.3, 2.6999986)
+
+[node name="Tile_12" parent="FS_PROP_城镇石墙_ROUTE_WALL_SOUTH/VISUAL_town_wall" unique_id=1260794972 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, 13.333333, -1.3, 2.6999986)
+
+[node name="Tile_13" parent="FS_PROP_城镇石墙_ROUTE_WALL_SOUTH/VISUAL_town_wall" unique_id=1764333978 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, 16, -1.3, 2.6999986)
+
+[node name="Tile_14" parent="FS_PROP_城镇石墙_ROUTE_WALL_SOUTH/VISUAL_town_wall" unique_id=1855343309 instance=ExtResource("1_e78ot")]
+transform = Transform3D(-2.622682e-07, 0, 2.6666667, 0, 2.6, 0, -5.999997, 0, -1.16563704e-07, 18.666666, -1.3, 2.6999986)
+
+[node name="FS_PROP_ROUTE_WALL_WEST" type="StaticBody3D" parent="." unique_id=122866738]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.5, 1.3, 0)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "",
+"kind": "prop",
+"links": Array[String]([]),
+"params": {
+"size": "(0.6, 2.6, 18.0)",
+"visual": {
+"fit_mode": "contain",
+"fit_scale": [0.588, 0.588, 0.588],
+"fitted_size": [0.588, 0.082325935, 0.588],
+"label": "喷泉中心",
+"model_id": "fountain_center",
+"path": "res://assets/vendor/kenney/fantasy_town/Models/fountain-center.glb",
+"repeat_along_longest": false,
+"repeat_count": 1,
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+}
+},
+"semantic_id": "route_wall_west",
+"tags": Array[String](["authored", "route", "boundary"]),
+"zone_id": ""
+}
+
+[node name="@CollisionShape3D@9" type="CollisionShape3D" parent="FS_PROP_ROUTE_WALL_WEST" unique_id=1225731670]
+shape = SubResource("BoxShape3D_g8cbt")
+
+[node name="FS_DECOR_墓穴门_VISUAL_CRYPT_DOOR_1" type="Node3D" parent="FS_PROP_ROUTE_WALL_WEST/@CollisionShape3D@9" unique_id=1621144460]
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "墓穴门",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"visual": {
+"fit_mode": "contain",
+"fit_scale": [1.0, 1.0, 1.0],
+"fitted_size": [0.33, 0.73784494, 0.125],
+"label": "墓穴门",
+"model_id": "crypt_door",
+"path": "res://assets/vendor/kenney/graveyard/Models/crypt-door.glb",
+"repeat_along_longest": false,
+"repeat_count": 1,
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+}
+},
+"semantic_id": "visual_crypt_door_1",
+"tags": Array[String](["新增模型", "门与出入口"]),
+"zone_id": ""
+}
+
+[node name="VISUAL_crypt_door" type="Node3D" parent="FS_PROP_ROUTE_WALL_WEST/@CollisionShape3D@9/FS_DECOR_墓穴门_VISUAL_CRYPT_DOOR_1" unique_id=360028063]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.450581e-09)
+
+[node name="FS_PROP_VISUAL_CRYPT_DOOR_MODEL" parent="FS_PROP_ROUTE_WALL_WEST/@CollisionShape3D@9/FS_DECOR_墓穴门_VISUAL_CRYPT_DOOR_1/VISUAL_crypt_door" unique_id=186830653 instance=ExtResource("1_p3dt8")]
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "",
+"kind": "prop",
+"links": Array[String]([]),
+"params": {
+"visual": {
+"fit_mode": "contain",
+"fit_scale": [0.06125, 0.06125, 0.06125],
+"fitted_size": [0.1225, 0.01715, 0.1225],
+"label": "圆形喷泉",
+"model_id": "fountain_round",
+"path": "res://assets/vendor/kenney/fantasy_town/Models/fountain-round.glb",
+"repeat_along_longest": false,
+"repeat_count": 1,
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+}
+},
+"semantic_id": "visual_crypt_door_model",
+"tags": Array[String]([]),
+"zone_id": ""
+}
+
+[node name="VISUAL_fountain_round" type="Node3D" parent="FS_PROP_ROUTE_WALL_WEST/@CollisionShape3D@9/FS_DECOR_墓穴门_VISUAL_CRYPT_DOOR_1/VISUAL_crypt_door/FS_PROP_VISUAL_CRYPT_DOOR_MODEL" unique_id=2099557289]
+transform = Transform3D(0.06125, 0, 0, 0, 0.06125, 0, 0, 0, 0.06125, 0, 0, -7.450581e-09)
+
+[node name="Model" parent="FS_PROP_ROUTE_WALL_WEST/@CollisionShape3D@9/FS_DECOR_墓穴门_VISUAL_CRYPT_DOOR_1/VISUAL_crypt_door/FS_PROP_VISUAL_CRYPT_DOOR_MODEL/VISUAL_fountain_round" unique_id=1789324448 instance=ExtResource("3_kwtuh")]
+
+[node name="art_key_route_wall_west" type="MeshInstance3D" parent="FS_PROP_ROUTE_WALL_WEST" unique_id=392143336]
+visible = false
+material_override = SubResource("StandardMaterial3D_ch3kp")
+mesh = SubResource("BoxMesh_6jlkp")
+metadata/__fs_visual_hidden_visible = false
+
+[node name="VISUAL_fountain_center" type="Node3D" parent="FS_PROP_ROUTE_WALL_WEST" unique_id=637302178]
+transform = Transform3D(0.588, 0, 0, 0, 0.588, 0, 0, 0, 0.588, 0, -1.3, 0)
+
+[node name="Model" parent="FS_PROP_ROUTE_WALL_WEST/VISUAL_fountain_center" unique_id=260941350 instance=ExtResource("4_0oujd")]
+
+[node name="FS_DECOR_宝箱_VISUAL_DUNGEON_CHEST_1" type="Node3D" parent="FS_PROP_ROUTE_WALL_WEST/VISUAL_fountain_center" unique_id=416776037]
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "宝箱",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"visual": {
+"fit_mode": "contain",
+"fit_scale": [1.0, 1.0, 1.0],
+"fitted_size": [0.5, 0.45, 0.5],
+"label": "宝箱",
+"model_id": "dungeon_chest",
+"path": "res://assets/vendor/kenney/mini_dungeon/Models/chest.glb",
+"placement": "ground",
+"repeat_along_longest": false,
+"repeat_count": 1,
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+}
+},
+"semantic_id": "visual_dungeon_chest_1",
+"tags": Array[String](["新增模型", "地牢道具"]),
+"zone_id": ""
+}
+
+[node name="VISUAL_dungeon_chest" type="Node3D" parent="FS_PROP_ROUTE_WALL_WEST/VISUAL_fountain_center/FS_DECOR_宝箱_VISUAL_DUNGEON_CHEST_1" unique_id=1780200176]
+
+[node name="Model" type="Node3D" parent="FS_PROP_ROUTE_WALL_WEST/VISUAL_fountain_center/FS_DECOR_宝箱_VISUAL_DUNGEON_CHEST_1/VISUAL_dungeon_chest" unique_id=951922941 instance=ExtResource("6_uqruc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.072687, 0, 0)
+
+[node name="FS_DECOR_方形喷泉_VISUAL_FOUNTAIN_SQUARE_1" type="Node3D" parent="FS_PROP_ROUTE_WALL_WEST/VISUAL_fountain_center/FS_DECOR_宝箱_VISUAL_DUNGEON_CHEST_1/VISUAL_dungeon_chest" unique_id=16787511]
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "方形喷泉",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"visual": {
+"fit_mode": "contain",
+"fit_scale": [1.0, 1.0, 1.0],
+"fitted_size": [2.0, 0.45520002, 2.0],
+"label": "方形喷泉",
+"model_id": "fountain_square",
+"path": "res://assets/vendor/kenney/fantasy_town/Models/fountain-square.glb",
+"placement": "ground",
+"repeat_along_longest": false,
+"repeat_count": 1,
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+}
+},
+"semantic_id": "visual_fountain_square_1",
+"tags": Array[String](["新增模型", "城镇互动"]),
+"zone_id": ""
+}
+
+[node name="VISUAL_fountain_square" type="Node3D" parent="FS_PROP_ROUTE_WALL_WEST/VISUAL_fountain_center/FS_DECOR_宝箱_VISUAL_DUNGEON_CHEST_1/VISUAL_dungeon_chest/FS_DECOR_方形喷泉_VISUAL_FOUNTAIN_SQUARE_1" unique_id=1017978738]
+
+[node name="Model" type="Node3D" parent="FS_PROP_ROUTE_WALL_WEST/VISUAL_fountain_center/FS_DECOR_宝箱_VISUAL_DUNGEON_CHEST_1/VISUAL_dungeon_chest/FS_DECOR_方形喷泉_VISUAL_FOUNTAIN_SQUARE_1/VISUAL_fountain_square" unique_id=2114697172 instance=ExtResource("6_u6m03")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5092697, 0, 0)
+
+[node name="FS_PROP_城镇石墙_ROUTE_WALL_EAST" type="StaticBody3D" parent="." unique_id=1330881389]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.5, 1.3, 0)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "城镇石墙",
+"kind": "prop",
+"links": Array[String]([]),
+"params": {
+"size": Vector3(0.6, 2.6, 18),
+"visual": {
+"fit_mode": "repeat_longest",
+"fit_scale": [5.999999, 2.6, 2.5714285],
+"fitted_size": [0.60000014, 2.6, 18.0],
+"label": "城镇石墙",
+"model_id": "town_wall",
+"path": "res://assets/vendor/kenney/fantasy_town/Models/wall.glb",
+"repeat_along_longest": true,
+"repeat_count": 7,
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+}
+},
+"semantic_id": "route_wall_east",
+"tags": Array[String](["authored", "route", "boundary"]),
+"zone_id": ""
+}
+
+[node name="@CollisionShape3D@11" type="CollisionShape3D" parent="FS_PROP_城镇石墙_ROUTE_WALL_EAST" unique_id=1467707632]
+shape = SubResource("BoxShape3D_16eu1")
+
+[node name="art_key_route_wall_east" type="MeshInstance3D" parent="FS_PROP_城镇石墙_ROUTE_WALL_EAST" unique_id=897409765]
+visible = false
+material_override = SubResource("StandardMaterial3D_ch3kp")
+mesh = SubResource("BoxMesh_6jlkp")
+metadata/__fs_visual_hidden_visible = true
+
+[node name="VISUAL_town_wall" type="Node3D" parent="FS_PROP_城镇石墙_ROUTE_WALL_EAST" unique_id=771100283]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1920929e-07, 0, 0)
+
+[node name="Tile_00" parent="FS_PROP_城镇石墙_ROUTE_WALL_EAST/VISUAL_town_wall" unique_id=1064497472 instance=ExtResource("1_e78ot")]
+transform = Transform3D(5.999999, 0, 0, 0, 2.6, 0, 0, 0, 2.5714285, -2.6999993, -1.3, -7.714286)
+
+[node name="Tile_01" parent="FS_PROP_城镇石墙_ROUTE_WALL_EAST/VISUAL_town_wall" unique_id=944083809 instance=ExtResource("1_e78ot")]
+transform = Transform3D(5.999999, 0, 0, 0, 2.6, 0, 0, 0, 2.5714285, -2.6999993, -1.3, -5.142857)
+
+[node name="Tile_02" parent="FS_PROP_城镇石墙_ROUTE_WALL_EAST/VISUAL_town_wall" unique_id=1205623263 instance=ExtResource("1_e78ot")]
+transform = Transform3D(5.999999, 0, 0, 0, 2.6, 0, 0, 0, 2.5714285, -2.6999993, -1.3, -2.5714285)
+
+[node name="Tile_03" parent="FS_PROP_城镇石墙_ROUTE_WALL_EAST/VISUAL_town_wall" unique_id=857785986 instance=ExtResource("1_e78ot")]
+transform = Transform3D(5.999999, 0, 0, 0, 2.6, 0, 0, 0, 2.5714285, -2.6999993, -1.3, 0)
+
+[node name="Tile_04" parent="FS_PROP_城镇石墙_ROUTE_WALL_EAST/VISUAL_town_wall" unique_id=669445587 instance=ExtResource("1_e78ot")]
+transform = Transform3D(5.999999, 0, 0, 0, 2.6, 0, 0, 0, 2.5714285, -2.6999993, -1.3, 2.5714285)
+
+[node name="Tile_05" parent="FS_PROP_城镇石墙_ROUTE_WALL_EAST/VISUAL_town_wall" unique_id=787314860 instance=ExtResource("1_e78ot")]
+transform = Transform3D(5.999999, 0, 0, 0, 2.6, 0, 0, 0, 2.5714285, -2.6999993, -1.3, 5.142857)
+
+[node name="Tile_06" parent="FS_PROP_城镇石墙_ROUTE_WALL_EAST/VISUAL_town_wall" unique_id=1227820577 instance=ExtResource("1_e78ot")]
+transform = Transform3D(5.999999, 0, 0, 0, 2.6, 0, 0, 0, 2.5714285, -2.6999993, -1.3, 7.714286)
+
+[node name="art_key_route_start" type="MeshInstance3D" parent="." unique_id=838110007]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.8, 0.04, 0)
+material_override = SubResource("StandardMaterial3D_s8tf1")
+mesh = SubResource("BoxMesh_3a506")
+
+[node name="FS_SPAWN_SPAWN" type="Node3D" parent="." unique_id=2143158038]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.6, 0.9, 0)
+metadata/fivestar_semantic = {
+"behavior": "spawn",
+"kind": "spawn",
+"links": Array[String]([]),
+"params": {},
+"semantic_id": "spawn",
+"tags": Array[String](["authored", "route"]),
+"zone_id": ""
+}
+
+[node name="AuthoringMarker" type="MeshInstance3D" parent="FS_SPAWN_SPAWN" unique_id=115002853]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.85999995, 0)
+material_override = SubResource("StandardMaterial3D_ogfnv")
+mesh = SubResource("BoxMesh_53oon")
+
+[node name="FS_ROUTE_GATE_地牢铁门_ROUTE_GATE_0" type="StaticBody3D" parent="." unique_id=681016739]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1.5, 0)
+metadata/fivestar_semantic = {
+"behavior": "route_gate",
+"display_name": "地牢铁门",
+"kind": "route_gate",
+"links": Array[String]([]),
+"params": {
+"index": 0,
+"visual": {
+"label": "地牢铁门",
+"model_id": "dungeon_gate",
+"path": "res://assets/vendor/kenney/mini_dungeon/Models/gate.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+}
+},
+"semantic_id": "route_gate_0",
+"tags": Array[String](["authored", "route"]),
+"zone_id": ""
+}
+
+[node name="@CollisionShape3D@14" type="CollisionShape3D" parent="FS_ROUTE_GATE_地牢铁门_ROUTE_GATE_0" unique_id=195615064]
+shape = SubResource("BoxShape3D_crp8i")
+
+[node name="art_key_route_gate" type="MeshInstance3D" parent="FS_ROUTE_GATE_地牢铁门_ROUTE_GATE_0" unique_id=182655865]
+visible = false
+material_override = SubResource("StandardMaterial3D_e78ot")
+mesh = SubResource("BoxMesh_p3dt8")
+
+[node name="VISUAL_dungeon_gate" parent="FS_ROUTE_GATE_地牢铁门_ROUTE_GATE_0" unique_id=129428988 instance=ExtResource("3_0oujd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
+
+[node name="FS_ROUTE_GATE_地牢铁门_ROUTE_GATE_1" type="StaticBody3D" parent="." unique_id=190997560]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1.5, 0)
+metadata/fivestar_semantic = {
+"behavior": "route_gate",
+"display_name": "地牢铁门",
+"kind": "route_gate",
+"links": Array[String]([]),
+"params": {
+"index": 1,
+"visual": {
+"label": "地牢铁门",
+"model_id": "dungeon_gate",
+"path": "res://assets/vendor/kenney/mini_dungeon/Models/gate.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+}
+},
+"semantic_id": "route_gate_1",
+"tags": Array[String](["authored", "route"]),
+"zone_id": ""
+}
+
+[node name="@CollisionShape3D@16" type="CollisionShape3D" parent="FS_ROUTE_GATE_地牢铁门_ROUTE_GATE_1" unique_id=1447348956]
+shape = SubResource("BoxShape3D_kwtuh")
+
+[node name="art_key_route_gate" type="MeshInstance3D" parent="FS_ROUTE_GATE_地牢铁门_ROUTE_GATE_1" unique_id=1710375842]
+visible = false
+material_override = SubResource("StandardMaterial3D_e78ot")
+mesh = SubResource("BoxMesh_p3dt8")
+
+[node name="VISUAL_dungeon_gate" parent="FS_ROUTE_GATE_地牢铁门_ROUTE_GATE_1" unique_id=342382843 instance=ExtResource("3_0oujd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
+
+[node name="FS_ZONE_DISTRICT_NIGHTWATCH" type="Node3D" parent="." unique_id=1125363974]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.75, 0, 0)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"kind": "zone",
+"links": Array[String]([]),
+"params": {
+"depth": 16.0,
+"max_x": -10.0,
+"min_x": -19.5,
+"name": "夜巡司"
+},
+"semantic_id": "district_nightwatch",
+"tags": Array[String](["authored"]),
+"zone_id": "district_nightwatch"
+}
+
+[node name="FS_FLOOR_DISTRICT_NIGHTWATCH_FLOOR" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH" unique_id=56848885]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+material_override = SubResource("StandardMaterial3D_0oujd")
+mesh = SubResource("BoxMesh_u6m03")
+metadata/fivestar_semantic = {
+"behavior": "none",
+"kind": "floor",
+"links": Array[String]([]),
+"params": {
+"color": "2b3a4e"
+},
+"semantic_id": "district_nightwatch_floor",
+"tags": Array[String](["authored"]),
+"zone_id": "district_nightwatch"
+}
+
+[node name="@Label3D@18" type="Label3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH" unique_id=448146435]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6, -6.5)
+pixel_size = 0.01
+modulate = Color(1, 0.9137255, 0.65882355, 1)
+outline_modulate = Color(0.078431375, 0.101960786, 0.14901961, 1)
+text = "夜巡司"
+font_size = 72
+outline_size = 24
+
+[node name="FS_BREAKABLE_圆骨灰瓮_NIGHT_JAR" type="StaticBody3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH" unique_id=1179004837]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 0, 5.6)
+metadata/fivestar_semantic = {
+"behavior": "breakable",
+"display_name": "圆骨灰瓮",
+"kind": "breakable",
+"links": Array[String]([]),
+"params": {
+"id": "night_jar",
+"type": "breakable",
+"visual": {
+"label": "圆骨灰瓮",
+"model_id": "urn_round",
+"path": "res://assets/vendor/kenney/graveyard/Models/urn-round.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": -16.5,
+"z": 5.6
+},
+"semantic_id": "night_jar",
+"tags": Array[String](["authored", "breakable"]),
+"zone_id": "district_nightwatch"
+}
+
+[node name="@CollisionShape3D@20" type="CollisionShape3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_BREAKABLE_圆骨灰瓮_NIGHT_JAR" unique_id=2084681773]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+shape = SubResource("SphereShape3D_34ste")
+
+[node name="AuthoringJarBody" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_BREAKABLE_圆骨灰瓮_NIGHT_JAR" unique_id=1291215277]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_uqruc")
+mesh = SubResource("BoxMesh_2cnho")
+
+[node name="AuthoringJarRim" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_BREAKABLE_圆骨灰瓮_NIGHT_JAR" unique_id=275619724]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.96, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_fa0jg")
+mesh = SubResource("BoxMesh_1dy2c")
+
+[node name="VISUAL_urn_round" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_BREAKABLE_圆骨灰瓮_NIGHT_JAR" unique_id=1426930570 instance=ExtResource("5_34ste")]
+
+[node name="FS_PROP_宝箱_NW_COUNTER" type="StaticBody3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH" unique_id=1728129013]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.05000019, 0, -3)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "宝箱",
+"kind": "prop",
+"links": Array[String]([]),
+"params": {
+"color": "#31405a",
+"id": "nw_counter",
+"sx": 3.0,
+"sy": 0.42,
+"sz": 1.5,
+"type": "platform",
+"visual": {
+"label": "宝箱",
+"model_id": "dungeon_chest",
+"path": "res://assets/vendor/kenney/mini_dungeon/Models/chest.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": -14.8,
+"z": -3.0
+},
+"semantic_id": "nw_counter",
+"tags": Array[String](["authored", "platform"]),
+"zone_id": "district_nightwatch"
+}
+
+[node name="@CollisionShape3D@22" type="CollisionShape3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_PROP_宝箱_NW_COUNTER" unique_id=1551701956]
+shape = SubResource("BoxShape3D_lmw76")
+
+[node name="art_key_v2_platform" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_PROP_宝箱_NW_COUNTER" unique_id=510750332]
+visible = false
+material_override = SubResource("StandardMaterial3D_laxmx")
+mesh = SubResource("BoxMesh_mnh1i")
+
+[node name="VISUAL_dungeon_chest" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_PROP_宝箱_NW_COUNTER" unique_id=1355567072 instance=ExtResource("6_uqruc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.21, 0)
+
+[node name="FS_PROP_宝箱_DISTRICT_NIGHTWATCH_PROP_2" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH" unique_id=944370088]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 1.6, -3)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "宝箱",
+"kind": "prop",
+"links": Array[String]([]),
+"params": {
+"color": "#5d6b80",
+"h": 3.2,
+"r": 0.32,
+"type": "pillar",
+"visual": {
+"fit_mode": "contain",
+"fit_scale": [0.34861994, 0.34861994, 0.34861994],
+"fitted_size": [0.29632697, 0.62720007, 0.6272],
+"label": "水车磨坊",
+"model_id": "watermill",
+"path": "res://assets/vendor/kenney/fantasy_town/Models/watermill.glb",
+"repeat_along_longest": false,
+"repeat_count": 1,
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": -16.5,
+"z": -3.0
+},
+"semantic_id": "district_nightwatch_prop_2",
+"tags": Array[String](["authored", "pillar"]),
+"zone_id": "district_nightwatch"
+}
+metadata/__fs_visual_host_mesh = SubResource("BoxMesh_f6yt6")
+metadata/__fs_visual_host_has_material_override = true
+metadata/__fs_visual_host_material_override = SubResource("StandardMaterial3D_a40rw")
+metadata/__fs_visual_host_has_material_overlay = false
+
+[node name="FS_PROP_FS_PROP__DISTRICT_NIGHTWATCH_PROP_2_VISUAL_DUNGEON_CHEST" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_PROP_宝箱_DISTRICT_NIGHTWATCH_PROP_2" unique_id=1114837721 instance=ExtResource("6_uqruc")]
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "",
+"kind": "prop",
+"links": Array[String]([]),
+"params": {
+"visual": {
+"fit_mode": "contain",
+"fit_scale": [0.24512337, 0.24512337, 0.24512337],
+"fitted_size": [0.20835488, 0.44099998, 0.44099995],
+"label": "水车磨坊",
+"model_id": "watermill",
+"path": "res://assets/vendor/kenney/fantasy_town/Models/watermill.glb",
+"repeat_along_longest": false,
+"repeat_count": 1,
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+}
+},
+"semantic_id": "fs_prop__district_nightwatch_prop_2_visual_dungeon_chest",
+"tags": Array[String]([]),
+"zone_id": ""
+}
+
+[node name="VISUAL_watermill" type="Node3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_PROP_宝箱_DISTRICT_NIGHTWATCH_PROP_2/FS_PROP_FS_PROP__DISTRICT_NIGHTWATCH_PROP_2_VISUAL_DUNGEON_CHEST" unique_id=1971878186]
+transform = Transform3D(0.24512337, 0, 0, 0, 0.24512337, 0, 0, 0, 0.24512337, 0, 0.22049999, 0)
+
+[node name="Model" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_PROP_宝箱_DISTRICT_NIGHTWATCH_PROP_2/FS_PROP_FS_PROP__DISTRICT_NIGHTWATCH_PROP_2_VISUAL_DUNGEON_CHEST/VISUAL_watermill" unique_id=715676775 instance=ExtResource("6_p3dt8")]
+
+[node name="VISUAL_watermill" type="Node3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_PROP_宝箱_DISTRICT_NIGHTWATCH_PROP_2" unique_id=1739934561]
+transform = Transform3D(0.34861994, 0, 0, 0, 0.34861994, 0, 0, 0, 0.34861994, 0, -1.2864, 0)
+
+[node name="Model" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_PROP_宝箱_DISTRICT_NIGHTWATCH_PROP_2/VISUAL_watermill" unique_id=1524666532 instance=ExtResource("6_p3dt8")]
+
+[node name="FS_PROP_宝箱_DISTRICT_NIGHTWATCH_PROP_3" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH" unique_id=1516039323]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6499996, 1.6, -3)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "宝箱",
+"kind": "prop",
+"links": Array[String]([]),
+"params": {
+"color": "#5d6b80",
+"h": 3.2,
+"r": 0.32,
+"type": "pillar",
+"visual": {
+"label": "宝箱",
+"model_id": "dungeon_chest",
+"path": "res://assets/vendor/kenney/mini_dungeon/Models/chest.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": -13.1,
+"z": -3.0
+},
+"semantic_id": "district_nightwatch_prop_3",
+"tags": Array[String](["authored", "pillar"]),
+"zone_id": "district_nightwatch"
+}
+metadata/__fs_visual_host_mesh = SubResource("BoxMesh_f6yt6")
+metadata/__fs_visual_host_has_material_override = true
+metadata/__fs_visual_host_material_override = SubResource("StandardMaterial3D_a40rw")
+metadata/__fs_visual_host_has_material_overlay = false
+
+[node name="VISUAL_dungeon_chest" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_PROP_宝箱_DISTRICT_NIGHTWATCH_PROP_3" unique_id=1291571135 instance=ExtResource("6_uqruc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.6, 0)
+
+[node name="FS_DECOR_单头路灯_DISTRICT_NIGHTWATCH_PROP_4" type="Node3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH" unique_id=469177695]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 0, -1.3)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "单头路灯",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"r": 0.55,
+"type": "lamp",
+"visual": {
+"label": "单头路灯",
+"model_id": "lightpost_single",
+"path": "res://assets/vendor/kenney/graveyard/Models/lightpost-single.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": -16.0,
+"z": -1.3
+},
+"semantic_id": "district_nightwatch_prop_4",
+"tags": Array[String](["authored", "lamp"]),
+"zone_id": "district_nightwatch"
+}
+
+[node name="art_key_v2_lamp_pole" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_单头路灯_DISTRICT_NIGHTWATCH_PROP_4" unique_id=1575125874]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_linwr")
+mesh = SubResource("BoxMesh_atlk1")
+
+[node name="art_key_v2_lamp_head" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_单头路灯_DISTRICT_NIGHTWATCH_PROP_4" unique_id=609872919]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.75, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_3u20a")
+mesh = SubResource("BoxMesh_axi2h")
+
+[node name="VISUAL_lightpost_single" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_单头路灯_DISTRICT_NIGHTWATCH_PROP_4" unique_id=2044361205 instance=ExtResource("7_2cnho")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3841858e-07, 5.639933e-17, -0.13085166)
+
+[node name="FS_DECOR_单头路灯_DISTRICT_NIGHTWATCH_PROP_5" type="Node3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH" unique_id=1038396135]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3500004, 0, -1.3)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "单头路灯",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"r": 0.55,
+"type": "lamp",
+"visual": {
+"label": "单头路灯",
+"model_id": "lightpost_single",
+"path": "res://assets/vendor/kenney/graveyard/Models/lightpost-single.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": -13.4,
+"z": -1.3
+},
+"semantic_id": "district_nightwatch_prop_5",
+"tags": Array[String](["authored", "lamp"]),
+"zone_id": "district_nightwatch"
+}
+
+[node name="art_key_v2_lamp_pole" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_单头路灯_DISTRICT_NIGHTWATCH_PROP_5" unique_id=1231507212]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_linwr")
+mesh = SubResource("BoxMesh_atlk1")
+
+[node name="art_key_v2_lamp_head" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_单头路灯_DISTRICT_NIGHTWATCH_PROP_5" unique_id=1257579567]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.75, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_3u20a")
+mesh = SubResource("BoxMesh_axi2h")
+
+[node name="VISUAL_lightpost_single" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_单头路灯_DISTRICT_NIGHTWATCH_PROP_5" unique_id=1384919533 instance=ExtResource("7_2cnho")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3841858e-07, 5.639933e-17, -0.13085166)
+
+[node name="FS_PROP_宝箱_NW_CLUE_DESK" type="StaticBody3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH" unique_id=866263407]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.1499996, 0, -3)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "宝箱",
+"kind": "prop",
+"links": Array[String]([]),
+"params": {
+"color": "#31405a",
+"id": "nw_clue_desk",
+"sx": 1.6,
+"sy": 0.42,
+"sz": 1.2,
+"type": "platform",
+"visual": {
+"label": "宝箱",
+"model_id": "dungeon_chest",
+"path": "res://assets/vendor/kenney/mini_dungeon/Models/chest.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": -11.6,
+"z": -3.0
+},
+"semantic_id": "nw_clue_desk",
+"tags": Array[String](["authored", "platform"]),
+"zone_id": "district_nightwatch"
+}
+
+[node name="@CollisionShape3D@24" type="CollisionShape3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_PROP_宝箱_NW_CLUE_DESK" unique_id=1287089037]
+shape = SubResource("BoxShape3D_hxtu8")
+
+[node name="art_key_v2_platform" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_PROP_宝箱_NW_CLUE_DESK" unique_id=657409119]
+visible = false
+material_override = SubResource("StandardMaterial3D_laxmx")
+mesh = SubResource("BoxMesh_hh5id")
+
+[node name="VISUAL_dungeon_chest" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_PROP_宝箱_NW_CLUE_DESK" unique_id=1751331671 instance=ExtResource("6_uqruc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.21, 0)
+
+[node name="FS_DECOR_单头路灯_DISTRICT_NIGHTWATCH_PROP_7" type="Node3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH" unique_id=538143096]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.1499996, 0, -1.5)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "单头路灯",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"r": 0.5,
+"type": "lamp",
+"visual": {
+"label": "单头路灯",
+"model_id": "lightpost_single",
+"path": "res://assets/vendor/kenney/graveyard/Models/lightpost-single.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": -11.6,
+"z": -1.5
+},
+"semantic_id": "district_nightwatch_prop_7",
+"tags": Array[String](["authored", "lamp"]),
+"zone_id": "district_nightwatch"
+}
+
+[node name="art_key_v2_lamp_pole" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_单头路灯_DISTRICT_NIGHTWATCH_PROP_7" unique_id=884440337]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_linwr")
+mesh = SubResource("BoxMesh_atlk1")
+
+[node name="art_key_v2_lamp_head" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_单头路灯_DISTRICT_NIGHTWATCH_PROP_7" unique_id=262384977]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.75, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_3u20a")
+mesh = SubResource("BoxMesh_bxocb")
+
+[node name="VISUAL_lightpost_single" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_单头路灯_DISTRICT_NIGHTWATCH_PROP_7" unique_id=1570380702 instance=ExtResource("7_2cnho")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3841858e-07, 5.639933e-17, -0.13085166)
+
+[node name="FS_DECOR_墓碑_DISTRICT_NIGHTWATCH_DECOR_0" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH" unique_id=1611065514]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.75, 3.5, -5.4)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "墓碑",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"h": 7.0,
+"type": "waterfall",
+"visual": {
+"label": "墓碑",
+"model_id": "grave_stone",
+"path": "res://assets/vendor/kenney/graveyard/Models/grave.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"w": 3.0,
+"x": -13.0,
+"z": -5.4
+},
+"semantic_id": "district_nightwatch_decor_0",
+"tags": Array[String](["authored", "waterfall"]),
+"zone_id": "district_nightwatch"
+}
+metadata/__fs_visual_host_mesh = SubResource("BoxMesh_icf71")
+metadata/__fs_visual_host_has_material_override = true
+metadata/__fs_visual_host_material_override = SubResource("StandardMaterial3D_kwk13")
+metadata/__fs_visual_host_has_material_overlay = false
+
+[node name="VISUAL_grave_stone" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_墓碑_DISTRICT_NIGHTWATCH_DECOR_0" unique_id=86635687 instance=ExtResource("8_fa0jg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020225406, -3.5, -0.011144698)
+
+[node name="FS_DECOR_松树_DISTRICT_NIGHTWATCH_DECOR_1" type="Node3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH" unique_id=1414749192]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.25, 0, 4.5)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "松树",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"type": "plant",
+"visual": {
+"label": "松树",
+"model_id": "pine",
+"path": "res://assets/vendor/kenney/graveyard/Models/pine.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": -11.5,
+"z": 4.5
+},
+"semantic_id": "district_nightwatch_decor_1",
+"tags": Array[String](["authored", "plant"]),
+"zone_id": "district_nightwatch"
+}
+
+[node name="art_key_v2_plant_stem" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_松树_DISTRICT_NIGHTWATCH_DECOR_1" unique_id=1725796961]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_x3vml")
+mesh = SubResource("BoxMesh_mua6g")
+
+[node name="art_key_v2_plant_leaf" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_松树_DISTRICT_NIGHTWATCH_DECOR_1" unique_id=1296374245]
+transform = Transform3D(0.8925389, -0.15737869, 0.42261827, 0.17364818, 0.9848077, 0, -0.41619775, 0.07338689, 0.90630776, 0.3, 1, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_roj50")
+mesh = SubResource("BoxMesh_4ad10")
+
+[node name="VISUAL_pine" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_松树_DISTRICT_NIGHTWATCH_DECOR_1" unique_id=1417575640 instance=ExtResource("9_1dy2c")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 0.1, 0)
+
+[node name="FS_DECOR_单头路灯_DISTRICT_NIGHTWATCH_DECOR_2" type="Node3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH" unique_id=1126450714]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, 0, 5.6)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "单头路灯",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"r": 0.65,
+"type": "lamp",
+"visual": {
+"label": "单头路灯",
+"model_id": "lightpost_single",
+"path": "res://assets/vendor/kenney/graveyard/Models/lightpost-single.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": -17.0,
+"z": 5.6
+},
+"semantic_id": "district_nightwatch_decor_2",
+"tags": Array[String](["authored", "lamp"]),
+"zone_id": "district_nightwatch"
+}
+
+[node name="art_key_v2_lamp_pole" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_单头路灯_DISTRICT_NIGHTWATCH_DECOR_2" unique_id=1936936488]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_linwr")
+mesh = SubResource("BoxMesh_atlk1")
+
+[node name="art_key_v2_lamp_head" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_单头路灯_DISTRICT_NIGHTWATCH_DECOR_2" unique_id=527556863]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.75, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_3u20a")
+mesh = SubResource("BoxMesh_jmth6")
+
+[node name="VISUAL_lightpost_single" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_单头路灯_DISTRICT_NIGHTWATCH_DECOR_2" unique_id=1752512070 instance=ExtResource("7_2cnho")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3841858e-07, 5.639933e-17, -0.13085166)
+
+[node name="FS_DECOR_墓碑_DISTRICT_NIGHTWATCH_DECOR_3" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH" unique_id=209019215]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 0, 6.2)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "墓碑",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"type": "plaque",
+"visual": {
+"label": "墓碑",
+"model_id": "grave_stone",
+"path": "res://assets/vendor/kenney/graveyard/Models/grave.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": -15.0,
+"z": 6.2
+},
+"semantic_id": "district_nightwatch_decor_3",
+"tags": Array[String](["authored", "plaque"]),
+"zone_id": "district_nightwatch"
+}
+metadata/__fs_visual_host_mesh = SubResource("BoxMesh_2hmf8")
+metadata/__fs_visual_host_has_material_override = true
+metadata/__fs_visual_host_material_override = SubResource("StandardMaterial3D_s8tf1")
+metadata/__fs_visual_host_has_material_overlay = false
+
+[node name="VISUAL_grave_stone" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_墓碑_DISTRICT_NIGHTWATCH_DECOR_3" unique_id=543654301 instance=ExtResource("8_fa0jg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020225406, -0.25, -0.011144698)
+
+[node name="FS_DECOR_火盆_DISTRICT_NIGHTWATCH_DECOR_4" type="Node3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH" unique_id=1348772077]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.75, 0, -5.5)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "火盆",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"type": "spirit_fire",
+"visual": {
+"label": "火盆",
+"model_id": "fire_basket",
+"path": "res://assets/vendor/kenney/graveyard/Models/fire-basket.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": -12.0,
+"z": -5.5
+},
+"semantic_id": "district_nightwatch_decor_4",
+"tags": Array[String](["authored", "spirit_fire"]),
+"zone_id": "district_nightwatch"
+}
+
+[node name="art_key_v2_spirit_fire_base" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_火盆_DISTRICT_NIGHTWATCH_DECOR_4" unique_id=901008266]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_6guqi")
+mesh = SubResource("BoxMesh_6g1nj")
+
+[node name="art_key_v2_spirit_fire" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_火盆_DISTRICT_NIGHTWATCH_DECOR_4" unique_id=1547728704]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.62, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_cfcyl")
+mesh = SubResource("BoxMesh_l3jda")
+
+[node name="VISUAL_fire_basket" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_火盆_DISTRICT_NIGHTWATCH_DECOR_4" unique_id=861907023 instance=ExtResource("10_lmw76")]
+
+[node name="FS_DECOR_墓碑_DISTRICT_NIGHTWATCH_DECOR_5" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_NIGHTWATCH" unique_id=1889592997]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0.75, 0.05, 6.5)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "墓碑",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"sd": 2.4,
+"sw": 4.0,
+"type": "mist",
+"visual": {
+"label": "墓碑",
+"model_id": "grave_stone",
+"path": "res://assets/vendor/kenney/graveyard/Models/grave.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": -14.0,
+"z": 6.5
+},
+"semantic_id": "district_nightwatch_decor_5",
+"tags": Array[String](["authored", "mist"]),
+"zone_id": "district_nightwatch"
+}
+metadata/__fs_visual_host_mesh = SubResource("QuadMesh_mfu5b")
+metadata/__fs_visual_host_has_material_override = true
+metadata/__fs_visual_host_material_override = SubResource("StandardMaterial3D_7hbxj")
+metadata/__fs_visual_host_has_material_overlay = false
+
+[node name="VISUAL_grave_stone" parent="FS_ZONE_DISTRICT_NIGHTWATCH/FS_DECOR_墓碑_DISTRICT_NIGHTWATCH_DECOR_5" unique_id=1893000257 instance=ExtResource("8_fa0jg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020225406, 0, -0.011144698)
+
+[node name="FS_ZONE_DISTRICT_RESIDENTIAL" type="Node3D" parent="." unique_id=1479609718]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.75, 0, 0)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"kind": "zone",
+"links": Array[String]([]),
+"params": {
+"depth": 16.0,
+"max_x": 4.5,
+"min_x": -10.0,
+"name": "居住区"
+},
+"semantic_id": "district_residential",
+"tags": Array[String](["authored"]),
+"zone_id": "district_residential"
+}
+
+[node name="FS_FLOOR_DISTRICT_RESIDENTIAL_FLOOR" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL" unique_id=1322937466]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+material_override = SubResource("StandardMaterial3D_fovh4")
+mesh = SubResource("BoxMesh_1uv40")
+metadata/fivestar_semantic = {
+"behavior": "none",
+"kind": "floor",
+"links": Array[String]([]),
+"params": {
+"color": "4a3b2e"
+},
+"semantic_id": "district_residential_floor",
+"tags": Array[String](["authored"]),
+"zone_id": "district_residential"
+}
+
+[node name="@Label3D@26" type="Label3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL" unique_id=1176983637]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6, -6.5)
+pixel_size = 0.01
+modulate = Color(1, 0.9137255, 0.65882355, 1)
+outline_modulate = Color(0.078431375, 0.101960786, 0.14901961, 1)
+text = "居住区"
+font_size = 72
+outline_size = 24
+
+[node name="FS_TRIGGER_石质压力板_DISTRICT_RESIDENTIAL_PROP_0" type="Area3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL" unique_id=453180517]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.25, 0, 6)
+metadata/press_color = Color(0.7882353, 0.7058824, 0.3529412, 1)
+metadata/fivestar_semantic = {
+"behavior": "pressure_plate",
+"display_name": "石质压力板",
+"kind": "trigger",
+"links": Array[String]([]),
+"params": {
+"size": 1.4,
+"type": "pressure",
+"visual": {
+"fit_mode": "stretch",
+"fit_scale": [1.4, 3.9999998, 1.4],
+"fitted_size": [1.4, 0.24, 1.4],
+"label": "石质压力板",
+"model_id": "pressure_plate",
+"path": "res://assets/vendor/kenney/fantasy_town/Models/planks.glb",
+"repeat_along_longest": false,
+"repeat_count": 1,
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 2.5,
+"z": 6.0
+},
+"semantic_id": "district_residential_prop_0",
+"tags": Array[String](["authored", "pressure"]),
+"zone_id": "district_residential"
+}
+
+[node name="@CollisionShape3D@27" type="CollisionShape3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_TRIGGER_石质压力板_DISTRICT_RESIDENTIAL_PROP_0" unique_id=1446879092]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, 0)
+shape = SubResource("BoxShape3D_44it3")
+
+[node name="art_key_v2_pressure_plate" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_TRIGGER_石质压力板_DISTRICT_RESIDENTIAL_PROP_0" unique_id=876554718]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.14, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_msoqg")
+mesh = SubResource("BoxMesh_8smt6")
+metadata/__fs_visual_hidden_visible = true
+
+[node name="VISUAL_pressure_plate" type="Node3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_TRIGGER_石质压力板_DISTRICT_RESIDENTIAL_PROP_0" unique_id=1105707349]
+transform = Transform3D(1.4, 0, 0, 0, 3.9999998, 0, 0, 0, 1.4, 0, 0, 0)
+
+[node name="Model" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_TRIGGER_石质压力板_DISTRICT_RESIDENTIAL_PROP_0/VISUAL_pressure_plate" unique_id=1910453223 instance=ExtResource("10_p3dt8")]
+
+[node name="FS_PROP_木推车_DISTRICT_RESIDENTIAL_PROP_1" type="RigidBody3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL" unique_id=126396637]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25, 0, -6)
+mass = 3.0
+metadata/fivestar_semantic = {
+"behavior": "pushable",
+"display_name": "木推车",
+"kind": "prop",
+"links": Array[String]([]),
+"params": {
+"size": 1.0,
+"type": "box",
+"visual": {
+"label": "木推车",
+"model_id": "cart",
+"path": "res://assets/vendor/kenney/fantasy_town/Models/cart.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": -1.5,
+"z": -6.0
+},
+"semantic_id": "district_residential_prop_1",
+"tags": Array[String](["authored", "box"]),
+"zone_id": "district_residential"
+}
+
+[node name="@CollisionShape3D@28" type="CollisionShape3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_PROP_木推车_DISTRICT_RESIDENTIAL_PROP_1" unique_id=2090834938]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("BoxShape3D_5jrxs")
+
+[node name="art_key_v2_pushable_box" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_PROP_木推车_DISTRICT_RESIDENTIAL_PROP_1" unique_id=1870552856]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_38ryx")
+mesh = SubResource("BoxMesh_wdcf4")
+
+[node name="VISUAL_cart" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_PROP_木推车_DISTRICT_RESIDENTIAL_PROP_1" unique_id=1622236613 instance=ExtResource("11_laxmx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.940697e-08, 1.1279866e-17, -0.024999976)
+
+[node name="FS_BREAKABLE_圆骨灰瓮_NIGHT_JAR_0" type="StaticBody3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL" unique_id=1450050782]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.75, 0, 4)
+metadata/fivestar_semantic = {
+"behavior": "breakable",
+"display_name": "圆骨灰瓮",
+"kind": "breakable",
+"links": Array[String]([]),
+"params": {
+"id": "night_jar_0",
+"type": "breakable",
+"visual": {
+"label": "圆骨灰瓮",
+"model_id": "urn_round",
+"path": "res://assets/vendor/kenney/graveyard/Models/urn-round.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": -6.5,
+"z": 4.0
+},
+"semantic_id": "night_jar_0",
+"tags": Array[String](["authored", "breakable"]),
+"zone_id": "district_residential"
+}
+
+[node name="@CollisionShape3D@30" type="CollisionShape3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_BREAKABLE_圆骨灰瓮_NIGHT_JAR_0" unique_id=1201996306]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+shape = SubResource("SphereShape3D_ijyx3")
+
+[node name="AuthoringJarBody" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_BREAKABLE_圆骨灰瓮_NIGHT_JAR_0" unique_id=1111701973]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_uqruc")
+mesh = SubResource("BoxMesh_2cnho")
+
+[node name="AuthoringJarRim" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_BREAKABLE_圆骨灰瓮_NIGHT_JAR_0" unique_id=1481160977]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.96, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_fa0jg")
+mesh = SubResource("BoxMesh_1dy2c")
+
+[node name="VISUAL_urn_round" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_BREAKABLE_圆骨灰瓮_NIGHT_JAR_0" unique_id=71067169 instance=ExtResource("5_34ste")]
+
+[node name="FS_BREAKABLE_圆骨灰瓮_NIGHT_JAR_1" type="StaticBody3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL" unique_id=648752666]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.9499998, 0, 4)
+metadata/fivestar_semantic = {
+"behavior": "breakable",
+"display_name": "圆骨灰瓮",
+"kind": "breakable",
+"links": Array[String]([]),
+"params": {
+"id": "night_jar_1",
+"type": "breakable",
+"visual": {
+"label": "圆骨灰瓮",
+"model_id": "urn_round",
+"path": "res://assets/vendor/kenney/graveyard/Models/urn-round.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": -5.7,
+"z": 4.0
+},
+"semantic_id": "night_jar_1",
+"tags": Array[String](["authored", "breakable"]),
+"zone_id": "district_residential"
+}
+
+[node name="@CollisionShape3D@32" type="CollisionShape3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_BREAKABLE_圆骨灰瓮_NIGHT_JAR_1" unique_id=256454215]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+shape = SubResource("SphereShape3D_8ypve")
+
+[node name="AuthoringJarBody" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_BREAKABLE_圆骨灰瓮_NIGHT_JAR_1" unique_id=1480885508]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_uqruc")
+mesh = SubResource("BoxMesh_2cnho")
+
+[node name="AuthoringJarRim" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_BREAKABLE_圆骨灰瓮_NIGHT_JAR_1" unique_id=1524353529]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.96, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_fa0jg")
+mesh = SubResource("BoxMesh_1dy2c")
+
+[node name="VISUAL_urn_round" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_BREAKABLE_圆骨灰瓮_NIGHT_JAR_1" unique_id=32151333 instance=ExtResource("5_34ste")]
+
+[node name="FS_BREAKABLE_圆骨灰瓮_NIGHT_JAR_2" type="StaticBody3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL" unique_id=362149327]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.15, 0, 4)
+metadata/fivestar_semantic = {
+"behavior": "breakable",
+"display_name": "圆骨灰瓮",
+"kind": "breakable",
+"links": Array[String]([]),
+"params": {
+"id": "night_jar_2",
+"type": "breakable",
+"visual": {
+"label": "圆骨灰瓮",
+"model_id": "urn_round",
+"path": "res://assets/vendor/kenney/graveyard/Models/urn-round.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": -4.9,
+"z": 4.0
+},
+"semantic_id": "night_jar_2",
+"tags": Array[String](["authored", "breakable"]),
+"zone_id": "district_residential"
+}
+
+[node name="@CollisionShape3D@34" type="CollisionShape3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_BREAKABLE_圆骨灰瓮_NIGHT_JAR_2" unique_id=1770422470]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+shape = SubResource("SphereShape3D_jk8ee")
+
+[node name="AuthoringJarBody" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_BREAKABLE_圆骨灰瓮_NIGHT_JAR_2" unique_id=823683962]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_uqruc")
+mesh = SubResource("BoxMesh_2cnho")
+
+[node name="AuthoringJarRim" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_BREAKABLE_圆骨灰瓮_NIGHT_JAR_2" unique_id=810553584]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.96, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_fa0jg")
+mesh = SubResource("BoxMesh_1dy2c")
+
+[node name="VISUAL_urn_round" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_BREAKABLE_圆骨灰瓮_NIGHT_JAR_2" unique_id=2048273659 instance=ExtResource("5_34ste")]
+
+[node name="FS_DECOR_松树_DISTRICT_RESIDENTIAL_DECOR_0" type="Node3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL" unique_id=1971843672]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.25, 0, -4.7)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "松树",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"type": "plant",
+"visual": {
+"label": "松树",
+"model_id": "pine",
+"path": "res://assets/vendor/kenney/graveyard/Models/pine.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": -7.0,
+"z": -4.7
+},
+"semantic_id": "district_residential_decor_0",
+"tags": Array[String](["authored", "plant"]),
+"zone_id": "district_residential"
+}
+
+[node name="art_key_v2_plant_stem" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_DECOR_松树_DISTRICT_RESIDENTIAL_DECOR_0" unique_id=815794765]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_x3vml")
+mesh = SubResource("BoxMesh_mua6g")
+
+[node name="art_key_v2_plant_leaf" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_DECOR_松树_DISTRICT_RESIDENTIAL_DECOR_0" unique_id=221361982]
+transform = Transform3D(0.8925389, -0.15737869, 0.42261827, 0.17364818, 0.9848077, 0, -0.41619775, 0.07338689, 0.90630776, 0.3, 1, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_roj50")
+mesh = SubResource("BoxMesh_4ad10")
+
+[node name="VISUAL_pine" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_DECOR_松树_DISTRICT_RESIDENTIAL_DECOR_0" unique_id=351927497 instance=ExtResource("9_1dy2c")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 0.1, 0)
+
+[node name="FS_DECOR_松树_DISTRICT_RESIDENTIAL_DECOR_1" type="Node3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL" unique_id=1308480735]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.75, 0, 4.5)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "松树",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"type": "plant",
+"visual": {
+"label": "松树",
+"model_id": "pine",
+"path": "res://assets/vendor/kenney/graveyard/Models/pine.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 2.0,
+"z": 4.5
+},
+"semantic_id": "district_residential_decor_1",
+"tags": Array[String](["authored", "plant"]),
+"zone_id": "district_residential"
+}
+
+[node name="art_key_v2_plant_stem" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_DECOR_松树_DISTRICT_RESIDENTIAL_DECOR_1" unique_id=29466430]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_x3vml")
+mesh = SubResource("BoxMesh_mua6g")
+
+[node name="art_key_v2_plant_leaf" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_DECOR_松树_DISTRICT_RESIDENTIAL_DECOR_1" unique_id=1369375641]
+transform = Transform3D(0.8925389, -0.15737869, 0.42261827, 0.17364818, 0.9848077, 0, -0.41619775, 0.07338689, 0.90630776, 0.3, 1, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_roj50")
+mesh = SubResource("BoxMesh_4ad10")
+
+[node name="VISUAL_pine" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_DECOR_松树_DISTRICT_RESIDENTIAL_DECOR_1" unique_id=1093197113 instance=ExtResource("9_1dy2c")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 0.1, 0)
+
+[node name="FS_DECOR_墓碑_DISTRICT_RESIDENTIAL_DECOR_2" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL" unique_id=1339193043]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.45, 1.7, 4.6)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "墓碑",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"h": 3.4,
+"r": 0.45,
+"type": "pillar",
+"visual": {
+"label": "墓碑",
+"model_id": "grave_stone",
+"path": "res://assets/vendor/kenney/graveyard/Models/grave.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": -9.2,
+"z": 4.6
+},
+"semantic_id": "district_residential_decor_2",
+"tags": Array[String](["authored", "pillar"]),
+"zone_id": "district_residential"
+}
+metadata/__fs_visual_host_mesh = SubResource("BoxMesh_enryy")
+metadata/__fs_visual_host_has_material_override = true
+metadata/__fs_visual_host_material_override = SubResource("StandardMaterial3D_qexu7")
+metadata/__fs_visual_host_has_material_overlay = false
+
+[node name="VISUAL_grave_stone" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_DECOR_墓碑_DISTRICT_RESIDENTIAL_DECOR_2" unique_id=1942163571 instance=ExtResource("8_fa0jg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020225406, -1.7, -0.011144698)
+
+[node name="FS_DECOR_墓碑_DISTRICT_RESIDENTIAL_DECOR_3" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL" unique_id=929695023]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.95, 1.9, -4.7)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "墓碑",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"h": 3.8,
+"r": 0.45,
+"type": "pillar",
+"visual": {
+"label": "墓碑",
+"model_id": "grave_stone",
+"path": "res://assets/vendor/kenney/graveyard/Models/grave.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 1.2,
+"z": -4.7
+},
+"semantic_id": "district_residential_decor_3",
+"tags": Array[String](["authored", "pillar"]),
+"zone_id": "district_residential"
+}
+metadata/__fs_visual_host_mesh = SubResource("BoxMesh_4bogo")
+metadata/__fs_visual_host_has_material_override = true
+metadata/__fs_visual_host_material_override = SubResource("StandardMaterial3D_qexu7")
+metadata/__fs_visual_host_has_material_overlay = false
+
+[node name="VISUAL_grave_stone" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_DECOR_墓碑_DISTRICT_RESIDENTIAL_DECOR_3" unique_id=444879611 instance=ExtResource("8_fa0jg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020225406, -1.9, -0.011144698)
+
+[node name="FS_DECOR_墓碑_DISTRICT_RESIDENTIAL_DECOR_4" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL" unique_id=64354376]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, 0, 5.6)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "墓碑",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"h": 1.6,
+"type": "window",
+"visual": {
+"label": "墓碑",
+"model_id": "grave_stone",
+"path": "res://assets/vendor/kenney/graveyard/Models/grave.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"w": 1.0,
+"x": -5.0,
+"z": 5.6
+},
+"semantic_id": "district_residential_decor_4",
+"tags": Array[String](["authored", "window"]),
+"zone_id": "district_residential"
+}
+metadata/__fs_visual_host_mesh = SubResource("BoxMesh_30cka")
+metadata/__fs_visual_host_has_material_override = true
+metadata/__fs_visual_host_material_override = SubResource("StandardMaterial3D_5axvi")
+metadata/__fs_visual_host_has_material_overlay = false
+
+[node name="VISUAL_grave_stone" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_DECOR_墓碑_DISTRICT_RESIDENTIAL_DECOR_4" unique_id=63953871 instance=ExtResource("8_fa0jg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020225406, -0.8, -0.011144698)
+
+[node name="FS_DECOR_单头路灯_DISTRICT_RESIDENTIAL_DECOR_5" type="Node3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL" unique_id=687648830]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.75, 0, -5.6)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "单头路灯",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"r": 0.6,
+"type": "lamp",
+"visual": {
+"label": "单头路灯",
+"model_id": "lightpost_single",
+"path": "res://assets/vendor/kenney/graveyard/Models/lightpost-single.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 3.0,
+"z": -5.6
+},
+"semantic_id": "district_residential_decor_5",
+"tags": Array[String](["authored", "lamp"]),
+"zone_id": "district_residential"
+}
+
+[node name="art_key_v2_lamp_pole" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_DECOR_单头路灯_DISTRICT_RESIDENTIAL_DECOR_5" unique_id=1547183603]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_linwr")
+mesh = SubResource("BoxMesh_atlk1")
+
+[node name="art_key_v2_lamp_head" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_DECOR_单头路灯_DISTRICT_RESIDENTIAL_DECOR_5" unique_id=491273994]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.75, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_3u20a")
+mesh = SubResource("BoxMesh_8xgs0")
+
+[node name="VISUAL_lightpost_single" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_DECOR_单头路灯_DISTRICT_RESIDENTIAL_DECOR_5" unique_id=962547207 instance=ExtResource("7_2cnho")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3841858e-07, 5.639933e-17, -0.13085166)
+
+[node name="FS_DECOR_火盆_DISTRICT_RESIDENTIAL_DECOR_6" type="Node3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL" unique_id=906475311]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.25, 0, 6)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "火盆",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"type": "spirit_fire",
+"visual": {
+"label": "火盆",
+"model_id": "fire_basket",
+"path": "res://assets/vendor/kenney/graveyard/Models/fire-basket.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 0.5,
+"z": 6.0
+},
+"semantic_id": "district_residential_decor_6",
+"tags": Array[String](["authored", "spirit_fire"]),
+"zone_id": "district_residential"
+}
+
+[node name="art_key_v2_spirit_fire_base" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_DECOR_火盆_DISTRICT_RESIDENTIAL_DECOR_6" unique_id=1773408578]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_6guqi")
+mesh = SubResource("BoxMesh_6g1nj")
+
+[node name="art_key_v2_spirit_fire" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_DECOR_火盆_DISTRICT_RESIDENTIAL_DECOR_6" unique_id=681812713]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.62, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_cfcyl")
+mesh = SubResource("BoxMesh_l3jda")
+
+[node name="VISUAL_fire_basket" parent="FS_ZONE_DISTRICT_RESIDENTIAL/FS_DECOR_火盆_DISTRICT_RESIDENTIAL_DECOR_6" unique_id=377351632 instance=ExtResource("10_lmw76")]
+
+[node name="FS_ZONE_DISTRICT_THEATER" type="Node3D" parent="." unique_id=176016580]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 0, 0)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"kind": "zone",
+"links": Array[String]([]),
+"params": {
+"depth": 16.0,
+"max_x": 10.5,
+"min_x": 4.5,
+"name": "旧剧场·电视台"
+},
+"semantic_id": "district_theater",
+"tags": Array[String](["authored"]),
+"zone_id": "district_theater"
+}
+
+[node name="FS_FLOOR_DISTRICT_THEATER_FLOOR" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_THEATER" unique_id=514809695]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+material_override = SubResource("StandardMaterial3D_n5ubk")
+mesh = SubResource("BoxMesh_8gldd")
+metadata/fivestar_semantic = {
+"behavior": "none",
+"kind": "floor",
+"links": Array[String]([]),
+"params": {
+"color": "4a2c3c"
+},
+"semantic_id": "district_theater_floor",
+"tags": Array[String](["authored"]),
+"zone_id": "district_theater"
+}
+
+[node name="@Label3D@36" type="Label3D" parent="FS_ZONE_DISTRICT_THEATER" unique_id=1374967255]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6, -6.5)
+pixel_size = 0.01
+modulate = Color(1, 0.9137255, 0.65882355, 1)
+outline_modulate = Color(0.078431375, 0.101960786, 0.14901961, 1)
+text = "旧剧场·电视台"
+font_size = 72
+outline_size = 24
+
+[node name="FS_PROP_木板路_DISTRICT_THEATER_PROP_0" type="AnimatableBody3D" parent="FS_ZONE_DISTRICT_THEATER" unique_id=1426409529]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, -6)
+metadata/fivestar_semantic = {
+"behavior": "lift",
+"display_name": "木板路",
+"kind": "prop",
+"links": Array[String]([]),
+"params": {
+"dur": 2.4,
+"lift": 2.0,
+"type": "lift",
+"visual": {
+"fit_mode": "stretch",
+"fit_scale": [2.4, 5.0, 2.0],
+"fitted_size": [2.4, 0.3, 2.0],
+"label": "木板路",
+"model_id": "wood_planks",
+"path": "res://assets/vendor/kenney/fantasy_town/Models/planks.glb",
+"repeat_along_longest": false,
+"repeat_count": 1,
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 6.0,
+"z": -6.0
+},
+"semantic_id": "district_theater_prop_0",
+"tags": Array[String](["authored", "lift"]),
+"zone_id": "district_theater"
+}
+
+[node name="@CollisionShape3D@38" type="CollisionShape3D" parent="FS_ZONE_DISTRICT_THEATER/FS_PROP_木板路_DISTRICT_THEATER_PROP_0" unique_id=1582861165]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
+shape = SubResource("BoxShape3D_ai80s")
+
+[node name="art_key_v2_lift_platform" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_THEATER/FS_PROP_木板路_DISTRICT_THEATER_PROP_0" unique_id=856201424]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_8c88e")
+mesh = SubResource("BoxMesh_wkxib")
+metadata/__fs_visual_hidden_visible = true
+
+[node name="VISUAL_wood_planks" type="Node3D" parent="FS_ZONE_DISTRICT_THEATER/FS_PROP_木板路_DISTRICT_THEATER_PROP_0" unique_id=674799020]
+transform = Transform3D(2.4, 0, 0, 0, 5, 0, 0, 0, 2, 0, 0, 0)
+
+[node name="Model" parent="FS_ZONE_DISTRICT_THEATER/FS_PROP_木板路_DISTRICT_THEATER_PROP_0/VISUAL_wood_planks" unique_id=1966429572 instance=ExtResource("10_p3dt8")]
+
+[node name="FS_BREAKABLE_圆骨灰瓮_THEATER_JAR" type="StaticBody3D" parent="FS_ZONE_DISTRICT_THEATER" unique_id=1091478003]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 5.5)
+metadata/fivestar_semantic = {
+"behavior": "breakable",
+"display_name": "圆骨灰瓮",
+"kind": "breakable",
+"links": Array[String]([]),
+"params": {
+"id": "theater_jar",
+"type": "breakable",
+"visual": {
+"label": "圆骨灰瓮",
+"model_id": "urn_round",
+"path": "res://assets/vendor/kenney/graveyard/Models/urn-round.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 9.5,
+"z": 5.5
+},
+"semantic_id": "theater_jar",
+"tags": Array[String](["authored", "breakable"]),
+"zone_id": "district_theater"
+}
+
+[node name="@CollisionShape3D@40" type="CollisionShape3D" parent="FS_ZONE_DISTRICT_THEATER/FS_BREAKABLE_圆骨灰瓮_THEATER_JAR" unique_id=271533041]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+shape = SubResource("SphereShape3D_m2vdq")
+
+[node name="AuthoringJarBody" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_THEATER/FS_BREAKABLE_圆骨灰瓮_THEATER_JAR" unique_id=1172153930]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_uqruc")
+mesh = SubResource("BoxMesh_2cnho")
+
+[node name="AuthoringJarRim" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_THEATER/FS_BREAKABLE_圆骨灰瓮_THEATER_JAR" unique_id=1526813970]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.96, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_fa0jg")
+mesh = SubResource("BoxMesh_1dy2c")
+
+[node name="VISUAL_urn_round" parent="FS_ZONE_DISTRICT_THEATER/FS_BREAKABLE_圆骨灰瓮_THEATER_JAR" unique_id=1771740807 instance=ExtResource("5_34ste")]
+
+[node name="FS_DECOR_松树_DISTRICT_THEATER_DECOR_0" type="Node3D" parent="FS_ZONE_DISTRICT_THEATER" unique_id=1524977944]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, -4.5)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "松树",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"type": "plant",
+"visual": {
+"label": "松树",
+"model_id": "pine",
+"path": "res://assets/vendor/kenney/graveyard/Models/pine.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 8.5,
+"z": -4.5
+},
+"semantic_id": "district_theater_decor_0",
+"tags": Array[String](["authored", "plant"]),
+"zone_id": "district_theater"
+}
+
+[node name="art_key_v2_plant_stem" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_THEATER/FS_DECOR_松树_DISTRICT_THEATER_DECOR_0" unique_id=979893010]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_x3vml")
+mesh = SubResource("BoxMesh_mua6g")
+
+[node name="art_key_v2_plant_leaf" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_THEATER/FS_DECOR_松树_DISTRICT_THEATER_DECOR_0" unique_id=710166690]
+transform = Transform3D(0.8925389, -0.15737869, 0.42261827, 0.17364818, 0.9848077, 0, -0.41619775, 0.07338689, 0.90630776, 0.3, 1, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_roj50")
+mesh = SubResource("BoxMesh_4ad10")
+
+[node name="VISUAL_pine" parent="FS_ZONE_DISTRICT_THEATER/FS_DECOR_松树_DISTRICT_THEATER_DECOR_0" unique_id=2034552762 instance=ExtResource("9_1dy2c")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 0.1, 0)
+
+[node name="FS_DECOR_墓碑_DISTRICT_THEATER_DECOR_1" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_THEATER" unique_id=1506393586]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6999998, 2.5, 4.5)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "墓碑",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"h": 5.0,
+"r": 0.6,
+"type": "pillar",
+"visual": {
+"label": "墓碑",
+"model_id": "grave_stone",
+"path": "res://assets/vendor/kenney/graveyard/Models/grave.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 10.2,
+"z": 4.5
+},
+"semantic_id": "district_theater_decor_1",
+"tags": Array[String](["authored", "pillar"]),
+"zone_id": "district_theater"
+}
+metadata/__fs_visual_host_mesh = SubResource("BoxMesh_vjnrx")
+metadata/__fs_visual_host_has_material_override = true
+metadata/__fs_visual_host_material_override = SubResource("StandardMaterial3D_qexu7")
+metadata/__fs_visual_host_has_material_overlay = false
+
+[node name="VISUAL_grave_stone" parent="FS_ZONE_DISTRICT_THEATER/FS_DECOR_墓碑_DISTRICT_THEATER_DECOR_1" unique_id=1189728772 instance=ExtResource("8_fa0jg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020225406, -2.5, -0.011144698)
+
+[node name="FS_DECOR_单头路灯_DISTRICT_THEATER_DECOR_2" type="Node3D" parent="FS_ZONE_DISTRICT_THEATER" unique_id=1754703536]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 5.6)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "单头路灯",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"r": 0.65,
+"type": "lamp",
+"visual": {
+"label": "单头路灯",
+"model_id": "lightpost_single",
+"path": "res://assets/vendor/kenney/graveyard/Models/lightpost-single.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 5.5,
+"z": 5.6
+},
+"semantic_id": "district_theater_decor_2",
+"tags": Array[String](["authored", "lamp"]),
+"zone_id": "district_theater"
+}
+
+[node name="art_key_v2_lamp_pole" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_THEATER/FS_DECOR_单头路灯_DISTRICT_THEATER_DECOR_2" unique_id=81917275]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_linwr")
+mesh = SubResource("BoxMesh_atlk1")
+
+[node name="art_key_v2_lamp_head" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_THEATER/FS_DECOR_单头路灯_DISTRICT_THEATER_DECOR_2" unique_id=928060258]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.75, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_3u20a")
+mesh = SubResource("BoxMesh_jmth6")
+
+[node name="VISUAL_lightpost_single" parent="FS_ZONE_DISTRICT_THEATER/FS_DECOR_单头路灯_DISTRICT_THEATER_DECOR_2" unique_id=636019111 instance=ExtResource("7_2cnho")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3841858e-07, 5.639933e-17, -0.13085166)
+
+[node name="FS_DECOR_墓碑_DISTRICT_THEATER_DECOR_3" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_THEATER" unique_id=1795409903]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, 5.6)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "墓碑",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"h": 1.8,
+"type": "window",
+"visual": {
+"label": "墓碑",
+"model_id": "grave_stone",
+"path": "res://assets/vendor/kenney/graveyard/Models/grave.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"w": 1.2,
+"x": 9.0,
+"z": 5.6
+},
+"semantic_id": "district_theater_decor_3",
+"tags": Array[String](["authored", "window"]),
+"zone_id": "district_theater"
+}
+metadata/__fs_visual_host_mesh = SubResource("BoxMesh_v0p5g")
+metadata/__fs_visual_host_has_material_override = true
+metadata/__fs_visual_host_material_override = SubResource("StandardMaterial3D_5axvi")
+metadata/__fs_visual_host_has_material_overlay = false
+
+[node name="VISUAL_grave_stone" parent="FS_ZONE_DISTRICT_THEATER/FS_DECOR_墓碑_DISTRICT_THEATER_DECOR_3" unique_id=213178581 instance=ExtResource("8_fa0jg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020225406, -0.9, -0.011144698)
+
+[node name="FS_DECOR_火盆_DISTRICT_THEATER_DECOR_4" type="Node3D" parent="FS_ZONE_DISTRICT_THEATER" unique_id=1558725988]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0, -5.5)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "火盆",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"type": "spirit_fire",
+"visual": {
+"label": "火盆",
+"model_id": "fire_basket",
+"path": "res://assets/vendor/kenney/graveyard/Models/fire-basket.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 7.0,
+"z": -5.5
+},
+"semantic_id": "district_theater_decor_4",
+"tags": Array[String](["authored", "spirit_fire"]),
+"zone_id": "district_theater"
+}
+
+[node name="art_key_v2_spirit_fire_base" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_THEATER/FS_DECOR_火盆_DISTRICT_THEATER_DECOR_4" unique_id=827421433]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_6guqi")
+mesh = SubResource("BoxMesh_6g1nj")
+
+[node name="art_key_v2_spirit_fire" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_THEATER/FS_DECOR_火盆_DISTRICT_THEATER_DECOR_4" unique_id=717139514]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.62, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_cfcyl")
+mesh = SubResource("BoxMesh_l3jda")
+
+[node name="VISUAL_fire_basket" parent="FS_ZONE_DISTRICT_THEATER/FS_DECOR_火盆_DISTRICT_THEATER_DECOR_4" unique_id=1238305540 instance=ExtResource("10_lmw76")]
+
+[node name="FS_DECOR_墓碑_DISTRICT_THEATER_DECOR_5" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_THEATER" unique_id=841835626]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -6)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "墓碑",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"type": "plaque",
+"visual": {
+"label": "墓碑",
+"model_id": "grave_stone",
+"path": "res://assets/vendor/kenney/graveyard/Models/grave.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 5.5,
+"z": -6.0
+},
+"semantic_id": "district_theater_decor_5",
+"tags": Array[String](["authored", "plaque"]),
+"zone_id": "district_theater"
+}
+metadata/__fs_visual_host_mesh = SubResource("BoxMesh_2hmf8")
+metadata/__fs_visual_host_has_material_override = true
+metadata/__fs_visual_host_material_override = SubResource("StandardMaterial3D_s8tf1")
+metadata/__fs_visual_host_has_material_overlay = false
+
+[node name="VISUAL_grave_stone" parent="FS_ZONE_DISTRICT_THEATER/FS_DECOR_墓碑_DISTRICT_THEATER_DECOR_5" unique_id=302419398 instance=ExtResource("8_fa0jg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020225406, -0.25, -0.011144698)
+
+[node name="FS_ZONE_DISTRICT_SEAL" type="Node3D" parent="." unique_id=1696012821]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.25, 0, 0)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"kind": "zone",
+"links": Array[String]([]),
+"params": {
+"depth": 16.0,
+"max_x": 20.0,
+"min_x": 10.5,
+"name": "Boss 封印场"
+},
+"semantic_id": "district_seal",
+"tags": Array[String](["authored"]),
+"zone_id": "district_seal"
+}
+
+[node name="FS_FLOOR_DISTRICT_SEAL_FLOOR" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_SEAL" unique_id=1825008301]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+material_override = SubResource("StandardMaterial3D_7ls52")
+mesh = SubResource("BoxMesh_u6m03")
+metadata/fivestar_semantic = {
+"behavior": "none",
+"kind": "floor",
+"links": Array[String]([]),
+"params": {
+"color": "2f4a40"
+},
+"semantic_id": "district_seal_floor",
+"tags": Array[String](["authored"]),
+"zone_id": "district_seal"
+}
+
+[node name="@Label3D@42" type="Label3D" parent="FS_ZONE_DISTRICT_SEAL" unique_id=769847234]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6, -6.5)
+pixel_size = 0.01
+modulate = Color(1, 0.9137255, 0.65882355, 1)
+outline_modulate = Color(0.078431375, 0.101960786, 0.14901961, 1)
+text = "Boss 封印场"
+font_size = 72
+outline_size = 24
+
+[node name="FS_TRIGGER_石质压力板_DISTRICT_SEAL_PROP_0" type="Area3D" parent="FS_ZONE_DISTRICT_SEAL" unique_id=1513304389]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.25, 0, -5.6)
+metadata/press_color = Color(0.7882353, 0.7058824, 0.3529412, 1)
+metadata/fivestar_semantic = {
+"behavior": "pressure_plate",
+"display_name": "石质压力板",
+"kind": "trigger",
+"links": Array[String]([]),
+"params": {
+"size": 1.6,
+"type": "pressure",
+"visual": {
+"fit_mode": "stretch",
+"fit_scale": [1.6, 3.9999998, 1.6],
+"fitted_size": [1.6, 0.24, 1.6],
+"label": "石质压力板",
+"model_id": "pressure_plate",
+"path": "res://assets/vendor/kenney/fantasy_town/Models/planks.glb",
+"repeat_along_longest": false,
+"repeat_count": 1,
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 12.0,
+"z": -5.6
+},
+"semantic_id": "district_seal_prop_0",
+"tags": Array[String](["authored", "pressure"]),
+"zone_id": "district_seal"
+}
+
+[node name="@CollisionShape3D@43" type="CollisionShape3D" parent="FS_ZONE_DISTRICT_SEAL/FS_TRIGGER_石质压力板_DISTRICT_SEAL_PROP_0" unique_id=832586525]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, 0)
+shape = SubResource("BoxShape3D_204ij")
+
+[node name="art_key_v2_pressure_plate" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_SEAL/FS_TRIGGER_石质压力板_DISTRICT_SEAL_PROP_0" unique_id=828587211]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.14, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_msoqg")
+mesh = SubResource("BoxMesh_f0iqp")
+metadata/__fs_visual_hidden_visible = true
+
+[node name="VISUAL_pressure_plate" type="Node3D" parent="FS_ZONE_DISTRICT_SEAL/FS_TRIGGER_石质压力板_DISTRICT_SEAL_PROP_0" unique_id=1137429146]
+transform = Transform3D(1.6, 0, 0, 0, 3.9999998, 0, 0, 0, 1.6, 0, 0, 0)
+
+[node name="Model" parent="FS_ZONE_DISTRICT_SEAL/FS_TRIGGER_石质压力板_DISTRICT_SEAL_PROP_0/VISUAL_pressure_plate" unique_id=1119546892 instance=ExtResource("10_p3dt8")]
+
+[node name="FS_PROP_木推车_DISTRICT_SEAL_PROP_1" type="RigidBody3D" parent="FS_ZONE_DISTRICT_SEAL" unique_id=886489999]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, 0, 5.6)
+mass = 3.0
+metadata/fivestar_semantic = {
+"behavior": "pushable",
+"display_name": "木推车",
+"kind": "prop",
+"links": Array[String]([]),
+"params": {
+"size": 1.1,
+"type": "box",
+"visual": {
+"label": "木推车",
+"model_id": "cart",
+"path": "res://assets/vendor/kenney/fantasy_town/Models/cart.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 13.0,
+"z": 5.6
+},
+"semantic_id": "district_seal_prop_1",
+"tags": Array[String](["authored", "box"]),
+"zone_id": "district_seal"
+}
+
+[node name="@CollisionShape3D@44" type="CollisionShape3D" parent="FS_ZONE_DISTRICT_SEAL/FS_PROP_木推车_DISTRICT_SEAL_PROP_1" unique_id=563950429]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+shape = SubResource("BoxShape3D_u4fuk")
+
+[node name="art_key_v2_pushable_box" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_SEAL/FS_PROP_木推车_DISTRICT_SEAL_PROP_1" unique_id=1612275508]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_38ryx")
+mesh = SubResource("BoxMesh_7qaiv")
+
+[node name="VISUAL_cart" parent="FS_ZONE_DISTRICT_SEAL/FS_PROP_木推车_DISTRICT_SEAL_PROP_1" unique_id=100036935 instance=ExtResource("11_laxmx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.940697e-08, 1.1279866e-17, -0.024999976)
+
+[node name="FS_PROP_木板路_DISTRICT_SEAL_PROP_2" type="AnimatableBody3D" parent="FS_ZONE_DISTRICT_SEAL" unique_id=348207466]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 0, -6)
+metadata/fivestar_semantic = {
+"behavior": "lift",
+"display_name": "木板路",
+"kind": "prop",
+"links": Array[String]([]),
+"params": {
+"dur": 2.8,
+"lift": 2.4,
+"type": "lift",
+"visual": {
+"fit_mode": "stretch",
+"fit_scale": [2.4, 5.0, 2.0],
+"fitted_size": [2.4, 0.3, 2.0],
+"label": "木板路",
+"model_id": "wood_planks",
+"path": "res://assets/vendor/kenney/fantasy_town/Models/planks.glb",
+"repeat_along_longest": false,
+"repeat_count": 1,
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 17.5,
+"z": -6.0
+},
+"semantic_id": "district_seal_prop_2",
+"tags": Array[String](["authored", "lift"]),
+"zone_id": "district_seal"
+}
+
+[node name="@CollisionShape3D@46" type="CollisionShape3D" parent="FS_ZONE_DISTRICT_SEAL/FS_PROP_木板路_DISTRICT_SEAL_PROP_2" unique_id=1149268471]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
+shape = SubResource("BoxShape3D_falat")
+
+[node name="art_key_v2_lift_platform" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_SEAL/FS_PROP_木板路_DISTRICT_SEAL_PROP_2" unique_id=584650723]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_8c88e")
+mesh = SubResource("BoxMesh_wkxib")
+metadata/__fs_visual_hidden_visible = true
+
+[node name="VISUAL_wood_planks" type="Node3D" parent="FS_ZONE_DISTRICT_SEAL/FS_PROP_木板路_DISTRICT_SEAL_PROP_2" unique_id=25997401]
+transform = Transform3D(2.4, 0, 0, 0, 5, 0, 0, 0, 2, 0, 0, 0)
+
+[node name="Model" parent="FS_ZONE_DISTRICT_SEAL/FS_PROP_木板路_DISTRICT_SEAL_PROP_2/VISUAL_wood_planks" unique_id=1513395007 instance=ExtResource("10_p3dt8")]
+
+[node name="FS_DECOR_墓碑_DISTRICT_SEAL_DECOR_0" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_SEAL" unique_id=854377676]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.75, 3, 5)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "墓碑",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"h": 6.0,
+"r": 0.7,
+"type": "pillar",
+"visual": {
+"label": "墓碑",
+"model_id": "grave_stone",
+"path": "res://assets/vendor/kenney/graveyard/Models/grave.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 12.5,
+"z": 5.0
+},
+"semantic_id": "district_seal_decor_0",
+"tags": Array[String](["authored", "pillar"]),
+"zone_id": "district_seal"
+}
+metadata/__fs_visual_host_mesh = SubResource("BoxMesh_t4rr3")
+metadata/__fs_visual_host_has_material_override = true
+metadata/__fs_visual_host_material_override = SubResource("StandardMaterial3D_qexu7")
+metadata/__fs_visual_host_has_material_overlay = false
+
+[node name="VISUAL_grave_stone" parent="FS_ZONE_DISTRICT_SEAL/FS_DECOR_墓碑_DISTRICT_SEAL_DECOR_0" unique_id=1118193339 instance=ExtResource("8_fa0jg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020225406, -3, -0.011144698)
+
+[node name="FS_DECOR_墓碑_DISTRICT_SEAL_DECOR_1" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_SEAL" unique_id=1397707851]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.75, 3, -5)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "墓碑",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"h": 6.0,
+"r": 0.7,
+"type": "pillar",
+"visual": {
+"label": "墓碑",
+"model_id": "grave_stone",
+"path": "res://assets/vendor/kenney/graveyard/Models/grave.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 18.0,
+"z": -5.0
+},
+"semantic_id": "district_seal_decor_1",
+"tags": Array[String](["authored", "pillar"]),
+"zone_id": "district_seal"
+}
+metadata/__fs_visual_host_mesh = SubResource("BoxMesh_t4rr3")
+metadata/__fs_visual_host_has_material_override = true
+metadata/__fs_visual_host_material_override = SubResource("StandardMaterial3D_qexu7")
+metadata/__fs_visual_host_has_material_overlay = false
+
+[node name="VISUAL_grave_stone" parent="FS_ZONE_DISTRICT_SEAL/FS_DECOR_墓碑_DISTRICT_SEAL_DECOR_1" unique_id=1967838169 instance=ExtResource("8_fa0jg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020225406, -3, -0.011144698)
+
+[node name="FS_DECOR_单头路灯_DISTRICT_SEAL_DECOR_2" type="Node3D" parent="FS_ZONE_DISTRICT_SEAL" unique_id=2066301059]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0, 5.6)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "单头路灯",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"r": 0.7,
+"type": "lamp",
+"visual": {
+"label": "单头路灯",
+"model_id": "lightpost_single",
+"path": "res://assets/vendor/kenney/graveyard/Models/lightpost-single.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 16.0,
+"z": 5.6
+},
+"semantic_id": "district_seal_decor_2",
+"tags": Array[String](["authored", "lamp"]),
+"zone_id": "district_seal"
+}
+
+[node name="art_key_v2_lamp_pole" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_SEAL/FS_DECOR_单头路灯_DISTRICT_SEAL_DECOR_2" unique_id=1842009046]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_linwr")
+mesh = SubResource("BoxMesh_atlk1")
+
+[node name="art_key_v2_lamp_head" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_SEAL/FS_DECOR_单头路灯_DISTRICT_SEAL_DECOR_2" unique_id=256266238]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.75, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_3u20a")
+mesh = SubResource("BoxMesh_qwtkp")
+
+[node name="VISUAL_lightpost_single" parent="FS_ZONE_DISTRICT_SEAL/FS_DECOR_单头路灯_DISTRICT_SEAL_DECOR_2" unique_id=200065689 instance=ExtResource("7_2cnho")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3841858e-07, 5.639933e-17, -0.13085166)
+
+[node name="FS_DECOR_火盆_DISTRICT_SEAL_DECOR_3" type="Node3D" parent="FS_ZONE_DISTRICT_SEAL" unique_id=163134389]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.75, 0, 5.5)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "火盆",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"type": "spirit_fire",
+"visual": {
+"label": "火盆",
+"model_id": "fire_basket",
+"path": "res://assets/vendor/kenney/graveyard/Models/fire-basket.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 19.0,
+"z": 5.5
+},
+"semantic_id": "district_seal_decor_3",
+"tags": Array[String](["authored", "spirit_fire"]),
+"zone_id": "district_seal"
+}
+
+[node name="art_key_v2_spirit_fire_base" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_SEAL/FS_DECOR_火盆_DISTRICT_SEAL_DECOR_3" unique_id=921653770]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_6guqi")
+mesh = SubResource("BoxMesh_6g1nj")
+
+[node name="art_key_v2_spirit_fire" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_SEAL/FS_DECOR_火盆_DISTRICT_SEAL_DECOR_3" unique_id=412851259]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.62, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_cfcyl")
+mesh = SubResource("BoxMesh_l3jda")
+
+[node name="VISUAL_fire_basket" parent="FS_ZONE_DISTRICT_SEAL/FS_DECOR_火盆_DISTRICT_SEAL_DECOR_3" unique_id=1596445332 instance=ExtResource("10_lmw76")]
+
+[node name="FS_DECOR_墓碑_DISTRICT_SEAL_DECOR_4" type="MeshInstance3D" parent="FS_ZONE_DISTRICT_SEAL" unique_id=2023666787]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 3, -5.4)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "墓碑",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"h": 6.0,
+"type": "waterfall",
+"visual": {
+"label": "墓碑",
+"model_id": "grave_stone",
+"path": "res://assets/vendor/kenney/graveyard/Models/grave.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"w": 2.5,
+"x": 14.0,
+"z": -5.4
+},
+"semantic_id": "district_seal_decor_4",
+"tags": Array[String](["authored", "waterfall"]),
+"zone_id": "district_seal"
+}
+metadata/__fs_visual_host_mesh = SubResource("BoxMesh_g8l6s")
+metadata/__fs_visual_host_has_material_override = true
+metadata/__fs_visual_host_material_override = SubResource("StandardMaterial3D_kwk13")
+metadata/__fs_visual_host_has_material_overlay = false
+
+[node name="VISUAL_grave_stone" parent="FS_ZONE_DISTRICT_SEAL/FS_DECOR_墓碑_DISTRICT_SEAL_DECOR_4" unique_id=908556154 instance=ExtResource("8_fa0jg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020225406, -3, -0.011144698)
+
+[node name="FS_NAV_SHORTCUT_EAST" type="Node3D" parent="." unique_id=2131306742]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 4)
+metadata/fivestar_semantic = {
+"behavior": "trigger",
+"kind": "nav",
+"links": Array[String]([]),
+"params": {
+"id": "shortcut_east",
+"type": "path",
+"x": -4.0,
+"z": 4.0
+},
+"semantic_id": "shortcut_east",
+"tags": Array[String](["authored", "path"]),
+"zone_id": "first_night"
+}
+
+[node name="AuthoringMarker" type="MeshInstance3D" parent="FS_NAV_SHORTCUT_EAST" unique_id=345031152]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
+material_override = SubResource("StandardMaterial3D_r5r35")
+mesh = SubResource("BoxMesh_jonac")
+
+[node name="FS_CASE_木祭坛_CASE_SOFA" type="Node3D" parent="." unique_id=1833452302]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, 0)
+metadata/fivestar_semantic = {
+"behavior": "case",
+"display_name": "木祭坛",
+"kind": "case",
+"links": Array[String]([]),
+"params": {
+"id": "case_sofa",
+"type": "case",
+"visual": {
+"label": "木祭坛",
+"model_id": "wood_altar",
+"path": "res://assets/vendor/kenney/graveyard/Models/altar-wood.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": -8.0,
+"z": 0.0
+},
+"semantic_id": "case_sofa",
+"tags": Array[String](["authored", "case"]),
+"zone_id": "first_night"
+}
+
+[node name="AuthoringMarker" type="MeshInstance3D" parent="FS_CASE_木祭坛_CASE_SOFA" unique_id=1704589811]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_432vr")
+mesh = SubResource("BoxMesh_m0d7t")
+
+[node name="VISUAL_wood_altar" parent="FS_CASE_木祭坛_CASE_SOFA" unique_id=1652989506 instance=ExtResource("13_a40rw")]
+
+[node name="FS_CASE_石祭坛_CASE_TV" type="Node3D" parent="." unique_id=949667316]
+metadata/fivestar_semantic = {
+"behavior": "case",
+"display_name": "石祭坛",
+"kind": "case",
+"links": Array[String]([]),
+"params": {
+"id": "case_tv",
+"type": "case",
+"visual": {
+"label": "石祭坛",
+"model_id": "stone_altar",
+"path": "res://assets/vendor/kenney/graveyard/Models/altar-stone.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 0.0,
+"z": 0.0
+},
+"semantic_id": "case_tv",
+"tags": Array[String](["authored", "case"]),
+"zone_id": "first_night"
+}
+
+[node name="AuthoringMarker" type="MeshInstance3D" parent="FS_CASE_石祭坛_CASE_TV" unique_id=1099821959]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_432vr")
+mesh = SubResource("BoxMesh_m0d7t")
+
+[node name="VISUAL_stone_altar" parent="FS_CASE_石祭坛_CASE_TV" unique_id=231072478 instance=ExtResource("14_f6yt6")]
+
+[node name="FS_CASE_小型墓穴_CASE_WARDROBE" type="Node3D" parent="." unique_id=1458240836]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 0)
+metadata/fivestar_semantic = {
+"behavior": "case",
+"display_name": "小型墓穴",
+"kind": "case",
+"links": Array[String]([]),
+"params": {
+"id": "case_wardrobe",
+"type": "case",
+"visual": {
+"label": "小型墓穴",
+"model_id": "crypt_small",
+"path": "res://assets/vendor/kenney/graveyard/Models/crypt-small.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 8.0,
+"z": 0.0
+},
+"semantic_id": "case_wardrobe",
+"tags": Array[String](["authored", "case"]),
+"zone_id": "first_night"
+}
+
+[node name="AuthoringMarker" type="MeshInstance3D" parent="FS_CASE_小型墓穴_CASE_WARDROBE" unique_id=246746889]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_432vr")
+mesh = SubResource("BoxMesh_m0d7t")
+
+[node name="VISUAL_crypt_small" parent="FS_CASE_小型墓穴_CASE_WARDROBE" unique_id=787444102 instance=ExtResource("15_linwr")]
+
+[node name="FS_BOSS_石祭坛_BOSS_ROOM" type="Node3D" parent="." unique_id=747677972]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, 0)
+metadata/fivestar_semantic = {
+"behavior": "boss",
+"display_name": "石祭坛",
+"kind": "boss",
+"links": Array[String]([]),
+"params": {
+"id": "boss_room",
+"type": "boss",
+"visual": {
+"fit_mode": "contain",
+"fit_scale": [1.0, 1.0, 1.0],
+"fitted_size": [1.039593, 0.4876, 0.6532],
+"label": "石祭坛",
+"model_id": "stone_altar",
+"path": "res://assets/vendor/kenney/graveyard/Models/altar-stone.glb",
+"repeat_along_longest": false,
+"repeat_count": 1,
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 11.0,
+"z": 0.0
+},
+"semantic_id": "boss_room",
+"tags": Array[String](["authored", "boss"]),
+"zone_id": "first_night"
+}
+
+[node name="AuthoringMarker" type="MeshInstance3D" parent="FS_BOSS_石祭坛_BOSS_ROOM" unique_id=150579164]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_t70yp")
+mesh = SubResource("BoxMesh_jonac")
+metadata/__fs_visual_hidden_visible = true
+
+[node name="VISUAL_stone_altar" type="Node3D" parent="FS_BOSS_石祭坛_BOSS_ROOM" unique_id=1993660234]
+
+[node name="Model" parent="FS_BOSS_石祭坛_BOSS_ROOM/VISUAL_stone_altar" unique_id=1271880433 instance=ExtResource("14_f6yt6")]
+
+[node name="FS_OBJECTIVE_石祭坛_SEAL_ENDPOINT" type="Node3D" parent="." unique_id=932824980]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.2, 0, 0)
+metadata/fivestar_semantic = {
+"behavior": "objective",
+"display_name": "石祭坛",
+"kind": "objective",
+"links": Array[String]([]),
+"params": {
+"id": "seal_endpoint",
+"type": "objective",
+"visual": {
+"fit_mode": "contain",
+"fit_scale": [1.0, 1.0, 1.0],
+"fitted_size": [1.039593, 0.4876, 0.6532],
+"label": "石祭坛",
+"model_id": "stone_altar",
+"path": "res://assets/vendor/kenney/graveyard/Models/altar-stone.glb",
+"repeat_along_longest": false,
+"repeat_count": 1,
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+},
+"x": 18.2,
+"z": 0.0
+},
+"semantic_id": "seal_endpoint",
+"tags": Array[String](["authored", "objective"]),
+"zone_id": "first_night"
+}
+
+[node name="AuthoringMarker" type="MeshInstance3D" parent="FS_OBJECTIVE_石祭坛_SEAL_ENDPOINT" unique_id=843541134]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_fwe5k")
+mesh = SubResource("BoxMesh_jtt3k")
+metadata/__fs_visual_hidden_visible = true
+
+[node name="VISUAL_stone_altar" type="Node3D" parent="FS_OBJECTIVE_石祭坛_SEAL_ENDPOINT" unique_id=556358071]
+
+[node name="Model" parent="FS_OBJECTIVE_石祭坛_SEAL_ENDPOINT/VISUAL_stone_altar" unique_id=1891119580 instance=ExtResource("14_f6yt6")]
+
+[node name="FS_REST_REST_0" type="Node3D" parent="." unique_id=742846607]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, 0.9, 0)
+metadata/fivestar_semantic = {
+"behavior": "rest",
+"kind": "rest",
+"links": Array[String]([]),
+"params": {
+"id": "rest_0",
+"type": "rest",
+"x": -13.5,
+"y": 0.9,
+"z": 0.0
+},
+"semantic_id": "rest_0",
+"tags": Array[String](["authored", "rest"]),
+"zone_id": "first_night"
+}
+
+[node name="AuthoringMarker" type="MeshInstance3D" parent="FS_REST_REST_0" unique_id=447136991]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.85999995, 0)
+material_override = SubResource("StandardMaterial3D_4cajb")
+mesh = SubResource("BoxMesh_dnmb0")
+
+[node name="FS_REST_REST_1" type="Node3D" parent="." unique_id=43878137]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6, 0.9, 0)
+metadata/fivestar_semantic = {
+"behavior": "rest",
+"kind": "rest",
+"links": Array[String]([]),
+"params": {
+"id": "rest_1",
+"type": "rest",
+"x": -3.6,
+"y": 0.9,
+"z": 0.0
+},
+"semantic_id": "rest_1",
+"tags": Array[String](["authored", "rest"]),
+"zone_id": "first_night"
+}
+
+[node name="AuthoringMarker" type="MeshInstance3D" parent="FS_REST_REST_1" unique_id=1539767162]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.85999995, 0)
+material_override = SubResource("StandardMaterial3D_4cajb")
+mesh = SubResource("BoxMesh_dnmb0")
+
+[node name="FS_REST_REST_2" type="Node3D" parent="." unique_id=2006029169]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.4, 0.9, 0)
+metadata/fivestar_semantic = {
+"behavior": "rest",
+"kind": "rest",
+"links": Array[String]([]),
+"params": {
+"id": "rest_2",
+"type": "rest",
+"x": 4.4,
+"y": 0.9,
+"z": 0.0
+},
+"semantic_id": "rest_2",
+"tags": Array[String](["authored", "rest"]),
+"zone_id": "first_night"
+}
+
+[node name="AuthoringMarker" type="MeshInstance3D" parent="FS_REST_REST_2" unique_id=88475854]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.85999995, 0)
+material_override = SubResource("StandardMaterial3D_4cajb")
+mesh = SubResource("BoxMesh_dnmb0")
+
+[node name="FS_GATE_墓穴门_SHORTCUT_GATE" type="StaticBody3D" parent="." unique_id=897040099]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.3, 0, -4)
+metadata/fivestar_semantic = {
+"behavior": "gate",
+"display_name": "墓穴门",
+"kind": "gate",
+"links": Array[String](["shortcut_east"]),
+"params": {
+"kind": "ability",
+"prompt": "夜巡印章捷径门",
+"required_ability": "night_stamp",
+"required_boss": "",
+"required_quest": "",
+"visual": {
+"label": "墓穴门",
+"model_id": "crypt_door",
+"path": "res://assets/vendor/kenney/graveyard/Models/crypt-door.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+}
+},
+"semantic_id": "shortcut_gate",
+"tags": Array[String](["authored"]),
+"zone_id": ""
+}
+
+[node name="@CollisionShape3D@56" type="CollisionShape3D" parent="FS_GATE_墓穴门_SHORTCUT_GATE" unique_id=156870350]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+shape = SubResource("BoxShape3D_wv4lf")
+
+[node name="art_key_v2_interactive_door" type="MeshInstance3D" parent="FS_GATE_墓穴门_SHORTCUT_GATE" unique_id=1972945178]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_06rq6")
+mesh = SubResource("BoxMesh_lqxtb")
+
+[node name="FS_PROP_FS_GATE__SHORTCUT_GATE_VISUAL_CRYPT_DOOR" parent="FS_GATE_墓穴门_SHORTCUT_GATE" unique_id=605797721 instance=ExtResource("1_p3dt8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.450581e-09)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "",
+"kind": "prop",
+"links": Array[String]([]),
+"params": {
+"visual": {
+"fit_mode": "contain",
+"fit_scale": [0.26949033, 0.26949033, 0.26949033],
+"fitted_size": [0.21865429, 0.21033102, 0.1225],
+"label": "吸血鬼角色",
+"model_id": "vampire",
+"path": "res://assets/vendor/kenney/graveyard/Models/character-vampire.glb",
+"placement": "ground",
+"repeat_along_longest": false,
+"repeat_count": 1,
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+}
+},
+"semantic_id": "fs_gate__shortcut_gate_visual_crypt_door",
+"tags": Array[String]([]),
+"zone_id": ""
+}
+
+[node name="VISUAL_vampire" type="Node3D" parent="FS_GATE_墓穴门_SHORTCUT_GATE/FS_PROP_FS_GATE__SHORTCUT_GATE_VISUAL_CRYPT_DOOR" unique_id=795537381]
+transform = Transform3D(0.26949033, 0, 0, 0, 0.26949033, 0, 0, 0, 0.26949033, 0, -0.0059365816, 0.014358684)
+
+[node name="FS_PROP_VISUAL_VAMPIRE_MODEL" type="Node3D" parent="FS_GATE_墓穴门_SHORTCUT_GATE/FS_PROP_FS_GATE__SHORTCUT_GATE_VISUAL_CRYPT_DOOR/VISUAL_vampire" unique_id=802504036 instance=ExtResource("19_34ste")]
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "",
+"kind": "prop",
+"links": Array[String]([]),
+"params": {
+"effect": {
+"color": "#ffd166",
+"effect_id": "case_gold_beacon",
+"label": "案件金色信标",
+"path": "res://authoring/assets/components/effects/case_gold_beacon.tscn",
+"placement": "ground"
+}
+},
+"semantic_id": "visual_vampire_model",
+"tags": Array[String]([]),
+"zone_id": ""
+}
+
+[node name="EFFECT_case_gold_beacon" type="Node3D" parent="FS_GATE_墓穴门_SHORTCUT_GATE/FS_PROP_FS_GATE__SHORTCUT_GATE_VISUAL_CRYPT_DOOR/VISUAL_vampire/FS_PROP_VISUAL_VAMPIRE_MODEL" unique_id=1629618948 instance=ExtResource("20_2cnho")]
+script = ExtResource("21_fa0jg")
+
+[node name="FS_DECOR_吸血鬼角色_VISUAL_VAMPIRE_1" type="Node3D" parent="FS_GATE_墓穴门_SHORTCUT_GATE" unique_id=1025814687]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.8920934)
+metadata/fivestar_semantic = {
+"behavior": "none",
+"display_name": "吸血鬼角色",
+"kind": "decor",
+"links": Array[String]([]),
+"params": {
+"visual": {
+"fit_mode": "contain",
+"fit_scale": [1.0, 1.0, 1.0],
+"fitted_size": [0.81136227, 0.78047705, 0.45456177],
+"label": "吸血鬼角色",
+"model_id": "vampire",
+"path": "res://assets/vendor/kenney/graveyard/Models/character-vampire.glb",
+"placement": "ground",
+"repeat_along_longest": false,
+"repeat_count": 1,
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+}
+},
+"semantic_id": "visual_vampire_1",
+"tags": Array[String](["新增模型", "角色占位"]),
+"zone_id": ""
+}
+
+[node name="VISUAL_vampire" type="Node3D" parent="FS_GATE_墓穴门_SHORTCUT_GATE/FS_DECOR_吸血鬼角色_VISUAL_VAMPIRE_1" unique_id=434689600]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.022028923, 0.05328092)
+
+[node name="Model" type="Node3D" parent="FS_GATE_墓穴门_SHORTCUT_GATE/FS_DECOR_吸血鬼角色_VISUAL_VAMPIRE_1/VISUAL_vampire" unique_id=75367580 instance=ExtResource("19_34ste")]
+
+[node name="FS_GATE_大型墓穴门_SEAL_DOOR" type="StaticBody3D" parent="." unique_id=1855406758]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.4, 0, 0)
+metadata/fivestar_semantic = {
+"behavior": "gate",
+"display_name": "大型墓穴门",
+"kind": "gate",
+"links": Array[String](["seal_endpoint"]),
+"params": {
+"kind": "boss",
+"prompt": "封印之门",
+"required_ability": "",
+"required_boss": "seal_boss",
+"required_quest": "",
+"visual": {
+"label": "大型墓穴门",
+"model_id": "crypt_large_door",
+"path": "res://assets/vendor/kenney/graveyard/Models/crypt-large-door.glb",
+"rotation_degrees": [0.0, 0.0, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"y_offset": 0.0
+}
+},
+"semantic_id": "seal_door",
+"tags": Array[String](["authored"]),
+"zone_id": ""
+}
+
+[node name="@CollisionShape3D@57" type="CollisionShape3D" parent="FS_GATE_大型墓穴门_SEAL_DOOR" unique_id=1238012076]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+shape = SubResource("BoxShape3D_1ocqh")
+
+[node name="art_key_v2_interactive_door" type="MeshInstance3D" parent="FS_GATE_大型墓穴门_SEAL_DOOR" unique_id=1176392244]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_06rq6")
+mesh = SubResource("BoxMesh_lqxtb")
+
+[node name="VISUAL_crypt_large_door" parent="FS_GATE_大型墓穴门_SEAL_DOOR" unique_id=338711979 instance=ExtResource("16_atlk1")]
