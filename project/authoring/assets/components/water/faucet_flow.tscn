@@ -1,0 +1,45 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Material" path="res://authoring/assets/components/water/water_flow_material.tres" id="1_water"]
+[ext_resource type="Material" path="res://authoring/assets/components/water/wet_stone_material.tres" id="2_stone"]
+[ext_resource type="Material" path="res://authoring/assets/components/water/foam_material.tres" id="3_foam"]
+
+[sub_resource type="CylinderMesh" id="Cylinder_pipe"]
+top_radius = 0.11
+bottom_radius = 0.11
+height = 0.8
+radial_segments = 14
+
+[sub_resource type="CylinderMesh" id="Cylinder_tip"]
+top_radius = 0.14
+bottom_radius = 0.1
+height = 0.18
+radial_segments = 14
+
+[sub_resource type="BoxMesh" id="BoxMesh_stream"]
+size = Vector3(0.11, 1.45, 0.11)
+
+[sub_resource type="BoxMesh" id="BoxMesh_drop"]
+size = Vector3(0.58, 0.09, 0.55)
+
+[node name="FaucetFlow" type="Node3D"]
+
+[node name="Pipe" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, -0.24, 0, 0)
+mesh = SubResource("Cylinder_pipe")
+material_override = ExtResource("2_stone")
+
+[node name="FaucetTip" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.64, 0, 0)
+mesh = SubResource("Cylinder_tip")
+material_override = ExtResource("2_stone")
+
+[node name="WaterStream" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.64, -0.8, 0)
+mesh = SubResource("BoxMesh_stream")
+material_override = ExtResource("1_water")
+
+[node name="BottomFoam" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.64, -1.54, 0)
+mesh = SubResource("BoxMesh_drop")
+material_override = ExtResource("3_foam")

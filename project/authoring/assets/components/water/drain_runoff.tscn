@@ -1,0 +1,39 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Material" path="res://authoring/assets/components/water/water_flow_material.tres" id="1_water"]
+[ext_resource type="Material" path="res://authoring/assets/components/water/wet_stone_material.tres" id="2_stone"]
+[ext_resource type="Material" path="res://authoring/assets/components/water/dark_material.tres" id="3_dark"]
+[ext_resource type="Material" path="res://authoring/assets/components/water/foam_material.tres" id="4_foam"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_slab"]
+size = Vector3(2.2, 1.45, 0.34)
+
+[sub_resource type="BoxMesh" id="BoxMesh_opening"]
+size = Vector3(1.08, 0.62, 0.18)
+
+[sub_resource type="BoxMesh" id="BoxMesh_stream"]
+size = Vector3(0.82, 2.6, 0.14)
+
+[sub_resource type="BoxMesh" id="BoxMesh_foam"]
+size = Vector3(1.55, 0.1, 0.62)
+
+[node name="DrainRunoff" type="Node3D"]
+
+[node name="StoneSlab" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_slab")
+material_override = ExtResource("2_stone")
+
+[node name="DarkOpening" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.04, -0.2)
+mesh = SubResource("BoxMesh_opening")
+material_override = ExtResource("3_dark")
+
+[node name="RunoffSheet" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.65, -0.24)
+mesh = SubResource("BoxMesh_stream")
+material_override = ExtResource("1_water")
+
+[node name="BottomFoam" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.88, -0.24)
+mesh = SubResource("BoxMesh_foam")
+material_override = ExtResource("4_foam")

@@ -1,0 +1,44 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Material" path="res://authoring/assets/components/water/water_flow_material.tres" id="1_water"]
+[ext_resource type="Material" path="res://authoring/assets/components/water/foam_material.tres" id="2_foam"]
+
+[sub_resource type="CylinderMesh" id="Cylinder_jet"]
+top_radius = 0.11
+bottom_radius = 0.18
+height = 2.8
+radial_segments = 18
+
+[sub_resource type="SphereMesh" id="Sphere_crest"]
+radius = 0.3
+height = 0.6
+radial_segments = 18
+rings = 8
+
+[sub_resource type="CylinderMesh" id="Cylinder_side"]
+top_radius = 0.055
+bottom_radius = 0.09
+height = 1.45
+radial_segments = 12
+
+[node name="FountainJet" type="Node3D"]
+
+[node name="CenterJet" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+mesh = SubResource("Cylinder_jet")
+material_override = ExtResource("1_water")
+
+[node name="Crest" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.86, 0)
+mesh = SubResource("Sphere_crest")
+material_override = ExtResource("2_foam")
+
+[node name="SideJetLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.92, 0, -0.39, 0, 1, 0, 0.39, 0, 0.92, -0.72, 0.76, 0)
+mesh = SubResource("Cylinder_side")
+material_override = ExtResource("1_water")
+
+[node name="SideJetRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.92, 0, 0.39, 0, 1, 0, -0.39, 0, 0.92, 0.72, 0.76, 0)
+mesh = SubResource("Cylinder_side")
+material_override = ExtResource("1_water")

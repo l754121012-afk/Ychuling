@@ -9,10 +9,11 @@ const Runtime := preload("res://scripts/authoring/FSAuthoringRuntime.gd")
 const VisualCatalog := preload("res://scripts/authoring/FSVisualCatalog.gd")
 const EffectCatalog := preload("res://scripts/authoring/FSEffectCatalog.gd")
 const EnvironmentCatalog := preload("res://scripts/authoring/FSEnvironmentCatalog.gd")
+const GroundPaintCatalog := preload("res://scripts/authoring/FSGroundPaintCatalog.gd")
 const ModelPreview := preload("res://scripts/authoring/FSModelPreview.gd")
 const GameView := preload("res://scripts/authoring/FSGameView.gd")
 const PlaytestMode := preload("res://scripts/authoring/FSPlaytestMode.gd")
-const ADDON_VERSION := "0.3.2"
+const ADDON_VERSION := "0.3.3"
 const MODEL_GALLERY_PATH := "res://authoring/scenes/model_gallery.tscn"
 
 var _selected_node: Node
@@ -55,6 +56,18 @@ var _environment_name_edit: LineEdit
 var _environment_create_button: Button
 var _environment_remove_button: Button
 var _environment_status_label: Label
+var _paint_preset_option: OptionButton
+var _paint_shape_option: OptionButton
+var _paint_radius_slider: HSlider
+var _paint_opacity_slider: HSlider
+var _paint_toggle_button: Button
+var _paint_remove_button: Button
+var _paint_status_label: Label
+var _paint_mode_active := false
+var _paint_stroke_active := false
+var _paint_stroke_count := 0
+var _paint_last_position := Vector3.ZERO
+var _paint_has_last_position := false
 var _open_scene_button: Button
 var _save_scene_button: Button
 var _apply_button: Button
@@ -107,6 +120,7 @@ func on_scene_changed() -> void:
 	_refresh_workflow()
 	_refresh_view_status()
 	_refresh_playtest_mode_ui()
+	call_deferred("_repair_environment_nodes")
 
 
 func on_editor_selection_changed() -> void:
@@ -437,6 +451,60 @@ func _build_ui() -> void:
 	content.add_child(_environment_status_label)
 	_populate_environment_options()
 
+	_add_heading(content, "地面绘制（贴面）")
+	var paint_help := Label.new()
+	paint_help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	paint_help.text = "地形模型继续负责承托和碰撞；这里在大地形表面刷湿泥、青苔、石屑、水光和破败痕迹。开启画笔后，在三维视图里左键点击或拖动。每笔完成会自动保存为 GROUND_PAINT_ 节点。"
+	content.add_child(paint_help)
+	_paint_preset_option = OptionButton.new()
+	_paint_preset_option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_paint_preset_option.fit_to_longest_item = false
+	_paint_preset_option.clip_text = true
+	content.add_child(_paint_preset_option)
+	_paint_shape_option = OptionButton.new()
+	_paint_shape_option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_paint_shape_option.fit_to_longest_item = false
+	_paint_shape_option.clip_text = true
+	content.add_child(_paint_shape_option)
+	var paint_radius_label := Label.new()
+	paint_radius_label.text = "笔刷半径"
+	content.add_child(paint_radius_label)
+	_paint_radius_slider = HSlider.new()
+	_paint_radius_slider.min_value = GroundPaintCatalog.MIN_RADIUS
+	_paint_radius_slider.max_value = GroundPaintCatalog.MAX_RADIUS
+	_paint_radius_slider.step = 0.1
+	_paint_radius_slider.value = 2.5
+	_paint_radius_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_child(_paint_radius_slider)
+	var paint_opacity_label := Label.new()
+	paint_opacity_label.text = "绘制浓度"
+	content.add_child(paint_opacity_label)
+	_paint_opacity_slider = HSlider.new()
+	_paint_opacity_slider.min_value = 0.05
+	_paint_opacity_slider.max_value = 1.0
+	_paint_opacity_slider.step = 0.05
+	_paint_opacity_slider.value = 0.7
+	_paint_opacity_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_child(_paint_opacity_slider)
+	var paint_action_row := HBoxContainer.new()
+	content.add_child(paint_action_row)
+	_paint_toggle_button = Button.new()
+	_paint_toggle_button.text = "开启地面画笔"
+	_paint_toggle_button.tooltip_text = "开启后左键在编辑器三维视图的地面碰撞体上绘制；再次点击结束。"
+	_paint_toggle_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_paint_toggle_button.pressed.connect(_on_toggle_paint_mode_pressed)
+	paint_action_row.add_child(_paint_toggle_button)
+	_paint_remove_button = Button.new()
+	_paint_remove_button.text = "删除选中绘制"
+	_paint_remove_button.tooltip_text = "删除当前选中的 GROUND_PAINT_ 绘制节点，不会删除地形模型。"
+	_paint_remove_button.pressed.connect(_on_remove_paint_pressed)
+	paint_action_row.add_child(_paint_remove_button)
+	_paint_status_label = Label.new()
+	_paint_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_paint_status_label.text = "画笔关闭。建议用“地形 / 平台”模型搭好碰撞地面后再绘制。"
+	content.add_child(_paint_status_label)
+	_populate_ground_paint_options()
+
 	var action_row := HBoxContainer.new()
 	content.add_child(action_row)
 	_apply_button = Button.new()
@@ -576,6 +644,10 @@ func _on_focus_selection_pressed() -> void:
 
 
 func handle_editor_3d_gui_input(p_camera: Camera3D, p_event: InputEvent) -> int:
+	if _paint_mode_active and p_camera != null:
+		var paint_result := _handle_ground_paint_input(p_camera, p_event)
+		if paint_result != 0:
+			return paint_result
 	if not _focus_view_active or p_camera == null:
 		return 0
 	if p_event is InputEventMouseButton:
@@ -614,6 +686,214 @@ func handle_editor_3d_gui_input(p_camera: Camera3D, p_event: InputEvent) -> int:
 		_apply_focus_camera(p_camera)
 		return 1
 	return 0
+
+
+func _handle_ground_paint_input(p_camera: Camera3D, p_event: InputEvent) -> int:
+	if p_event is InputEventMouseButton:
+		var button_event := p_event as InputEventMouseButton
+		if button_event.button_index != MOUSE_BUTTON_LEFT:
+			return 0
+		if button_event.pressed:
+			_paint_stroke_active = true
+			_paint_stroke_count = 0
+			_paint_has_last_position = false
+			_paint_at_editor_position(p_camera, button_event.position, true)
+			return 1
+		if _paint_stroke_active:
+			_paint_stroke_active = false
+			_paint_has_last_position = false
+			var saved := _commit_ground_paint_stroke()
+			_paint_status_label.text = (
+				"本笔已保存：%d 个绘制贴面。继续左键拖动，或关闭画笔。"
+				% _paint_stroke_count
+				if saved
+				else "本笔已生成，但自动保存失败；请按 Ctrl+S。"
+			)
+			_paint_stroke_count = 0
+			return 1
+	if p_event is InputEventMouseMotion and _paint_stroke_active:
+		var motion := p_event as InputEventMouseMotion
+		if motion.button_mask & MOUSE_BUTTON_MASK_LEFT:
+			_paint_at_editor_position(p_camera, motion.position, false)
+			return 1
+	return 0
+
+
+func _paint_at_editor_position(
+	p_camera: Camera3D,
+	p_screen_position: Vector2,
+	p_force: bool
+) -> void:
+	if not _edited_root:
+		return
+	var hit := _raycast_ground_point(p_camera, p_screen_position)
+	if not bool(hit.get("ok", false)):
+		if p_force:
+			_paint_status_label.text = str(hit.get("error", "没有找到可绘制的地面。"))
+		return
+	var position: Vector3 = hit["position"]
+	var radius := float(_paint_radius_slider.value)
+	if (
+		not p_force
+		and _paint_has_last_position
+		and _paint_last_position.distance_to(position) < radius * GroundPaintCatalog.STAMP_SPACING_RATIO
+	):
+		return
+	var parent := _ground_paint_parent()
+	var params := GroundPaintCatalog.brush_params(
+		_selected_option(_paint_preset_option),
+		_selected_option(_paint_shape_option),
+		radius,
+		float(_paint_opacity_slider.value)
+	)
+	var result := GroundPaintCatalog.apply_stamp(
+		parent,
+		position,
+		hit["normal"],
+		_edited_root,
+		params
+	)
+	if not bool(result.get("ok", false)):
+		_paint_status_label.text = str(result.get("error", "绘制失败。"))
+		return
+	_paint_last_position = position
+	_paint_has_last_position = true
+	_paint_stroke_count += 1
+	_paint_status_label.text = "正在绘制 %s：%d 笔。" % [
+		str(params.get("preset_label", "")),
+		_paint_stroke_count,
+	]
+
+
+func _raycast_ground_point(p_camera: Camera3D, p_screen_position: Vector2) -> Dictionary:
+	var ray_origin := p_camera.project_ray_origin(p_screen_position)
+	var ray_normal := p_camera.project_ray_normal(p_screen_position)
+	var ray_end := ray_origin + ray_normal * 5000.0
+	var world := p_camera.get_world_3d()
+	if world:
+		var query := PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
+		query.collide_with_areas = false
+		query.collide_with_bodies = true
+		var hit: Dictionary = world.direct_space_state.intersect_ray(query)
+		if not hit.is_empty():
+			return {
+				"ok": true,
+				"position": hit.get("position", Vector3.ZERO),
+				"normal": hit.get("normal", Vector3.UP),
+			}
+	var ground_plane := Plane(Vector3.UP, 0.0)
+	var plane_hit = ground_plane.intersects_ray(ray_origin, ray_normal)
+	if plane_hit == null:
+		return {"ok": false, "error": "视线前方没有地面碰撞体，也没有命中 y=0 构建平面。"}
+	return {
+		"ok": true,
+		"position": plane_hit,
+		"normal": Vector3.UP,
+	}
+
+
+func _ground_paint_parent() -> Node3D:
+	var existing := _edited_root.get_node_or_null(GroundPaintCatalog.GROUP_NAME)
+	if existing is Node3D:
+		return existing as Node3D
+	var group := Node3D.new()
+	group.name = GroundPaintCatalog.GROUP_NAME
+	_edited_root.add_child(group)
+	group.owner = _edited_root
+	return group
+
+
+func _commit_ground_paint_stroke() -> bool:
+	if _paint_stroke_count <= 0:
+		return true
+	if EditorInterface.has_method("mark_scene_as_unsaved"):
+		EditorInterface.call("mark_scene_as_unsaved")
+	return EditorInterface.save_scene() == OK
+
+
+func _on_toggle_paint_mode_pressed() -> void:
+	if _paint_mode_active:
+		_paint_mode_active = false
+		_paint_stroke_active = false
+		_paint_has_last_position = false
+		_paint_toggle_button.text = "开启地面画笔"
+		_paint_status_label.text = "画笔已关闭。绘制贴面会继续保存在 GROUND_PAINT_ 地面绘制 节点下。"
+		return
+	if not _edited_root:
+		_set_status("没有打开的作者场景。", true)
+		return
+	_paint_mode_active = true
+	_focus_view_active = false
+	_paint_toggle_button.text = "地面画笔：已开启"
+	_paint_status_label.text = "画笔已开启。左键在三维视图地面碰撞体上点击或拖动；每笔松开后自动保存。"
+	_set_status("地面画笔已开启；可先用 Shift+F 调整观察位置。", false)
+
+
+func _on_remove_paint_pressed() -> void:
+	if not _selected_node or not GroundPaintCatalog.is_paint_node(_selected_node):
+		_set_status("请先在场景树中选中一个 GROUND_PAINT_ 绘制节点。", true)
+		return
+	var removed_name := str(_selected_node.name)
+	if not GroundPaintCatalog.remove_paint_node(_selected_node):
+		_set_status("删除地面绘制失败。", true)
+		return
+	_selected_node = null
+	if EditorInterface.has_method("mark_scene_as_unsaved"):
+		EditorInterface.call("mark_scene_as_unsaved")
+	var save_error := EditorInterface.save_scene()
+	if save_error != OK:
+		_set_status(
+			"已删除绘制 %s，但自动保存失败：%s。请按 Ctrl+S。" % [
+				removed_name,
+				error_string(save_error),
+			],
+			true
+		)
+	else:
+		_set_status("已删除并保存地面绘制：%s。" % removed_name, false)
+	_refresh_selection()
+
+
+func _populate_ground_paint_options() -> void:
+	_paint_preset_option.clear()
+	for entry in GroundPaintCatalog.presets():
+		_paint_preset_option.add_item(str(entry.get("label", "")))
+		_paint_preset_option.set_item_metadata(
+			_paint_preset_option.item_count - 1,
+			str(entry.get("id", ""))
+		)
+	if _paint_preset_option.item_count > 0:
+		_paint_preset_option.select(0)
+	_paint_shape_option.clear()
+	for entry in GroundPaintCatalog.shapes():
+		_paint_shape_option.add_item(str(entry.get("label", "")))
+		_paint_shape_option.set_item_metadata(
+			_paint_shape_option.item_count - 1,
+			str(entry.get("id", ""))
+		)
+	if _paint_shape_option.item_count > 0:
+		_paint_shape_option.select(0)
+
+
+func _repair_environment_nodes() -> void:
+	if not _edited_root:
+		return
+	var result := EnvironmentCatalog.repair_environment_nodes(_edited_root, _edited_root)
+	var repaired := int(result.get("repaired", 0))
+	var rebuilt := int(result.get("rebuilt", 0))
+	if repaired <= 0 and rebuilt <= 0:
+		return
+	if EditorInterface.has_method("mark_scene_as_unsaved"):
+		EditorInterface.call("mark_scene_as_unsaved")
+	var save_error := EditorInterface.save_scene()
+	_set_status(
+		"已修复环境特效持久化：补建 %d 个，修复归属 %d 个。%s" % [
+			rebuilt,
+			repaired,
+			"已保存。" if save_error == OK else "自动保存失败，请按 Ctrl+S。",
+		],
+		save_error != OK or not bool(result.get("ok", true))
+	)
 
 
 func _apply_focus_camera(p_camera: Camera3D) -> void:
@@ -1690,6 +1970,18 @@ func _set_form_enabled(p_enabled: bool) -> void:
 		_environment_create_button.disabled = not has_scene
 	if _environment_remove_button:
 		_environment_remove_button.disabled = not has_scene or not EnvironmentCatalog.is_environment_node(_selected_node)
+	if _paint_preset_option:
+		_paint_preset_option.disabled = not has_scene
+	if _paint_shape_option:
+		_paint_shape_option.disabled = not has_scene
+	if _paint_radius_slider:
+		_paint_radius_slider.editable = has_scene
+	if _paint_opacity_slider:
+		_paint_opacity_slider.editable = has_scene
+	if _paint_toggle_button:
+		_paint_toggle_button.disabled = not has_scene
+	if _paint_remove_button:
+		_paint_remove_button.disabled = not has_scene or not GroundPaintCatalog.is_paint_node(_selected_node)
 	_refresh_create_button_state()
 
 

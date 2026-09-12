@@ -16,6 +16,50 @@ size = Vector3(0.98, 0.25, 0.98)
 [sub_resource type="BoxShape3D" id="BoxShape3D_dh0b2"]
 size = Vector3(0.98, 0.08, 0.98)
 
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_yma1l"]
+emission_shape = 3
+emission_box_extents = Vector3(9, 0.3, 9)
+direction = Vector3(0, -1, 0)
+spread = 2.0
+initial_velocity_min = 11.0
+initial_velocity_max = 16.0
+gravity = Vector3(0, -7, 0)
+scale_min = 0.65
+scale_max = 1.25
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dh0b2"]
+transparency = 1
+cull_mode = 2
+shading_mode = 0
+albedo_color = Color(0.68, 0.86, 1, 0.62)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ch3kp"]
+material = SubResource("StandardMaterial3D_dh0b2")
+size = Vector3(0.018, 0.58, 0.018)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_3drgm"]
+emission_shape = 3
+emission_box_extents = Vector3(0.28, 0.08, 0.28)
+direction = Vector3(0, 1, 0)
+spread = 18.0
+initial_velocity_min = 1.1
+initial_velocity_max = 2.5
+gravity = Vector3(0, -1.8, 0)
+scale_min = 0.22
+scale_max = 0.55
+color = Color(1, 0.5411765, 0.21176471, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rpwam"]
+albedo_color = Color(1, 0.47843137, 0.18431373, 1)
+emission_enabled = true
+emission = Color(1, 0.47843137, 0.18431373, 1)
+emission_energy_multiplier = 2.4
+
+[sub_resource type="SphereMesh" id="SphereMesh_g8cbt"]
+material = SubResource("StandardMaterial3D_rpwam")
+radius = 0.22
+height = 0.44
+
 [node name="FS_REGION_FIRST_NIGHT" type="Node3D" unique_id=2145368658]
 metadata/fivestar_semantic = {
 "behavior": "none",
@@ -92,7 +136,7 @@ metadata/fivestar_semantic = {
 
 [node name="VISUAL_dungeon_dirt" type="Node3D" parent="FS_DECOR_地牢泥土地面_VISUAL_DUNGEON_DIRT_1" unique_id=1404554266]
 
-[node name="Model" type="Node3D" parent="FS_DECOR_地牢泥土地面_VISUAL_DUNGEON_DIRT_1/VISUAL_dungeon_dirt" unique_id=117822517 instance=ExtResource("1_gl8ts")]
+[node name="Model" parent="FS_DECOR_地牢泥土地面_VISUAL_DUNGEON_DIRT_1/VISUAL_dungeon_dirt" unique_id=117822517 instance=ExtResource("1_gl8ts")]
 
 [node name="SUPPORT_floor" type="StaticBody3D" parent="FS_DECOR_地牢泥土地面_VISUAL_DUNGEON_DIRT_1" unique_id=1127058089]
 metadata/__fs_auto_support_collision = true
@@ -135,7 +179,7 @@ metadata/fivestar_semantic = {
 
 [node name="VISUAL_dungeon_floor_detail" type="Node3D" parent="FS_DECOR_地牢花纹地板_VISUAL_DUNGEON_FLOOR_DETAIL_1" unique_id=1664819642]
 
-[node name="Model" type="Node3D" parent="FS_DECOR_地牢花纹地板_VISUAL_DUNGEON_FLOOR_DETAIL_1/VISUAL_dungeon_floor_detail" unique_id=536723015 instance=ExtResource("2_yma1l")]
+[node name="Model" parent="FS_DECOR_地牢花纹地板_VISUAL_DUNGEON_FLOOR_DETAIL_1/VISUAL_dungeon_floor_detail" unique_id=536723015 instance=ExtResource("2_yma1l")]
 
 [node name="SUPPORT_floor" type="StaticBody3D" parent="FS_DECOR_地牢花纹地板_VISUAL_DUNGEON_FLOOR_DETAIL_1" unique_id=1604821620]
 metadata/__fs_auto_support_collision = true
@@ -155,3 +199,35 @@ metadata/__fs_environment_effect = {
 "label": "成片雨幕",
 "tags": ["雨", "雨幕", "天气", "成片"]
 }
+
+[node name="成片雨幕" type="GPUParticles3D" parent="ENVIRONMENT_成片雨幕_RAIN_SHEET_01" unique_id=1212543741]
+amount = 360
+lifetime = 0.9
+preprocess = 0.45
+visibility_aabb = AABB(-12, -5, -12, 24, 14, 24)
+process_material = SubResource("ParticleProcessMaterial_yma1l")
+draw_pass_1 = SubResource("BoxMesh_ch3kp")
+
+[node name="ENVIRONMENT_火焰与动态光_FIRE_01" type="Node3D" parent="." unique_id=190510663]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1787949, 0, 0)
+metadata/__fs_environment_effect = {
+"category": "火焰与粒子",
+"effect_id": "fire",
+"label": "火焰与动态光",
+"tags": ["火焰", "灯光", "粒子", "暖色"]
+}
+
+[node name="暖色灯光" type="OmniLight3D" parent="ENVIRONMENT_火焰与动态光_FIRE_01" unique_id=140685612]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+light_color = Color(1, 0.5411765, 0.21176471, 1)
+light_energy = 2.8
+shadow_enabled = true
+omni_range = 6.0
+
+[node name="火焰粒子" type="GPUParticles3D" parent="ENVIRONMENT_火焰与动态光_FIRE_01" unique_id=1923259698]
+amount = 72
+lifetime = 1.15
+preprocess = 0.575
+visibility_aabb = AABB(-12, -5, -12, 24, 14, 24)
+process_material = SubResource("ParticleProcessMaterial_3drgm")
+draw_pass_1 = SubResource("SphereMesh_g8cbt")

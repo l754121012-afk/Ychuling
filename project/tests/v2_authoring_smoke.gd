@@ -8,6 +8,7 @@ const Workflow := preload("res://scripts/authoring/FSWorkflow.gd")
 const VisualCatalog := preload("res://scripts/authoring/FSVisualCatalog.gd")
 const EffectCatalog := preload("res://scripts/authoring/FSEffectCatalog.gd")
 const EnvironmentCatalog := preload("res://scripts/authoring/FSEnvironmentCatalog.gd")
+const GroundPaintCatalog := preload("res://scripts/authoring/FSGroundPaintCatalog.gd")
 const ModelPreview := preload("res://scripts/authoring/FSModelPreview.gd")
 const GameView := preload("res://scripts/authoring/FSGameView.gd")
 const AuthoringDock := preload("res://addons/fivestar_authoring/fs_authoring_dock.gd")
@@ -217,8 +218,16 @@ func _run() -> void:
 	var environment_root := Node3D.new()
 	root.add_child(environment_root)
 	for entry in environment_entries:
-		var first_environment := EnvironmentCatalog.apply_environment(environment_root, entry)
-		var second_environment := EnvironmentCatalog.apply_environment(environment_root, entry)
+		var first_environment := EnvironmentCatalog.apply_environment(
+			environment_root,
+			entry,
+			environment_root
+		)
+		var second_environment := EnvironmentCatalog.apply_environment(
+			environment_root,
+			entry,
+			environment_root
+		)
 		var first_node := first_environment.get("node") as Node3D
 		var second_node := second_environment.get("node") as Node3D
 		ok = _expect(
@@ -235,6 +244,10 @@ func _run() -> void:
 			first_node != null and first_node.get_child_count() > 0,
 			"环境特效节点必须包含可见灯光、网格或粒子：%s" % str(entry)
 		) and ok
+		ok = _expect(
+			first_node != null and _all_owned_by(first_node, environment_root),
+			"环境特效生成后必须递归写入作者场景 owner，否则 F5 或重开会丢失：%s" % str(entry)
+		) and ok
 		if first_node and second_node:
 			ok = _expect(
 				EnvironmentCatalog.remove_environment(first_node)
@@ -242,6 +255,59 @@ func _run() -> void:
 				"删除一个环境层不得影响同类型的另一个环境层"
 			) and ok
 	environment_root.free()
+	var repair_environment_root := Node3D.new()
+	repair_environment_root.name = "FS_ENVIRONMENT_REPAIR_SMOKE"
+	root.add_child(repair_environment_root)
+	var repair_environment_result := EnvironmentCatalog.apply_environment(
+		repair_environment_root,
+		EnvironmentCatalog.find("fire"),
+		repair_environment_root
+	)
+	var repairable_environment := repair_environment_result.get("node") as Node3D
+	ok = _expect(
+		bool(repair_environment_result.get("ok", false)) and repairable_environment != null,
+		"环境特效修复测试必须能先创建火与动态光节点"
+	) and ok
+	if repairable_environment:
+		for child in repairable_environment.get_children():
+			repairable_environment.remove_child(child)
+			child.free()
+	var repair_result := EnvironmentCatalog.repair_environment_nodes(
+		repair_environment_root,
+		repair_environment_root
+	)
+	ok = _expect(
+		bool(repair_result.get("ok", false))
+		and int(repair_result.get("rebuilt", 0)) == 1
+		and repairable_environment != null
+		and repairable_environment.get_child_count() > 0
+		and _all_owned_by(repairable_environment, repair_environment_root),
+		"旧场景中的空环境节点必须能从元数据补建并重新归作者场景持有：%s" % str(repair_result)
+	) and ok
+	repair_environment_root.free()
+	var persisted_authoring_scene = ResourceLoader.load(
+		"res://authoring/scenes/first_night_authoring.tscn"
+	)
+	ok = _expect(
+		persisted_authoring_scene is PackedScene,
+		"当前作者场景必须可作为 PackedScene 重新加载"
+	) and ok
+	if persisted_authoring_scene is PackedScene:
+		var persisted_instance = (persisted_authoring_scene as PackedScene).instantiate()
+		var persisted_environment_count := 0
+		for candidate in persisted_instance.find_children("*", "Node", true, false):
+			if EnvironmentCatalog.is_environment_node(candidate):
+				persisted_environment_count += 1
+				ok = _expect(
+					candidate.get_child_count() > 0
+					and _all_owned_by(candidate, persisted_instance),
+					"重新打开作者场景后环境节点必须有内容且归属场景根：%s" % str(candidate.name)
+				) and ok
+		ok = _expect(
+			persisted_environment_count > 0,
+			"当前作者场景应至少保留一个已应用环境特效用于持久化回归"
+		) and ok
+		persisted_instance.free()
 
 	var support_entries := VisualCatalog.support_shortcut_entries()
 	var support_profiles := {}
@@ -758,6 +824,16 @@ func _run() -> void:
 		"plunge_pool_foam",
 		"puddle_ripple",
 		"drain_outfall",
+		"waterfall_wide",
+		"waterfall_narrow",
+		"river_calm_straight",
+		"river_rapids_straight",
+		"wall_spout",
+		"fountain_jet",
+		"faucet_flow",
+		"drain_runoff",
+		"pool_overflow",
+		"water_flow_sheet",
 		"watermill",
 	]:
 		var found_water := false
@@ -772,6 +848,50 @@ func _run() -> void:
 			water_shortcut_has_potion = true
 			break
 	ok = _expect(not water_shortcut_has_potion, "水体快捷筛选不得混入药水瓶") and ok
+	for float_water_id in [
+		"wall_spout",
+		"fountain_jet",
+		"faucet_flow",
+		"drain_runoff",
+		"pool_overflow",
+	]:
+		ok = _expect(
+			VisualCatalog.placement_for_model_id(float_water_id) == "float",
+			"建筑附着类水流不得被自动强制落地：%s" % float_water_id
+		) and ok
+
+	var paint_root := Node3D.new()
+	paint_root.name = "FS_GROUND_PAINT_SMOKE"
+	root.add_child(paint_root)
+	var paint_parent := Node3D.new()
+	paint_parent.name = GroundPaintCatalog.GROUP_NAME
+	paint_root.add_child(paint_parent)
+	paint_parent.owner = paint_root
+	var paint_params := GroundPaintCatalog.brush_params("water_sheen", "oval", 2.5, 0.7)
+	var paint_result := GroundPaintCatalog.apply_stamp(
+		paint_parent,
+		Vector3(1.0, 0.2, 2.0),
+		Vector3.UP,
+		paint_root,
+		paint_params
+	)
+	var paint_node := paint_result.get("node") as MeshInstance3D
+	ok = _expect(
+		bool(paint_result.get("ok", false))
+		and paint_node != null
+		and GroundPaintCatalog.is_paint_node(paint_node)
+		and paint_node.owner == paint_root
+		and paint_node.mesh != null
+		and paint_node.material_override != null,
+		"地面绘制必须生成可持久化、无碰撞的 MeshInstance3D 贴面：%s" % str(paint_result)
+	) and ok
+	ok = _expect(
+		paint_node != null
+		and GroundPaintCatalog.remove_paint_node(paint_node)
+		and not is_instance_valid(paint_node),
+		"地面绘制必须支持独立删除且不影响地形"
+	) and ok
+	paint_root.free()
 
 	var repair_root := Node3D.new()
 	var repair_mesh_host := MeshInstance3D.new()
@@ -891,9 +1011,9 @@ func _run() -> void:
 		REGION_ID,
 		["authored", "window"]
 	))
-	var repair_result := VisualCatalog.apply_recommended_models(repair_host, repair_host)
+	var model_repair_result := VisualCatalog.apply_recommended_models(repair_host, repair_host)
 	ok = _expect(
-		int(repair_result.get("repaired", 0)) == 1
+		int(model_repair_result.get("repaired", 0)) == 1
 		and VisualCatalog.model_id_from_node(repair_host) == "town_window",
 		"空壳 VISUAL_ 节点必须被批量操作识别并重建"
 	) and ok
@@ -1049,6 +1169,15 @@ func _assign_owner(p_node: Node, p_owner: Node) -> void:
 	for child in p_node.get_children():
 		child.owner = p_owner
 		_assign_owner(child, p_owner)
+
+
+func _all_owned_by(p_node: Node, p_owner: Node) -> bool:
+	if p_node != p_owner and p_node.owner != p_owner:
+		return false
+	for child in p_node.get_children():
+		if not _all_owned_by(child, p_owner):
+			return false
+	return true
 
 
 func _cleanup_temp_files(p_write_result: Dictionary) -> void:

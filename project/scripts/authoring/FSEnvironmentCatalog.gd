@@ -125,11 +125,51 @@ static func apply_environment(
 		return {"ok": false, "error": build_error}
 	root.set_meta(META_KEY, environment_params(p_entry))
 	if p_owner and p_owner.is_ancestor_of(root):
-		root.owner = p_owner
+		_assign_owner_recursive(root, p_owner)
 	return {
 		"ok": true,
 		"node": root,
 		"environment": environment_params(p_entry),
+	}
+
+
+static func repair_environment_nodes(p_parent: Node, p_owner: Node) -> Dictionary:
+	if (
+		p_parent == null
+		or p_owner == null
+		or (p_parent != p_owner and not p_owner.is_ancestor_of(p_parent))
+	):
+		return {
+			"ok": false,
+			"repaired": 0,
+			"rebuilt": 0,
+			"errors": ["环境节点修复需要当前作者场景根节点作为 owner。"],
+		}
+	var environment_nodes: Array[Node] = []
+	_collect_environment_nodes(p_parent, environment_nodes)
+	var repaired := 0
+	var rebuilt := 0
+	var errors: Array[String] = []
+	for node in environment_nodes:
+		if not is_instance_valid(node) or not (node is Node3D):
+			continue
+		if node.get_child_count() == 0:
+			var params_value = node.get_meta(META_KEY, {})
+			var params: Dictionary = params_value if params_value is Dictionary else {}
+			var effect_id := str(params.get("effect_id", "")).strip_edges()
+			var build_error := _build_environment(node as Node3D, effect_id)
+			if build_error.is_empty():
+				rebuilt += 1
+			else:
+				errors.append("%s: %s" % [str(node.name), build_error])
+				continue
+		if _assign_owner_recursive(node, p_owner):
+			repaired += 1
+	return {
+		"ok": errors.is_empty(),
+		"repaired": repaired,
+		"rebuilt": rebuilt,
+		"errors": errors,
 	}
 
 
@@ -256,6 +296,26 @@ static func _emissive_material(p_color: Color) -> StandardMaterial3D:
 	material.emission = p_color
 	material.emission_energy_multiplier = 2.4
 	return material
+
+
+static func _collect_environment_nodes(p_node: Node, p_result: Array[Node]) -> void:
+	if is_environment_node(p_node):
+		p_result.append(p_node)
+	for child in p_node.get_children():
+		_collect_environment_nodes(child, p_result)
+
+
+static func _assign_owner_recursive(p_node: Node, p_owner: Node) -> bool:
+	if p_node == null or p_owner == null:
+		return false
+	var changed := false
+	if p_node.owner != p_owner:
+		p_node.owner = p_owner
+		changed = true
+	for child in p_node.get_children():
+		if _assign_owner_recursive(child, p_owner):
+			changed = true
+	return changed
 
 
 static func _particle_material() -> ParticleProcessMaterial:

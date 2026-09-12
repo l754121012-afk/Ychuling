@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Material" path="res://authoring/assets/components/water/water_flow_material.tres" id="1_water"]
+[ext_resource type="Material" path="res://authoring/assets/components/water/foam_material.tres" id="2_foam"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_core"]
+size = Vector3(0.48, 6.4, 0.48)
+
+[sub_resource type="BoxMesh" id="BoxMesh_foam"]
+size = Vector3(0.92, 0.16, 0.92)
+
+[node name="NarrowWaterfall" type="Node3D"]
+
+[node name="WaterCore" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, 0)
+mesh = SubResource("BoxMesh_core")
+material_override = ExtResource("1_water")
+
+[node name="BottomFoam" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
+mesh = SubResource("BoxMesh_foam")
+material_override = ExtResource("2_foam")

@@ -1,0 +1,30 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Material" path="res://authoring/assets/components/water/water_flow_material.tres" id="1_water"]
+[ext_resource type="Material" path="res://authoring/assets/components/water/wet_stone_material.tres" id="2_stone"]
+[ext_resource type="Material" path="res://authoring/assets/components/water/foam_material.tres" id="3_foam"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_lip"]
+size = Vector3(4, 0.28, 0.62)
+
+[sub_resource type="BoxMesh" id="BoxMesh_curtain"]
+size = Vector3(3.9, 2.15, 0.1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_foam"]
+size = Vector3(4.2, 0.13, 0.76)
+
+[node name="PoolOverflow" type="Node3D"]
+
+[node name="StoneLip" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_lip")
+material_override = ExtResource("2_stone")
+
+[node name="OverflowCurtain" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.2, 0.3)
+mesh = SubResource("BoxMesh_curtain")
+material_override = ExtResource("1_water")
+
+[node name="BottomFoam" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.28, 0.34)
+mesh = SubResource("BoxMesh_foam")
+material_override = ExtResource("3_foam")

@@ -94,6 +94,16 @@ const WATER_SHORTCUT_MODEL_IDS := [
 	"plunge_pool_foam",
 	"puddle_ripple",
 	"drain_outfall",
+	"waterfall_wide",
+	"waterfall_narrow",
+	"river_calm_straight",
+	"river_rapids_straight",
+	"wall_spout",
+	"fountain_jet",
+	"faucet_flow",
+	"drain_runoff",
+	"pool_overflow",
+	"water_flow_sheet",
 	"watermill",
 	"watermill_wide",
 ]
@@ -1178,6 +1188,11 @@ static func _default_placement_for_model_id(p_model_id: String) -> String:
 		"water_surface",
 		"plunge_pool_foam",
 		"puddle_ripple",
+		"wall_spout",
+		"fountain_jet",
+		"faucet_flow",
+		"drain_runoff",
+		"pool_overflow",
 		"auto_fantasy_town_cloud",
 	]:
 		return "float"

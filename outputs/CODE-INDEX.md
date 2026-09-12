@@ -1,7 +1,7 @@
 # CODE-INDEX（脚本 / 场景 / 测试 导航索引）
 
 > 目的：让新会话按“我要改哪个功能”直接跳到 文件+行，避免整读大脚本/多次重读。
-> 行数为当前 HEAD（`db489e2`）实测。标“大字”的文件（>300 行）不要整读，用 `rg`/行范围定位。
+> 行数为最近一轮整理时实测；改动后用 `rg`/行范围定位，标“大字”的文件（>300 行）不要整读。
 
 ## 场景（scenes/main/）
 
@@ -31,22 +31,23 @@
 ### 作者场景 / 接管工作流
 - `scripts/authoring/FSAuthoringSchema.gd` — 语义字段/命名/分组/`runtime_support_for`。用户登记物件后由它统一规范化。
 - `scripts/authoring/FSModelPreview.gd` — 独立 `SubViewport` 三维模型预览，自动居中、缩放、落地、灯光和旋转；Dock 与模型总览共用。
-- `scripts/authoring/FSVisualCatalog.gd` — 读取/搜索 131 项精选目录并自动扫描全部已导入 GLB（当前 288 项）、中文推荐映射、替换式模型应用/移除、批量补模型和落地修正；模型永远挂在语义宿主下。新增 `floor/platform/wall/stairs/column/obstacle` 承托类型和 `SUPPORT_*` 自动碰撞，保留用户手搭碰撞。
+- `scripts/authoring/FSVisualCatalog.gd` — 读取/搜索 141 项精选目录并自动扫描全部已导入 GLB，合并去重后进行中文推荐映射、替换式模型应用/移除、批量补模型和落地修正；模型永远挂在语义宿主下。包含 `floor/platform/wall/stairs/column/obstacle` 承托类型和 `SUPPORT_*` 自动碰撞，保留用户手搭碰撞；`0.3.3` 增加 10 个雨城水流快捷项和建筑附着水流的浮动放置规则。
 - `scripts/authoring/FSEffectCatalog.gd` — 8 种事件/状态特效目录；事件特效独立挂在语义宿主下，不替换 `VISUAL_*`。
-- `scripts/authoring/FSEnvironmentCatalog.gd` — 9 种灯光/大气/天气/粒子环境特效目录；使用独立 `ENVIRONMENT_*` 节点，可重复叠加、单独调参和删除，与模型和事件特效互不替换。
+- `scripts/authoring/FSEnvironmentCatalog.gd` — 9 种灯光/大气/天气/粒子环境特效目录；使用独立 `ENVIRONMENT_*` 节点，可重复叠加、单独调参和删除，与模型和事件特效互不替换。`0.3.3` 递归写入作者场景 `owner`，并能从元数据补建旧场景中的空环境节点，保证 F5/重启后仍存在。
+- `scripts/authoring/FSGroundPaintCatalog.gd` — 地面贴面绘制目录/工厂：湿泥、青苔、石屑、水光、破败土痕，圆/长椭圆/方形笔触；在命中地形碰撞面后生成无碰撞 `GROUND_PAINT_*` `MeshInstance3D`，统一归入 `GROUND_PAINT_地面绘制`，不属于玩法语义。
 - `scripts/authoring/FSWorkflow.gd` — 七节点定义、状态保存、当前节点和显式确认；状态在 `project/authoring/workflows/<region>.json`。
 - `scripts/authoring/FSRegionScaffold.gd` — 从 region JSON 生成可手调的普通 Godot 场景（用户开始手调后不要再覆盖重建）。
 - `scripts/authoring/FSSceneManifest.gd` — 扫描作者场景生成 Manifest/Markdown；只导出语义数据，不让 AI 整读 `.tscn`。
 - `scripts/authoring/FSAuthoringRuntime.gd` — 加载已发布作者场景，按语义挂门、拾取、可击破、升降和 marker；没有有效绑定时回退旧 builder。
 - `scripts/authoring/FSGameView.gd` — 编辑器与运行态共用游戏摄像机规格：高度 `10.5`、后移 `5.0`、FOV `52`、视线中心抬高 `1.0`；另提供选中物件世界包围盒与 `Shift+F` 舒适聚焦姿态计算。
 - `scripts/authoring/FSPlaytestMode.gd` — 持久化 `fivestar_authoring/playtest_mode`；默认开启构建试玩，Dock 可切回完整游戏。
-- `addons/fivestar_authoring/fs_authoring_dock.gd` — 右侧 `FIVESTAR 场景语义工具`：中文显示名，固定高度模型列表、实时三维预览、无宿主直接创建/中文命名、替换式应用、批量补模型、全部模型总览、落地修正、事件/环境特效、校验、导出发布、七节点确认框。当前版本 `0.3.2`，包含“观察视图”和“F5 运行模式”：`Shift+F` 按选中物件包围盒舒适聚焦，聚焦后按模型半径限制中键环绕和滚轮缩放；新建模型只选中父语义层。`Ctrl+Alt+1` 从当前选中物件切到实际游戏视角，`Ctrl+Alt+2` 恢复原编辑视角；F5 可切换构建试玩/完整游戏。观察操作只移动编辑器摄像机，不改场景。
+- `addons/fivestar_authoring/fs_authoring_dock.gd` — 右侧 `FIVESTAR 场景语义工具`：中文显示名，固定高度模型列表、实时三维预览、无宿主直接创建/中文命名、替换式应用、批量补模型、全部模型总览、落地修正、事件/环境特效、地面贴面绘制、校验、导出发布、七节点确认框。当前版本 `0.3.3`，包含“观察视图”和“F5 运行模式”：`Shift+F` 按选中物件包围盒舒适聚焦，聚焦后按模型半径限制中键环绕和滚轮缩放；新建模型只选中父语义层。`Ctrl+Alt+1` 从当前选中物件切到实际游戏视角，`Ctrl+Alt+2` 恢复原编辑视角；F5 可切换构建试玩/完整游戏。观察操作只移动编辑器摄像机，不改场景。
 - `tools/fs_build_authoring_scene.gd` — 首次从 JSON 生成/覆盖正式作者场景；用户开始手调后禁用。
 - `tools/fs_repair_owner_duplicates.gd` — 修复旧版模型递归 `owner` 导致的作者场景内部节点重复；先备份，再清重复节点，不重建布局。
-- `project/authoring/assets/model_catalog.json` — 131 个精选中文模型目录项，其中“地形与平台”24 项；插件自动扫描 Kenney 已导入 GLB 后总目录为 288 项。`params.visual` 保存可视选择，`params.effect` 保存事件特效，环境节点独立保存；三者都不参与行为判断。
-- `authoring/scenes/model_gallery.tscn` / `authoring/scenes/fs_model_gallery.gd` — 只读 UI 模型浏览器：左侧搜索/分类/列表，右侧实时三维预览、自动旋转、复制 ID 和文件定位；不实例化 288 个场景模型，不修改作者场景。
+- `project/authoring/assets/model_catalog.json` — 141 个精选中文模型目录项，其中“地形与平台”24 项，并新增 10 个雨城水流组件；插件自动扫描 Kenney 已导入 GLB 后合并去重。`params.visual` 保存可视选择，`params.effect` 保存事件特效，环境节点和 `GROUND_PAINT_*` 独立保存；都不参与行为判断。
+- `authoring/scenes/model_gallery.tscn` / `authoring/scenes/fs_model_gallery.gd` — 只读 UI 模型浏览器：左侧搜索/分类/列表，右侧实时三维预览、自动旋转、复制 ID 和文件定位；只为当前选中项建立预览，不实例化整个目录，不修改作者场景。
 - `authoring/assets/components/effects/` + `scripts/authoring/FSEffectCatalog.gd` — 案件金色信标、能力光柱、可击破提示、门锁红封印、目标金柱、休息光环、压力机关脉冲、危险地面警示 8 种事件特效。
-- `project/authoring/scenes/first_night_authoring.tscn` — 当前已重置为从零搭建场景：区域根节点 + `y=0` 的 `120 x 120` 构建平面。清场前布局备份为 `*.pre-reset-20260910-225140.bak`。
+- `project/authoring/scenes/first_night_authoring.tscn` — 当前用户手搭真源：区域根节点、`y=0` 的 `120 x 120` 构建平面、两块地牢地面模型与 `SUPPORT_*`、成片雨幕和火焰与动态光环境节点。禁止用生成工具覆盖；清场前布局备份为 `*.pre-reset-20260910-225140.bak`。
 - `project/authoring/manifests/first_night_authoring.manifest.json` — Codex 功能实现的机器清单，含每物件 `runtime_support`。
 - `project/authoring/semantic/first_night_authoring.md` — 人类摘要，含接管分类。
 - `outputs/AUTHORING-WORKFLOW.md` — 七节点接管工作流、用户手调步骤、失败回退和 AI 接手指令。
@@ -95,7 +96,8 @@
 | `v2_map_plan.gd` | 347 | 顶视施工图渲染（带窗口）→ `outputs/map-v2-plan.png` |
 | `v2_map_schematic.gd` / `v2_map_capture.gd` / `v2_map_organic.gd` | 175/107/245 | 其余地图渲染辅助，旧参考非基准 |
 | `v2_world_map_smoke.gd` | 64 | `V2_WORLDMAP rooms=12 edges=12 rest=DONE hub=IN_PROGRESS seal_init=LOCKED map@-13.5=rest map@-8=case_sofa map@11=boss seal_after=DONE current=case_sofa` |
-| `v2_authoring_smoke.gd` | — | `V2_AUTHORING objects=71 errors=0 warnings=0 route_gates=2 markers=10 authored=true`（`objects=71` 是 smoke 内部临时脚手架，不是当前空作者场景；另验证 131 项目录、24 项地形/平台、自动承托碰撞与用户碰撞保留、9 种环境特效叠加/删除、近距尺寸自适应聚焦、新建后只选父层、UI 模型总览、三维预览、替换清理、落地和事件特效共存） |
+| `v2_authoring_smoke.gd` | — | `V2_AUTHORING objects=71 errors=0 warnings=0 route_gates=2 markers=10 authored=true`（`objects=71` 是 smoke 内部临时脚手架，不是当前作者场景；另验证精选目录、24 项地形/平台、自动承托碰撞与用户碰撞保留、环境特效 owner/空节点修复与场景重载、10 个新增水流及浮动规则、地面绘制创建/删除、近距尺寸自适应聚焦、新建后只选父层、UI 模型总览、三维预览、替换清理、落地和事件特效共存） |
+| `v2_authoring_playtest_smoke.gd` | — | `V2_AUTHORING_PLAYTEST grounded=true floor=SUPPORT_floor start_y=3.81 player_y=1.80 authored=true clean=true`（验证 F5 构建试玩落到用户搭建的实际承托面，而不是强制落到 `y=0`） |
 
 ## 权威地图数据
 
