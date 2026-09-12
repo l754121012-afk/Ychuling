@@ -4,7 +4,11 @@
 
 ## 当前任务
 
-- **本次：建立“用户手调作者场景 + Codex 语义接管”的长期工作流，解决 Codex 对模型/布局还原不准和会话上下文压力。**
+- **本次：修复低矮地板/台阶被误判为墙并反弹，以及 Windows Vulkan 红色渲染错误；作者场景仍由用户手调，禁止重建。**
+- 玩家移动：`PlayerController.gd` 新增 `_try_step_up()`，普通移动、落地且未受击时可跨过约 `0.42m` 的低台；高于阈值、坡度不适合落脚的障碍仍保留原有反弹。冲刺/高墙碰撞行为不变。
+- 渲染：`project.godot` 写入 `rendering_device/driver.windows="d3d12"`。本机 Godot 原先落到 Mesa Dozen Vulkan 并报 `VK_ERROR_OUT_OF_HOST_MEMORY`；改用原生 NVIDIA D3D12 后 Forward+ 正常启动，红字消失。
+- 报错分级：黄色导入/预览/socket 提示通常非致命；`Can't use get_node() with absolute paths from outside the active scene tree.` 出现在编辑器扫描部分 smoke 脚本期间，工程内无运行时绝对路径 `get_node()`，headless 解析和 F5 构建试玩均通过，暂按编辑器扫描期提示处理。
+- 本轮新增 `tests/m2_step_up_smoke.gd`；`m2_bounce_smoke.gd` 改为自建地板和高墙，不再依赖用户正在手搭的路线场景。
 - 作者场景：`project/authoring/scenes/first_night_authoring.tscn` 保持用户手搭真源，当前包含 `FS_REGION_FIRST_NIGHT`、`y=0` 的 `120 x 120` 构建平面、两块地牢地面模型及其 `SUPPORT_*` 碰撞，以及成片雨幕和火焰与动态光两个环境特效；旧布局备份为 `*.pre-reset-20260910-225140.bak`，不要自动恢复或重建。
 - 已实现：右侧 Dock `FIVESTAR 场景语义工具` 可登记中文显示名/分组/校验/导出/发布；Manifest 每物件带 `display_name`、`visual` 和 `runtime_support`。
 - 可视原型：`project/authoring/assets/model_catalog.json` 收录 141 个精选中文模型项，插件还会自动扫描全部已导入 GLB 并与精选目录去重合并；支持搜索/分类/实时三维预览/应用/替换/移除，并可“一键区分未配模型”，只补空白宿主，不覆盖已有模型、碰撞或自定义显示名。
@@ -22,7 +26,7 @@
 - 七节点工作流：规格确认 → 场景手调 → 语义校验 → 导出并发布 → 功能实现 → 试玩验收 → 交接回填。每节点有负责人、说明、确认提示和二次确认框。
 - 当前状态：`project/authoring/workflows/first_night.json` 仍是 `current_step=0`，七个节点全 `PENDING`，明确等待用户确认第 1 节点；不要替用户静默确认。
 - 清单状态：清场前留下的历史发布清单为 70 个对象，`runtime=11 native=2 marker=10 pending=2 none=45`；它不代表当前空场景。用户重搭并重新导出前，不要把它当作当前真源，也不要用它判断功能物件是否还存在。
-- 本轮验证：全工程 headless 编辑器解析通过；`v2_authoring_smoke.gd` 输出 `V2_AUTHORING objects=71 errors=0 warnings=0 route_gates=2 markers=10 authored=true`。这里的 `71` 来自 smoke 内部临时搭建的完整测试脚手架，不是当前作者场景对象数；smoke 另断言精选目录、24 个地形/平台件、6 类承托 profile、自动承托碰撞和用户碰撞保留、9 种环境特效可重复叠加与单独删除、环境节点 owner/空节点修复、当前作者场景重载后环境仍存在、10 种新增水流注册与浮动规则、地面绘制创建/删除/持久化、近距缩放/小步环绕，以及新建后只选中父语义层。`v2_authoring_playtest_smoke.gd` 输出 `V2_AUTHORING_PLAYTEST grounded=true floor=SUPPORT_floor start_y=3.81 player_y=1.80 authored=true clean=true`，确认玩家落到用户搭建的实际承托面且没有生成 HUD/地图/鬼。旧 `v2_r1_runtime_smoke` 因当前作者场景缺少旧路线 marker 而输出未通过；这是作者接管后的预期基线变化，不要为跑通该旧 smoke 自动重建场景。
+- 本轮验证：全工程 headless 编辑器解析通过；`m2_step_up_smoke.gd` 输出 `STEP_UP low_ok=true low_y=1.17 low_z=-2.17 wall_ok=true wall_y=0.90 wall_z=1.59`，`m2_bounce_smoke.gd` 输出 `BOUNCE bounced=true start_x=0.00 min_x=-1.30 end_x=3.01 velocity=(0.003, 0.000, 0.000)`；`v2_authoring_smoke.gd` 输出 `V2_AUTHORING objects=71 errors=0 warnings=0 route_gates=2 markers=10 authored=true`。这里的 `71` 来自 smoke 内部临时搭建的完整测试脚手架，不是当前作者场景对象数；smoke 另断言精选目录、24 个地形/平台件、6 类承托 profile、自动承托碰撞和用户碰撞保留、9 种环境特效可重复叠加与单独删除、环境节点 owner/空节点修复、当前作者场景重载后环境仍存在、10 种新增水流注册与浮动规则、地面绘制创建/删除/持久化、近距缩放/小步环绕，以及新建后只选中父语义层。`v2_authoring_playtest_smoke.gd` 输出 `V2_AUTHORING_PLAYTEST grounded=true floor=SUPPORT_floor start_y=3.81 player_y=1.80 authored=true clean=true`，确认玩家落到用户搭建的实际承托面且没有生成 HUD/地图/鬼。旧 `v2_r1_runtime_smoke` 因当前作者场景缺少旧路线 marker 而输出未通过；这是作者接管后的预期基线变化，不要为跑通该旧 smoke 自动重建场景。
 - 保存语义：模型创建/应用/替换/移除、批量补模型、落地修正、事件/环境特效、地面绘制每笔和删除绘制会尝试自动保存，状态栏会明确报告保存结果；普通手改和“应用语义 / 改名”仍按 Godot 的未保存状态处理，必要时按 `Ctrl+S`。若状态栏提示自动保存失败，必须先按 `Ctrl+S` 再继续。
 - 重载语义：修改插件脚本后需完全关闭并重新打开 Godot 项目；只重开场景不算重载插件，未重开时右侧 Dock 可能仍运行旧逻辑。Dock 标题显示 `0.3.3` 表示本轮修复已加载；Dock 更新不等于场景已保存。F5 模式写入项目设置后，若编辑器进程仍使用旧值，同样完全重开项目一次。
 - 下一步：用户确认第 1 节点规格后，从 `build_plane_0` 开始手搭场景。一旦开始编辑，禁止再运行 `tools/fs_build_authoring_scene.gd`，否则会覆盖手调内容。

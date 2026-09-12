@@ -2,6 +2,8 @@
 
 状态：Godot 工程已推进到 M2 路线白盒；headless smoke 与完整送走流程测试均通过。
 
+本轮修复：玩家现在可以直接跨过高度不超过约 `0.42m` 的低台、地板和短台阶；高于该值的墙仍会触发原有反弹。Windows 改用原生 NVIDIA D3D12 渲染，避开本机当前异常的 Mesa Dozen Vulkan 后端。
+
 V2 可见玩法：按 Tab 打开首夜城区地图；两个 NPC 用 E 对话提供世界观；第一案后拾取“夜巡印章”可强化清扫并打开下一段门；Boss 后靠近金色目标柱按 E 完成封印终点。
 
 Q 键撤步冲撞会消耗 1 点体力；Shift 冲刺改为不消耗体力。靠近封印终点会显示 E 提示，若未按键也会在短暂停留后自动完成。
@@ -69,6 +71,12 @@ F5 构建试玩 smoke：
 
 注意：`tools/fs_build_authoring_scene.gd` 只用于首次生成或明确要求重置作者场景；用户开始手调后禁止运行，否则会覆盖布局和模型。完整流程见 [AUTHORING-WORKFLOW.md](./AUTHORING-WORKFLOW.md)。
 
+## 渲染与报错分级
+
+`project.godot` 已写入 Windows 专用设置 `rendering_device/driver.windows="d3d12"`。当前 NVIDIA 驱动没有暴露可用的原生 Vulkan 设备，Godot 会落到 Mesa Dozen Vulkan，并产生截图里的红色 `VK_ERROR_OUT_OF_HOST_MEMORY` / pipeline 错误；切到原生 NVIDIA D3D12 后，Forward+ 可正常启动且不再出现这组红色错误。
+
+编辑器里的黄色提示多为模型导入、资源预览或 socket 提示，不影响 F5 运行。另有一条 `Can't use get_node() with absolute paths from outside the active scene tree.` 会在 Godot 扫描部分 smoke 脚本时出现；工程内没有运行时的绝对路径 `get_node()`，headless 解析和 F5 构建试玩均能通过，因此按编辑器扫描期提示处理，不需要为它改场景。
+
 ## 自动 smoke
 
 ```powershell
@@ -107,7 +115,15 @@ F5 构建试玩 smoke：
 & 'F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs\project' --script 'res://tests/m2_bounce_smoke.gd'
 ```
 
-预期输出类似：`BOUNCE start_x=-19 end_x=-17.1`，表示撞墙后确实向后弹回。
+预期输出类似：`BOUNCE bounced=true start_x=0.00 min_x=-1.30 end_x=3.01 velocity=(0.003, 0.000, 0.000)`，表示撞到高墙后确实先后退再弹开。
+
+低矮台阶跨越 smoke：
+
+```powershell
+& 'F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs\project' --script 'res://tests/m2_step_up_smoke.gd'
+```
+
+预期输出：`STEP_UP low_ok=true low_y=1.17 low_z=-2.17 wall_ok=true wall_y=0.90 wall_z=1.59`。低台可以走上，高墙仍会挡住玩家；阈值约 `0.42m`。
 
 连携撞击 smoke：
 

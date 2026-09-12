@@ -35,5 +35,6 @@ playtest_mode=true
 
 [rendering]
 
+rendering_device/driver.windows="d3d12"
 anti_aliasing/quality/msaa_3d=2
 environment/defaults/default_clear_color=Color(0.09, 0.11, 0.16, 1)

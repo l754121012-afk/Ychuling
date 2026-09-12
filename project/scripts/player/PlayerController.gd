@@ -53,6 +53,12 @@ const MAX_HEALTH := 5
 const HIT_INVULN_TIME := 1.0
 const HITSTUN_TIME := 0.24
 const WALL_BOUNCE_DAMPING := 0.78
+const STEP_UP_HEIGHT := 0.42
+const STEP_UP_MIN_RISE := 0.04
+const STEP_UP_MIN_FORWARD := 0.42
+const STEP_UP_DROP_PROBE := 0.12
+const STEP_UP_MAX_OBSTACLE_NORMAL_Y := 0.5
+const STEP_UP_MIN_FLOOR_NORMAL_Y := 0.55
 const SPIN_TIME := 2.0
 const SPIN_MOVE_SPEED := 4.8
 const SPIN_ROTATION_SPEED := 12.0
@@ -79,7 +85,6 @@ var _dash_timer := 0.0
 var _dash_cooldown := 0.0
 var _dash_dir := Vector3.FORWARD
 var _facing := Vector3.FORWARD
-var _can_interact_after_dash := true
 var _attack_hit_done := false
 var _spin_time := 0.0
 var _spin_interval := 0.0
@@ -302,9 +307,58 @@ func _tick_timers(delta: float) -> void:
 			_state = State.NORMAL
 			var flat_velocity := Vector2(velocity.x, velocity.z)
 			if flat_velocity.length() > 8.5:
-				var scale := 8.5 / flat_velocity.length()
-				velocity.x *= scale
-				velocity.z *= scale
+				var speed_scale := 8.5 / flat_velocity.length()
+				velocity.x *= speed_scale
+				velocity.z *= speed_scale
+
+
+func _try_step_up(p_motion: Vector3) -> bool:
+	var horizontal_motion := Vector3(p_motion.x, 0.0, p_motion.z)
+	if horizontal_motion.length_squared() < 0.0001:
+		return false
+	var step_motion := horizontal_motion.normalized() * maxf(horizontal_motion.length(), STEP_UP_MIN_FORWARD)
+
+	var obstacle := KinematicCollision3D.new()
+	if not test_move(transform, step_motion, obstacle, 0.001, true, 4):
+		return false
+	var found_ledge := false
+	for index in range(obstacle.get_collision_count()):
+		if obstacle.get_collider(index) is CharacterBody3D:
+			continue
+		# Slopes are already handled by move_and_slide; only lift onto near-vertical ledges.
+		if obstacle.get_normal(index).y <= STEP_UP_MAX_OBSTACLE_NORMAL_Y:
+			found_ledge = true
+			break
+	if not found_ledge:
+		return false
+
+	var ceiling := KinematicCollision3D.new()
+	if test_move(transform, Vector3.UP * STEP_UP_HEIGHT, ceiling):
+		return false
+
+	var elevated := transform.translated(Vector3.UP * STEP_UP_HEIGHT)
+	var forward := KinematicCollision3D.new()
+	if test_move(elevated, step_motion, forward):
+		return false
+
+	var landing := KinematicCollision3D.new()
+	if not test_move(
+		elevated.translated(step_motion),
+		Vector3.DOWN * (STEP_UP_HEIGHT + STEP_UP_DROP_PROBE),
+		landing
+	):
+		return false
+	if landing.get_normal().y < STEP_UP_MIN_FLOOR_NORMAL_Y:
+		return false
+
+	var drop := -landing.get_travel().y
+	var rise := STEP_UP_HEIGHT - drop
+	if rise < STEP_UP_MIN_RISE or rise > STEP_UP_HEIGHT:
+		return false
+
+	global_position = elevated.translated(step_motion).origin + Vector3.DOWN * drop
+	velocity.y = 0.0
+	return true
 
 
 func _handle_state_input(delta: float) -> void:
@@ -833,6 +887,10 @@ func _bounce_and_bump_from_slides() -> void:
 		if normal.length() < 0.5:
 			continue
 		normal = normal.normalized()
+		if _state == State.NORMAL and _hitstun_time <= 0.0 and is_on_floor():
+			if _try_step_up(Vector3(flat_velocity.x, 0.0, flat_velocity.y)):
+				_state = State.NORMAL
+				return
 		_show_bounce_effect(collision.get_position())
 		var normal_flat := Vector2(normal.x, normal.z)
 		if flat_velocity.dot(normal_flat) >= 0.0:
