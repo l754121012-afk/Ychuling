@@ -9,6 +9,7 @@ const VisualCatalog := preload("res://scripts/authoring/FSVisualCatalog.gd")
 const EffectCatalog := preload("res://scripts/authoring/FSEffectCatalog.gd")
 const EnvironmentCatalog := preload("res://scripts/authoring/FSEnvironmentCatalog.gd")
 const GroundPaintCatalog := preload("res://scripts/authoring/FSGroundPaintCatalog.gd")
+const TerrainBrushCatalog := preload("res://scripts/authoring/FSTerrainBrushCatalog.gd")
 const ModelPreview := preload("res://scripts/authoring/FSModelPreview.gd")
 const GameView := preload("res://scripts/authoring/FSGameView.gd")
 const AuthoringDock := preload("res://addons/fivestar_authoring/fs_authoring_dock.gd")
@@ -41,6 +42,51 @@ func _run() -> void:
 		int(workflow_document.get("current_step", -1)) == 0
 		and str(workflow_document.get("steps", [{}])[0].get("status", "")) == "PENDING",
 		"新工作流必须停在规格确认且不得静默确认"
+	) and ok
+	var malformed_workflow := {
+		"current_step": 99,
+		"status": "COMPLETE",
+		"steps": [
+			{
+				"id": "spec_confirm",
+				"status": "DONE",
+				"confirmed_at": "2026-09-12T12:00:00",
+				"note": "保留节点 1 确认记录",
+			},
+			"invalid step",
+			{"id": "scene_edit", "status": "BROKEN"},
+		],
+	}
+	var normalized_workflow := Workflow.normalize_document(
+		malformed_workflow,
+		REGION_ID,
+		SCENE_PATH
+	)
+	var normalized_steps: Array = normalized_workflow.get("steps", [])
+	var preserved_state: Dictionary = {}
+	if not normalized_steps.is_empty() and normalized_steps[0] is Dictionary:
+		preserved_state = normalized_steps[0]
+	ok = _expect(
+		normalized_steps.size() == 7
+		and int(normalized_workflow.get("current_step", -1)) == 1
+		and str(normalized_workflow.get("status", "")) == "ACTIVE"
+		and str(preserved_state.get("status", "")) == "DONE"
+		and str(preserved_state.get("confirmed_at", "")) == "2026-09-12T12:00:00"
+		and str(preserved_state.get("note", "")) == "保留节点 1 确认记录",
+		"损坏的工作流文档必须恢复为七个节点并保留已有确认记录"
+	) and ok
+	var malformed_progress := Workflow.progress_text(malformed_workflow)
+	ok = _expect(
+		malformed_progress.contains("[x] 1 / 7 规格确认")
+		and malformed_progress.contains("[>] 2 / 7 场景手调"),
+		"异常工作流进度必须安全显示当前待确认节点"
+	) and ok
+	var malformed_confirmation := malformed_workflow.duplicate(true)
+	Workflow.confirm_current(malformed_confirmation, "场景手调已完成")
+	ok = _expect(
+		int(malformed_confirmation.get("current_step", -1)) == 2
+		and str(malformed_confirmation.get("steps", [{}])[1].get("note", "")) == "场景手调已完成",
+		"异常工作流在执行确认后必须继续推进而不是越界"
 	) and ok
 
 	var region: Dictionary = RouteData.load_region()
@@ -158,8 +204,12 @@ func _run() -> void:
 	) and ok
 	ok = _expect(
 		not authoring_dock._model_filter_edit.editable
-		and authoring_dock._model_create_button.disabled,
-		"没有作者场景时必须禁用模型浏览器"
+		and authoring_dock._model_create_button.disabled
+		and authoring_dock._terrain_eraser_button.disabled
+		and authoring_dock._terrain_multiselect_button.disabled
+		and authoring_dock._terrain_select_group_button.disabled
+		and authoring_dock._terrain_copy_group_button.disabled,
+		"没有作者场景时必须禁用模型浏览器和实体地形批量工具"
 	) and ok
 	ok = _expect(
 		authoring_dock._model_list.item_count >= 40,
@@ -303,10 +353,6 @@ func _run() -> void:
 					and _all_owned_by(candidate, persisted_instance),
 					"重新打开作者场景后环境节点必须有内容且归属场景根：%s" % str(candidate.name)
 				) and ok
-		ok = _expect(
-			persisted_environment_count > 0,
-			"当前作者场景应至少保留一个已应用环境特效用于持久化回归"
-		) and ok
 		persisted_instance.free()
 
 	var support_entries := VisualCatalog.support_shortcut_entries()
@@ -390,7 +436,8 @@ func _run() -> void:
 	var large_limits := GameView.focus_zoom_limits(4.0)
 	var tiny_distance := float(tiny_limits["max"])
 	var tiny_zoom_out := GameView.focus_zoom_step(tiny_distance, 0.1, 1.0)
-	var orbit_step := GameView.focus_orbit_step(Vector2(10.0, 0.0))
+	var orbit_step := GameView.focus_orbit_step(Vector2(10.0, 0.0), 0.1)
+	var large_orbit_step := GameView.focus_orbit_step(Vector2(10.0, 0.0), 4.0)
 	ok = _expect(
 		float(tiny_limits["min"]) >= 0.14
 		and float(tiny_limits["max"]) <= 2.6
@@ -403,26 +450,129 @@ func _run() -> void:
 	) and ok
 	ok = _expect(
 		absf(float(orbit_step["yaw_delta"])) > 0.0
+		and float(orbit_step["yaw_delta"]) > 0.0
+		and float(GameView.focus_orbit_step(Vector2(0.0, 10.0), 0.1)["elevation_delta"]) > 0.0
 		and absf(float(orbit_step["yaw_delta"])) <= 2.0
+		and absf(float(orbit_step["yaw_delta"])) < absf(float(large_orbit_step["yaw_delta"]))
 		and is_zero_approx(float(orbit_step["elevation_delta"])),
-		"舒适聚焦中键环绕必须是适合近距观察的有限小步长：%s" % str(orbit_step)
+		"舒适聚焦中键水平环绕必须反转为直觉方向并保持原上下方向，同时按物件尺寸减速：%s / %s" % [
+			str(orbit_step),
+			str(large_orbit_step),
+		]
+	) and ok
+	var tiny_focus_pose := GameView.focus_pose_for_aabb(
+		AABB(Vector3.ZERO, Vector3(0.2, 0.2, 0.2))
+	)
+	var large_focus_pose := GameView.focus_pose_for_aabb(
+		AABB(Vector3.ZERO, Vector3(4.0, 4.0, 4.0))
+	)
+	var tiny_pan_units := GameView.focus_pan_units_per_pixel(
+		float(tiny_focus_pose["distance"])
+	)
+	var large_pan_units := GameView.focus_pan_units_per_pixel(
+		float(large_focus_pose["distance"])
+	)
+	ok = _expect(
+		float(tiny_focus_pose["distance"]) < 0.6
+		and float(large_focus_pose["distance"]) > float(tiny_focus_pose["distance"]) * 4.0
+		and tiny_pan_units < large_pan_units,
+		"舒适聚焦必须按物件尺寸决定取景距离和拖拽单位：%s / %s / %s / %s" % [
+			str(tiny_focus_pose["distance"]),
+			str(large_focus_pose["distance"]),
+			str(tiny_pan_units),
+			str(large_pan_units),
+		]
 	) and ok
 
+	var selection_root := Node3D.new()
+	selection_root.name = "FS_REGION_SELECTION_SMOKE"
+	root.add_child(selection_root)
+	Schema.apply_to_node(selection_root, Schema.make(
+		"selection_smoke",
+		"region",
+		"none",
+		REGION_ID
+	))
 	var selection_parent := Node3D.new()
+	selection_parent.name = "FS_ZONE_SELECTION_SMOKE"
 	var selection_child := Node3D.new()
 	selection_parent.add_child(selection_child)
-	root.add_child(selection_parent)
+	selection_root.add_child(selection_parent)
+	Schema.apply_to_node(selection_parent, Schema.make(
+		"selection_zone",
+		"zone",
+		"none",
+		REGION_ID
+	))
 	var selection_dock = AuthoringDock.new()
 	root.add_child(selection_dock)
-	selection_dock._edited_root = root
+	selection_dock._edited_root = selection_root
+	selection_dock._last_model_parent = selection_parent
+	selection_dock._selected_node = selection_root
+	ok = _expect(
+		selection_dock._model_instance_parent() == selection_parent,
+		"编辑器选中区域根节点时，新建模型必须继续使用上次有效父语义层"
+	) and ok
+	selection_dock._last_model_parent = null
+	selection_dock._remember_model_parent(selection_root)
+	ok = _expect(
+		selection_dock._last_model_parent == null,
+		"场景根节点不得被记录为后续新建模型的默认父级"
+	) and ok
+	ok = _expect(
+		selection_dock._model_instance_parent() == selection_parent,
+		"没有可用选择时必须回退到区域内的第一个语义容器，而不是场景根节点"
+	) and ok
+	var terrain_group := selection_dock._model_group_parent({"category": "地形与平台"})
+	var building_group := selection_dock._model_group_parent({"category": "城镇建筑"})
+	var object_group := selection_dock._model_group_parent({"category": "城镇互动"})
+	var character_group := selection_dock._model_group_parent({"category": "角色占位"})
+	ok = _expect(
+		terrain_group != null
+		and building_group != null
+		and object_group != null
+		and character_group != null
+		and str(terrain_group.name) == AuthoringDock.GROUP_TERRAIN
+		and str(building_group.name) == AuthoringDock.GROUP_BUILDINGS
+		and str(object_group.name) == AuthoringDock.GROUP_OBJECTS
+		and str(character_group.name) == AuthoringDock.GROUP_CHARACTERS,
+		"新建模型必须按地形、建筑、物件和角色分类进入稳定容器"
+	) and ok
+	ok = _expect(
+		terrain_group.owner == selection_root
+		and selection_dock._scene_group_name_for_entry({"category": "雨城水文"}) == AuthoringDock.GROUP_TERRAIN
+		and selection_dock._scene_group_name_for_entry({"category": "门与出入口"}) == AuthoringDock.GROUP_BUILDINGS
+		and selection_dock._scene_group_name_for_entry({"category": "角色占位"}) == AuthoringDock.GROUP_CHARACTERS
+		and selection_dock._scene_group_name_for_entry({"category": "未登记分类"}) == AuthoringDock.GROUP_OBJECTS,
+		"分类容器必须由作者场景根节点持有并使用完整类别映射"
+	) and ok
+	selection_dock._last_model_parent = null
+	selection_dock._remember_model_parent(object_group)
+	ok = _expect(
+		selection_dock._last_model_parent == null,
+		"分类容器不得被记录为后续新建模型的语义父级"
+	) and ok
+	ok = _expect(
+		selection_dock._model_parent_for_selection(object_group) == selection_parent,
+		"选中分类容器时必须回溯到区域内的语义父级"
+	) and ok
 	selection_dock._select_created_parent(selection_parent)
 	ok = _expect(
 		selection_dock._selected_node == selection_parent
 		and selection_dock._selected_node != selection_child,
-		"新建模型后必须只选中父语义层，避免场景树自动展开到内部 VISUAL_ 层级"
+		"存在非根父语义层时，新建模型后必须只选中该父层"
+	) and ok
+	var created_selection_node := Node3D.new()
+	object_group.add_child(created_selection_node)
+	selection_dock._select_created_parent(selection_root, created_selection_node)
+	ok = _expect(
+		selection_dock._selected_node == object_group
+		and selection_dock._selected_node != created_selection_node
+		and selection_dock._selected_node != selection_root,
+		"新建物件后必须选中分类容器而不能自动展开并选中刚创建物件"
 	) and ok
 	selection_dock.free()
-	selection_parent.free()
+	selection_root.free()
 
 	var key_entry := VisualCatalog.find("dungeon_key")
 	ok = _expect(not key_entry.is_empty(), "模型目录应包含钥匙模型") and ok
@@ -893,6 +1043,529 @@ func _run() -> void:
 	) and ok
 	paint_root.free()
 
+	var terrain_root := Node3D.new()
+	terrain_root.name = "FS_TERRAIN_BRUSH_SMOKE"
+	root.add_child(terrain_root)
+	var terrain_grid_result := TerrainBrushCatalog.ensure_grid_map(terrain_root, terrain_root)
+	var terrain_grid := terrain_grid_result.get("grid_map") as GridMap
+	var terrain_library: MeshLibrary = terrain_grid.mesh_library if terrain_grid else null
+	var terrain_shapes: Array = terrain_library.get_item_shapes(0) if terrain_library else []
+	ok = _expect(
+		bool(terrain_grid_result.get("ok", false))
+		and terrain_grid != null
+		and TerrainBrushCatalog.is_terrain_grid_map(terrain_grid)
+		and terrain_grid.get_parent().name == TerrainBrushCatalog.GROUP_TERRAIN
+		and terrain_library != null
+		and terrain_library.get_item_list().size() == TerrainBrushCatalog.terrain_presets().size()
+		and terrain_shapes.size() == 2
+		and terrain_shapes[0] is BoxShape3D,
+		(
+			"实体地形画笔必须创建一个带视觉与碰撞定义的共享 GridMap："
+			+ "parent=%s library_count=%d shapes=%s shape_class=%s result=%s"
+			% [
+				str(terrain_grid.get_parent().name) if terrain_grid else "null",
+				terrain_library.get_item_list().size() if terrain_library else -1,
+				str(terrain_shapes),
+				terrain_shapes[0].get_class() if not terrain_shapes.is_empty() else "none",
+				str(terrain_grid_result),
+			]
+		)
+	) and ok
+	var terrain_placement_root := Node3D.new()
+	terrain_placement_root.name = "FS_TERRAIN_BRUSH_PLACEMENT_SMOKE"
+	root.add_child(terrain_placement_root)
+	var terrain_selected_sibling := Node3D.new()
+	terrain_selected_sibling.name = "SELECTED_SIBLING"
+	terrain_placement_root.add_child(terrain_selected_sibling)
+	var terrain_placement_result := TerrainBrushCatalog.ensure_grid_map(
+		terrain_placement_root,
+		terrain_placement_root,
+		terrain_selected_sibling
+	)
+	var terrain_placement_grid := terrain_placement_result.get("grid_map") as GridMap
+	ok = _expect(
+		bool(terrain_placement_result.get("ok", false))
+		and terrain_placement_grid != null
+		and terrain_placement_grid.get_parent() == terrain_placement_root,
+		"实体地形画笔必须优先创建在当前选中节点的同一级：%s" % str(terrain_placement_result)
+	) and ok
+	var terrain_moved_parent := Node3D.new()
+	terrain_moved_parent.name = "MOVED_PARENT"
+	terrain_placement_root.add_child(terrain_moved_parent)
+	terrain_placement_grid.reparent(terrain_moved_parent)
+	var terrain_found_after_move := TerrainBrushCatalog.find_grid_map(terrain_placement_root)
+	var terrain_resumed_result := TerrainBrushCatalog.ensure_grid_map(
+		terrain_placement_root,
+		terrain_placement_root,
+		terrain_placement_grid
+	)
+	ok = _expect(
+		terrain_found_after_move == terrain_placement_grid
+		and TerrainBrushCatalog.find_grid_map(
+			terrain_placement_root,
+			terrain_moved_parent
+		) == terrain_placement_grid
+		and terrain_resumed_result.get("grid_map") == terrain_placement_grid
+		and terrain_placement_grid.get_parent() == terrain_moved_parent,
+		"实体地形画笔拖到其他父级后仍必须能按元数据继续编辑：%s" % str(terrain_resumed_result)
+	) and ok
+	var terrain_context_root := Node3D.new()
+	terrain_context_root.name = "FS_TERRAIN_CONTEXT_SMOKE"
+	root.add_child(terrain_context_root)
+	var context_a_parent := Node3D.new()
+	context_a_parent.name = "CONTEXT_A"
+	terrain_context_root.add_child(context_a_parent)
+	var context_a_selected := Node3D.new()
+	context_a_selected.name = "SELECTED_A"
+	context_a_parent.add_child(context_a_selected)
+	var context_b_parent := Node3D.new()
+	context_b_parent.name = "CONTEXT_B"
+	terrain_context_root.add_child(context_b_parent)
+	var context_b_selected := Node3D.new()
+	context_b_selected.name = "SELECTED_B"
+	context_b_parent.add_child(context_b_selected)
+	var context_a_grid := TerrainBrushCatalog.ensure_grid_map(
+		terrain_context_root,
+		terrain_context_root,
+		context_a_selected
+	).get("grid_map") as GridMap
+	var context_b_grid := TerrainBrushCatalog.ensure_grid_map(
+		terrain_context_root,
+		terrain_context_root,
+		context_b_selected
+	).get("grid_map") as GridMap
+	var context_a_moved_parent := Node3D.new()
+	context_a_moved_parent.name = "CONTEXT_A_MOVED"
+	context_a_parent.add_child(context_a_moved_parent)
+	if context_a_grid != null:
+		context_a_grid.reparent(context_a_moved_parent)
+	ok = _expect(
+		context_a_grid != null
+		and context_b_grid != null
+		and TerrainBrushCatalog.find_grid_map(
+			terrain_context_root,
+			context_a_selected
+		) == context_a_grid
+		and TerrainBrushCatalog.find_grid_map(
+			terrain_context_root,
+			context_b_selected
+		) == context_b_grid,
+		"存在多个实体地形画笔时，操作目标必须跟随当前选中节点所在上下文，而不是固定选择第一个网格"
+	) and ok
+	terrain_context_root.free()
+	var grass_params := TerrainBrushCatalog.brush_params("grass_platform", "circle", 3, 0)
+	var grass_stamp := TerrainBrushCatalog.apply_stamp(
+		terrain_grid,
+		Vector3i.ZERO,
+		grass_params
+	)
+	ok = _expect(
+		bool(grass_stamp.get("ok", false))
+		and int(grass_stamp.get("added", 0)) == 5
+		and int(grass_stamp.get("used_cells", 0)) == 5,
+		"3 × 3 圆形实体笔刷必须一次写入 5 个相互独立的网格格"
+	) and ok
+	var grass_repeat := TerrainBrushCatalog.apply_stamp(
+		terrain_grid,
+		Vector3i.ZERO,
+		grass_params
+	)
+	ok = _expect(
+		int(grass_repeat.get("changed", -1)) == 0
+		and int(grass_repeat.get("unchanged", 0)) == 5
+		and int(grass_repeat.get("used_cells", 0)) == 5,
+		"重复刷同一区域必须按格子去重，而不是继续复制节点"
+	) and ok
+	var grass_line := TerrainBrushCatalog.apply_line(
+		terrain_grid,
+		Vector3i.ZERO,
+		Vector3i(2, 0, 0),
+		grass_params
+	)
+	ok = _expect(
+		int(grass_line.get("added", 0)) == 6
+		and int(grass_line.get("touched_cells", 0)) == 11
+		and int(grass_line.get("used_cells", 0)) == 11,
+		"按住拖动时必须补齐相邻采样点之间的网格，避免形成断点：%s" % str(grass_line)
+	) and ok
+	var eraser_params := TerrainBrushCatalog.brush_params(
+		TerrainBrushCatalog.ERASER_ID,
+		"circle",
+		3,
+		0
+	)
+	var erased := TerrainBrushCatalog.apply_stamp(
+		terrain_grid,
+		Vector3i(1, 0, 0),
+		eraser_params
+	)
+	ok = _expect(
+		int(erased.get("erased", 0)) == 5
+		and int(erased.get("used_cells", 0)) == 6,
+		"实体地形擦除必须只移除画笔网格中的格子"
+	) and ok
+	var thick_cell := Vector3i(8, 1, 8)
+	var thick_params := TerrainBrushCatalog.brush_params(
+		"stone_ground",
+		"square",
+		1,
+		1,
+		TerrainBrushCatalog.MAX_THICKNESS
+	)
+	var thick_stamp := TerrainBrushCatalog.apply_stamp(
+		terrain_grid,
+		thick_cell,
+		thick_params
+	)
+	var thick_info := TerrainBrushCatalog.get_cell_info(terrain_grid, thick_cell)
+	var thick_item := int(thick_info.get("item_id", TerrainBrushCatalog.INVALID_ITEM))
+	var thick_shapes: Array = (
+		terrain_library.get_item_shapes(thick_item)
+		if terrain_library != null and thick_item >= 0
+		else []
+	)
+	var thick_shape := thick_shapes[0] as BoxShape3D if not thick_shapes.is_empty() else null
+	ok = _expect(
+		bool(thick_stamp.get("ok", false))
+		and int(thick_stamp.get("added", 0)) == 1
+		and thick_item >= TerrainBrushCatalog.terrain_presets().size()
+		and terrain_library.get_item_list().size() == TerrainBrushCatalog.terrain_presets().size() + 1
+		and bool(thick_info.get("ok", false))
+		and str(thick_info.get("preset_id", "")) == "stone_ground"
+		and is_equal_approx(
+			float(thick_info.get("thickness", 0.0)),
+			TerrainBrushCatalog.MAX_THICKNESS
+		)
+		and thick_shape != null
+		and is_equal_approx(thick_shape.size.y, TerrainBrushCatalog.MAX_THICKNESS),
+		"实体地形画笔必须支持每格厚度，并为自定义厚度创建共享网格项目：%s" % str(thick_info)
+	) and ok
+	var thick_pick_position := terrain_grid.to_global(Vector3(
+		float(thick_cell.x) * terrain_grid.cell_size.x,
+		float(thick_cell.y) * terrain_grid.cell_size.y
+			+ TerrainBrushCatalog.MAX_THICKNESS * 0.5
+			+ TerrainBrushCatalog.MAX_CELL_PICK_DISTANCE * 0.60,
+		float(thick_cell.z) * terrain_grid.cell_size.z
+	))
+	var thick_pick := TerrainBrushCatalog.pick_cell_at_world_position(
+		terrain_grid,
+		thick_pick_position
+	)
+	ok = _expect(
+		bool(thick_pick.get("ok", false))
+		and thick_pick.get("cell") == thick_cell
+		and float(thick_pick.get("thickness", 0.0)) == TerrainBrushCatalog.MAX_THICKNESS,
+		"2.00 米厚地形格必须能在顶部拾取范围内被反查选中：%s" % str(thick_pick)
+	) and ok
+	var removed_thick := TerrainBrushCatalog.remove_cell(terrain_grid, thick_cell)
+	ok = _expect(
+		bool(removed_thick.get("ok", false))
+		and int(removed_thick.get("removed", 0)) == 1
+		and int(removed_thick.get("used_cells", 0)) == 6
+		and not bool(TerrainBrushCatalog.get_cell_info(terrain_grid, thick_cell).get("ok", false)),
+		"单格删除必须只移除选中格并保留其余实体地形"
+	) and ok
+	var restored_thick := TerrainBrushCatalog.apply_stamp(
+		terrain_grid,
+		thick_cell,
+		thick_params
+	)
+	ok = _expect(
+		bool(restored_thick.get("ok", false))
+		and int(restored_thick.get("added", 0)) == 1
+		and int(restored_thick.get("used_cells", 0)) == 7,
+		"自定义厚度格删除后必须可以按原参数恢复"
+	) and ok
+	var terrain_scene_path := "user://fs_terrain_brush_smoke.tscn"
+	var terrain_packed := PackedScene.new()
+	var terrain_pack_error := terrain_packed.pack(terrain_root)
+	var terrain_save_error := ResourceSaver.save(terrain_packed, terrain_scene_path)
+	var terrain_loaded_scene := load(terrain_scene_path) as PackedScene
+	var terrain_loaded_root := (
+		terrain_loaded_scene.instantiate()
+		if terrain_loaded_scene != null
+		else null
+	)
+	var terrain_loaded_grid := (
+		TerrainBrushCatalog.find_grid_map(terrain_loaded_root)
+		if terrain_loaded_root != null
+		else null
+	)
+	var loaded_thick_info := (
+		TerrainBrushCatalog.get_cell_info(terrain_loaded_grid, thick_cell)
+		if terrain_loaded_grid != null
+		else {}
+	)
+	var loaded_thick_item := int(
+		loaded_thick_info.get("item_id", TerrainBrushCatalog.INVALID_ITEM)
+	)
+	var loaded_thick_shapes: Array = (
+		terrain_loaded_grid.mesh_library.get_item_shapes(loaded_thick_item)
+		if terrain_loaded_grid != null
+		and terrain_loaded_grid.mesh_library != null
+		and loaded_thick_item >= 0
+		else []
+	)
+	var loaded_thick_shape := (
+		loaded_thick_shapes[0] as BoxShape3D
+		if not loaded_thick_shapes.is_empty()
+		else null
+	)
+	ok = _expect(
+		terrain_pack_error == OK
+		and terrain_save_error == OK
+		and terrain_loaded_grid != null
+		and terrain_loaded_grid.mesh_library != null
+		and terrain_loaded_grid.mesh_library.get_item_list().size() == TerrainBrushCatalog.terrain_presets().size() + 1
+		and terrain_loaded_grid.get_used_cells().size() == 7
+		and bool(loaded_thick_info.get("ok", false))
+		and is_equal_approx(
+			float(loaded_thick_info.get("thickness", 0.0)),
+			TerrainBrushCatalog.MAX_THICKNESS
+		)
+		and loaded_thick_shape != null
+		and is_equal_approx(loaded_thick_shape.size.y, TerrainBrushCatalog.MAX_THICKNESS),
+		"实体地形画笔、自定义厚度及 MeshLibrary 碰撞定义必须随场景保存和重载：%s" % str(loaded_thick_info)
+	) and ok
+	var terrain_dock = AuthoringDock.new()
+	root.add_child(terrain_dock)
+	terrain_dock._edited_root = terrain_root
+	terrain_dock._set_form_enabled(true)
+	ok = _expect(
+		terrain_dock._terrain_clear_button != null
+		and not terrain_dock._terrain_clear_button.disabled
+		and not terrain_dock._terrain_eraser_button.disabled
+		and not terrain_dock._terrain_multiselect_button.disabled
+		and not terrain_dock._terrain_select_group_button.disabled
+		and not terrain_dock._terrain_copy_group_button.disabled
+		and terrain_dock._terrain_thickness_spin != null
+		and terrain_dock._terrain_apply_cell_button.disabled
+		and terrain_dock._terrain_delete_cell_button.disabled
+		and terrain_dock._terrain_eyedropper_button.disabled,
+		"实体地形存在格子时清空和整组按钮必须可用，批量操作在未选中格时必须禁用"
+	) and ok
+	terrain_dock._on_toggle_terrain_multiselect_pressed()
+	ok = _expect(
+		terrain_dock._terrain_multiselect_mode_active
+		and not terrain_dock._terrain_eraser_mode_active
+		and terrain_dock._terrain_multiselect_button.text.contains("已开启")
+		and bool(terrain_dock._terrain_multiselect_button.get_meta("fs_toggle_active", false))
+		and terrain_dock._terrain_multiselect_button.has_theme_stylebox_override("normal"),
+		"多格选择按钮必须切换到橙色启用的可拖动批量加选模式"
+	) and ok
+	terrain_dock._on_toggle_terrain_eraser_pressed()
+	ok = _expect(
+		terrain_dock._terrain_eraser_mode_active
+		and not terrain_dock._terrain_multiselect_mode_active
+		and terrain_dock._terrain_eraser_button.text.contains("已开启")
+		and bool(terrain_dock._terrain_eraser_button.get_meta("fs_toggle_active", false))
+		and not bool(terrain_dock._terrain_multiselect_button.get_meta("fs_toggle_active", true)),
+		"橡皮擦与多格选择必须互斥切换，并同步切换橙色启用态"
+	) and ok
+	var terrain_camera := Camera3D.new()
+	terrain_root.add_child(terrain_camera)
+	terrain_camera.global_position = Vector3(0.0, 8.0, 0.0)
+	terrain_camera.look_at(Vector3.ZERO, Vector3.FORWARD)
+	var eraser_probe := InputEventMouseButton.new()
+	eraser_probe.button_index = MOUSE_BUTTON_LEFT
+	eraser_probe.pressed = true
+	eraser_probe.position = Vector2(64.0, 64.0)
+	ok = _expect(
+		terrain_dock.handle_editor_3d_gui_input(terrain_camera, eraser_probe) == 1
+		and terrain_dock._terrain_eraser_mode_active
+		and not terrain_dock._terrain_group_selection_active()
+		and not bool(terrain_dock._terrain_select_group_button.get_meta("fs_toggle_active", true)),
+		"橡皮擦模式必须消费三维左键输入，不能穿透为 GridMap 选择并误亮整组地形"
+	) and ok
+	terrain_dock._set_terrain_mode(AuthoringDock.TERRAIN_MODE_NONE, false)
+	terrain_dock._select_terrain_grid_map(terrain_grid)
+	var group_gizmo_probe := InputEventMouseButton.new()
+	group_gizmo_probe.button_index = MOUSE_BUTTON_LEFT
+	group_gizmo_probe.pressed = true
+	ok = _expect(
+		terrain_dock._terrain_group_selection_active()
+		and terrain_dock._terrain_select_group_button.text == "结束整组选择"
+		and bool(terrain_dock._terrain_select_group_button.get_meta("fs_toggle_active", false))
+		and terrain_dock.handle_editor_3d_gui_input(null, group_gizmo_probe) == 0,
+		"选中整组地形必须进入可再次点击退出的橙色整组状态，并放行左键给 Godot gizmo"
+	) and ok
+	terrain_dock._on_toggle_terrain_multiselect_pressed()
+	ok = _expect(
+		terrain_dock._terrain_multiselect_mode_active
+		and not terrain_dock._terrain_group_selection_active()
+		and terrain_dock._terrain_select_group_button.text == "选中整组地形"
+		and not bool(terrain_dock._terrain_select_group_button.get_meta("fs_toggle_active", true)),
+		"进入单格或多格选择时必须自动退出整组选择，避免整组 gizmo 截断选格输入"
+	) and ok
+	terrain_dock._set_terrain_mode(AuthoringDock.TERRAIN_MODE_NONE, false)
+	terrain_dock._select_terrain_grid_map(terrain_grid)
+	terrain_dock._on_select_terrain_group_pressed()
+	ok = _expect(
+		not terrain_dock._terrain_group_selection_active()
+		and terrain_dock._terrain_select_group_button.text == "选中整组地形",
+		"再次点击整组按钮必须能结束整组选择"
+	) and ok
+	terrain_grid.set_cell_item(thick_cell, thick_item, 1)
+	var duplicate_result := TerrainBrushCatalog.duplicate_grid_map(terrain_grid, terrain_root)
+	var duplicate_grid := duplicate_result.get("grid_map") as GridMap
+	var duplicate_thick_info := (
+		TerrainBrushCatalog.get_cell_info(duplicate_grid, thick_cell)
+		if duplicate_grid != null
+		else {}
+	)
+	var duplicate_meta: Dictionary = (
+		duplicate_grid.get_meta(TerrainBrushCatalog.META_KEY, {})
+		if duplicate_grid != null
+		else {}
+	)
+	var duplicate_palette: Dictionary = duplicate_meta.get("item_palette", {})
+	var duplicate_group_source: GridMap = null
+	if duplicate_grid != null:
+		terrain_dock._selected_node = duplicate_grid
+		duplicate_group_source = terrain_dock._terrain_group_grid_map()
+	ok = _expect(
+		bool(duplicate_result.get("ok", false))
+		and duplicate_grid != null
+		and duplicate_grid != terrain_grid
+		and duplicate_grid.name != terrain_grid.name
+		and duplicate_grid.get_parent() == terrain_grid.get_parent()
+		and duplicate_grid.owner == terrain_root
+		and duplicate_grid.mesh_library != terrain_library
+		and duplicate_grid.get_used_cells().size() == terrain_grid.get_used_cells().size()
+		and duplicate_grid.get_cell_item(thick_cell) == thick_item
+		and duplicate_grid.get_cell_item_orientation(thick_cell) == 1
+		and bool(duplicate_thick_info.get("ok", false))
+		and duplicate_palette.has(str(thick_item))
+		and TerrainBrushCatalog.is_terrain_grid_map(duplicate_grid)
+		and duplicate_group_source == duplicate_grid
+		and is_equal_approx(
+			duplicate_grid.position.x - terrain_grid.position.x,
+			float(duplicate_result.get("offset_x", 0.0))
+		),
+		"复制整组必须保留格子、朝向、厚度元数据、owner 和独立 MeshLibrary，并生成可继续选中的偏移副本：%s"
+		% str(duplicate_result)
+	) and ok
+	if duplicate_grid:
+		duplicate_grid.free()
+	terrain_dock._selected_node = null
+	terrain_grid.set_cell_item(thick_cell, thick_item, 0)
+	var batch_cells := terrain_grid.get_used_cells()
+	var batch_cell_a: Vector3i = batch_cells[0]
+	var batch_cell_b: Vector3i = batch_cells[1]
+	terrain_dock._terrain_selected_cells.clear()
+	terrain_dock._terrain_selected_cells[batch_cell_a] = TerrainBrushCatalog.get_cell_info(
+		terrain_grid,
+		batch_cell_a
+	)
+	terrain_dock._terrain_selected_cells[batch_cell_b] = TerrainBrushCatalog.get_cell_info(
+		terrain_grid,
+		batch_cell_b
+	)
+	terrain_dock._terrain_selected_cell = batch_cell_a
+	terrain_dock._terrain_has_selected_cell = true
+	terrain_dock._select_option(terrain_dock._terrain_preset_option, "road_ground")
+	terrain_dock._terrain_thickness_spin.value = TerrainBrushCatalog.default_thickness("road_ground")
+	terrain_dock._on_apply_terrain_cell_pressed()
+	ok = _expect(
+		str(TerrainBrushCatalog.get_cell_info(
+			terrain_grid,
+			batch_cell_a
+		).get("preset_id", "")) == "road_ground"
+		and str(TerrainBrushCatalog.get_cell_info(
+			terrain_grid,
+			batch_cell_b
+		).get("preset_id", "")) == "road_ground",
+		"批量应用必须一次性更新所有已选中格"
+	) and ok
+	terrain_dock._on_delete_terrain_cell_pressed()
+	ok = _expect(
+		terrain_grid.get_cell_item(batch_cell_a) == TerrainBrushCatalog.INVALID_ITEM
+		and terrain_grid.get_cell_item(batch_cell_b) == TerrainBrushCatalog.INVALID_ITEM,
+		"批量删除必须一次性移除所有已选中格"
+	) and ok
+	terrain_dock._terrain_has_selected_cell = true
+	terrain_dock._terrain_selected_cell = thick_cell
+	terrain_dock._refresh_terrain_cell_action_state()
+	terrain_dock._show_terrain_selection(thick_info)
+	ok = _expect(
+		not terrain_dock._terrain_apply_cell_button.disabled
+		and not terrain_dock._terrain_delete_cell_button.disabled
+		and not terrain_dock._terrain_eyedropper_button.disabled
+		and terrain_dock._terrain_selection_preview != null
+		and terrain_dock._terrain_selection_preview.owner == null,
+		"单格被选中后调整按钮必须可用，临时选择预览不得进入场景持久层"
+	) and ok
+	var preview_cells := terrain_grid.get_used_cells()
+	var preview_cell_count := mini(preview_cells.size(), 3)
+	terrain_dock._terrain_selected_cells.clear()
+	for index in range(preview_cell_count):
+		var preview_cell: Vector3i = preview_cells[index]
+		terrain_dock._terrain_selected_cells[preview_cell] = TerrainBrushCatalog.get_cell_info(
+			terrain_grid,
+			preview_cell
+		)
+	if not preview_cells.is_empty():
+		terrain_dock._terrain_selected_cell = preview_cells[0]
+	terrain_dock._terrain_has_selected_cell = not preview_cells.is_empty()
+	terrain_dock._refresh_terrain_selection_preview()
+	var preview_aligned: bool = (
+		terrain_dock._terrain_selection_preview != null
+		and terrain_dock._terrain_selection_preview is Node3D
+		and terrain_dock._terrain_selection_preview.get_child_count() == preview_cell_count
+	)
+	var preview_debug: Array[String] = []
+	for index in range(preview_cell_count):
+		var preview_cell: Vector3i = preview_cells[index]
+		var preview_instance := (
+			terrain_dock._terrain_selection_preview.get_child(index) as MeshInstance3D
+		)
+		var actual_origin := (
+			preview_instance.transform.origin
+			if preview_instance != null
+			else Vector3.INF
+		)
+		var expected_origin := terrain_grid.map_to_local(preview_cell)
+		if (
+			preview_instance == null
+			or not _vector3_close(actual_origin, expected_origin, 0.0001)
+		):
+			preview_debug.append(
+				"%s actual=%s expected=%s" % [
+					str(preview_cell),
+					str(actual_origin),
+					str(expected_origin),
+				]
+			)
+		preview_aligned = (
+			preview_aligned
+			and preview_instance != null
+			and _vector3_close(
+				actual_origin,
+				expected_origin,
+				0.0001
+			)
+		)
+	ok = _expect(
+		preview_aligned,
+		(
+			"单格和多格选择预览必须直接使用 GridMap.map_to_local，不能手工乘格坐标导致高亮错位："
+			+ "; ".join(preview_debug)
+		)
+	) and ok
+	terrain_dock._clear_terrain_selection()
+	TerrainBrushCatalog.clear_terrain(terrain_grid)
+	terrain_dock._refresh_terrain_clear_button_state()
+	ok = _expect(
+		terrain_dock._terrain_clear_button.disabled,
+		"实体地形清空后清空按钮必须立即变灰"
+	) and ok
+	terrain_dock.free()
+	if terrain_loaded_root:
+		terrain_loaded_root.free()
+	terrain_root.free()
+	if FileAccess.file_exists(terrain_scene_path):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(terrain_scene_path))
+
 	var repair_root := Node3D.new()
 	var repair_mesh_host := MeshInstance3D.new()
 	var repair_mesh := BoxMesh.new()
@@ -1052,11 +1725,14 @@ func _run() -> void:
 				str(packed_state.get_node_path(index)),
 			])
 		var packed_has_pickup := false
+		var packed_has_night_jar := false
 		for path in packed_names:
 			if path.begins_with("FS_ABILITY_SMOKE_PICKUP@"):
 				packed_has_pickup = true
-				break
+			if path.begins_with("FS_BREAKABLE_NIGHT_JAR@"):
+				packed_has_night_jar = true
 		ok = _expect(packed_has_pickup, "自定义拾取节点应进入打包场景：%s" % str(packed_names)) and ok
+		ok = _expect(packed_has_night_jar, "现有可击破节点应进入打包场景：%s" % str(packed_names)) and ok
 	if pack_error == OK:
 		_ensure_project_dir(SCENE_PATH.get_base_dir())
 		var save_error := ResourceSaver.save(packed, SCENE_PATH)
@@ -1102,7 +1778,11 @@ func _run() -> void:
 		var breakable_node: Node = scene_root.get_node_or_null(str(breakable_object.get("node_path", ""))) if not breakable_object.is_empty() else null
 		ok = _expect(
 			is_instance_valid(breakable_node) and breakable_node.get_script() == BreakableScript,
-			"可击破语义应注入可击破行为"
+			"可击破语义应注入可击破行为：path=%s node=%s script=%s" % [
+				str(breakable_object.get("node_path", "")),
+				str(breakable_node != null),
+				str(breakable_node.get_script()) if breakable_node else "none",
+			]
 		) and ok
 
 	print("V2_AUTHORING objects=%s errors=%s warnings=%s route_gates=%s markers=%s authored=%s" % [

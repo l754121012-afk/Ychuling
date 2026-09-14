@@ -6,6 +6,7 @@ func _init() -> void:
 
 
 func _run() -> void:
+	ProjectSettings.set_setting("fivestar_authoring/playtest_mode", false)
 	var packed: PackedScene = load("res://scenes/main/M2Route.tscn")
 	var main: Node = packed.instantiate()
 	root.add_child(main)

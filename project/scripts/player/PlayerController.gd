@@ -66,6 +66,7 @@ const SPIN_DAMAGE_INTERVAL := 0.35
 const SPIN_COOLDOWN := 0.8
 const SPIN_CHARGE_TIME := 0.6
 const SPIN_CHARGE_MOVE_SPEED := 4.0
+const FALL_RESPAWN_DEPTH := 8.0
 
 enum State {
 	NORMAL,
@@ -79,6 +80,7 @@ enum State {
 }
 
 var _state := State.NORMAL
+var spatial_scale := 1.0
 var _attack_timer := 0.0
 var _attack_cooldown := 0.0
 var _dash_timer := 0.0
@@ -142,6 +144,25 @@ func _ready() -> void:
 	_setup_spin()
 
 
+func set_spatial_scale(p_scale: float) -> void:
+	spatial_scale = maxf(p_scale, 0.001)
+
+
+func _spatial(p_value: float) -> float:
+	return p_value * spatial_scale
+
+
+func get_spatial_metrics() -> Dictionary:
+	return {
+		"scale": spatial_scale,
+		"move_speed": _spatial(MOVE_SPEED),
+		"dash_speed": _spatial(DASH_SPEED),
+		"interact_range": _spatial(INTERACT_RANGE),
+		"heavy_base_radius": _spatial(HEAVY_BASE_RADIUS),
+		"followup_rear_distance": _spatial(FOLLOWUP_REAR_DISTANCE),
+	}
+
+
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT:
 		_spin_held = event.pressed
@@ -149,6 +170,9 @@ func _input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	if _defeated:
+		return
+	if global_position.y < spawn_point.y - FALL_RESPAWN_DEPTH:
+		_respawn_after_fall()
 		return
 	_tick_timers(delta)
 	_handle_state_input(delta)
@@ -158,20 +182,20 @@ func _physics_process(delta: float) -> void:
 		return
 
 	if _hitstun_time > 0.0:
-		velocity.x = move_toward(velocity.x, 0.0, 22.0 * delta)
-		velocity.z = move_toward(velocity.z, 0.0, 22.0 * delta)
+		velocity.x = move_toward(velocity.x, 0.0, _spatial(22.0) * delta)
+		velocity.z = move_toward(velocity.z, 0.0, _spatial(22.0) * delta)
 		if not is_on_floor():
-			velocity.y -= GRAVITY * delta
+			velocity.y -= _spatial(GRAVITY) * delta
 		_pre_move_velocity = velocity
 		move_and_slide()
 		_bounce_and_bump_from_slides()
 		return
 
 	if _bounce_time > 0.0:
-		velocity.x = move_toward(velocity.x, 0.0, 16.0 * delta)
-		velocity.z = move_toward(velocity.z, 0.0, 16.0 * delta)
+		velocity.x = move_toward(velocity.x, 0.0, _spatial(16.0) * delta)
+		velocity.z = move_toward(velocity.z, 0.0, _spatial(16.0) * delta)
 		if not is_on_floor():
-			velocity.y -= GRAVITY * delta
+			velocity.y -= _spatial(GRAVITY) * delta
 		move_and_slide()
 		return
 
@@ -212,12 +236,12 @@ func _physics_process(delta: float) -> void:
 			_facing = wish.normalized()
 
 		if Input.is_action_just_pressed("jump") and is_on_floor():
-			velocity.y = JUMP_VELOCITY
+			velocity.y = _spatial(JUMP_VELOCITY)
 		if not is_on_floor():
-			velocity.y -= GRAVITY * delta
+			velocity.y -= _spatial(GRAVITY) * delta
 
-		var target := wish * MOVE_SPEED
-		var accel := ACCELERATION if is_on_floor() else AIR_ACCELERATION
+		var target := wish * _spatial(MOVE_SPEED)
+		var accel := _spatial(ACCELERATION if is_on_floor() else AIR_ACCELERATION)
 		velocity.x = move_toward(velocity.x, target.x, accel * delta)
 		velocity.z = move_toward(velocity.z, target.z, accel * delta)
 
@@ -306,8 +330,9 @@ func _tick_timers(delta: float) -> void:
 		if _dash_timer <= 0.0:
 			_state = State.NORMAL
 			var flat_velocity := Vector2(velocity.x, velocity.z)
-			if flat_velocity.length() > 8.5:
-				var speed_scale := 8.5 / flat_velocity.length()
+			var dash_rest_speed := _spatial(8.5)
+			if flat_velocity.length() > dash_rest_speed:
+				var speed_scale := dash_rest_speed / flat_velocity.length()
 				velocity.x *= speed_scale
 				velocity.z *= speed_scale
 
@@ -316,7 +341,10 @@ func _try_step_up(p_motion: Vector3) -> bool:
 	var horizontal_motion := Vector3(p_motion.x, 0.0, p_motion.z)
 	if horizontal_motion.length_squared() < 0.0001:
 		return false
-	var step_motion := horizontal_motion.normalized() * maxf(horizontal_motion.length(), STEP_UP_MIN_FORWARD)
+	var step_height := _spatial(STEP_UP_HEIGHT)
+	var step_forward := _spatial(STEP_UP_MIN_FORWARD)
+	var drop_probe := _spatial(STEP_UP_DROP_PROBE)
+	var step_motion := horizontal_motion.normalized() * maxf(horizontal_motion.length(), step_forward)
 
 	var obstacle := KinematicCollision3D.new()
 	if not test_move(transform, step_motion, obstacle, 0.001, true, 4):
@@ -333,10 +361,10 @@ func _try_step_up(p_motion: Vector3) -> bool:
 		return false
 
 	var ceiling := KinematicCollision3D.new()
-	if test_move(transform, Vector3.UP * STEP_UP_HEIGHT, ceiling):
+	if test_move(transform, Vector3.UP * step_height, ceiling):
 		return false
 
-	var elevated := transform.translated(Vector3.UP * STEP_UP_HEIGHT)
+	var elevated := transform.translated(Vector3.UP * step_height)
 	var forward := KinematicCollision3D.new()
 	if test_move(elevated, step_motion, forward):
 		return false
@@ -344,7 +372,7 @@ func _try_step_up(p_motion: Vector3) -> bool:
 	var landing := KinematicCollision3D.new()
 	if not test_move(
 		elevated.translated(step_motion),
-		Vector3.DOWN * (STEP_UP_HEIGHT + STEP_UP_DROP_PROBE),
+		Vector3.DOWN * (step_height + drop_probe),
 		landing
 	):
 		return false
@@ -352,8 +380,8 @@ func _try_step_up(p_motion: Vector3) -> bool:
 		return false
 
 	var drop := -landing.get_travel().y
-	var rise := STEP_UP_HEIGHT - drop
-	if rise < STEP_UP_MIN_RISE or rise > STEP_UP_HEIGHT:
+	var rise := step_height - drop
+	if rise < _spatial(STEP_UP_MIN_RISE) or rise > step_height:
 		return false
 
 	global_position = elevated.translated(step_motion).origin + Vector3.DOWN * drop
@@ -370,6 +398,7 @@ func _handle_state_input(delta: float) -> void:
 		var wish := Vector3(input.x, 0.0, input.y)
 		if wish.length_squared() > 0.001:
 			var desired := wish.normalized()
+			var dash_speed := _spatial(DASH_SPEED)
 			var steer := clampf(18.0 * delta, 0.0, 0.55)
 			var blended := _dash_dir.lerp(desired, steer)
 			if blended.length_squared() < 0.001:
@@ -377,11 +406,11 @@ func _handle_state_input(delta: float) -> void:
 			_dash_dir = blended.normalized()
 			var alignment := maxf(_dash_dir.dot(desired), 0.0)
 			var speed_factor := lerpf(0.72, 1.0, alignment)
-			velocity.x = _dash_dir.x * DASH_SPEED * speed_factor
-			velocity.z = _dash_dir.z * DASH_SPEED * speed_factor
+			velocity.x = _dash_dir.x * dash_speed * speed_factor
+			velocity.z = _dash_dir.z * dash_speed * speed_factor
 		else:
-			velocity.x = _dash_dir.x * DASH_SPEED
-			velocity.z = _dash_dir.z * DASH_SPEED
+			velocity.x = _dash_dir.x * _spatial(DASH_SPEED)
+			velocity.z = _dash_dir.z * _spatial(DASH_SPEED)
 		velocity.y = 0.0
 
 
@@ -390,7 +419,7 @@ func _start_dash(p_dir: Vector3) -> void:
 	_dash_timer = DASH_TIME
 	_dash_cooldown = DASH_COOLDOWN
 	_dash_dir = p_dir
-	velocity = Vector3(p_dir.x * DASH_SPEED, 0.0, p_dir.z * DASH_SPEED)
+	velocity = Vector3(p_dir.x * _spatial(DASH_SPEED), 0.0, p_dir.z * _spatial(DASH_SPEED))
 
 
 func _start_q_tech(p_dir: Vector3) -> void:
@@ -406,14 +435,14 @@ func _start_q_tech(p_dir: Vector3) -> void:
 	_q_phase = 0
 	_q_timer = Q_BACKSTEP_TIME
 	_state = State.DASH_TECH
-	velocity = -_q_dir * Q_BACKSTEP_SPEED
+	velocity = -_q_dir * _spatial(Q_BACKSTEP_SPEED)
 
 
 func _tick_q_tech(delta: float) -> void:
 	_q_timer -= delta
 	if _q_phase == 0:
-		velocity.x = -_q_dir.x * Q_BACKSTEP_SPEED
-		velocity.z = -_q_dir.z * Q_BACKSTEP_SPEED
+		velocity.x = -_q_dir.x * _spatial(Q_BACKSTEP_SPEED)
+		velocity.z = -_q_dir.z * _spatial(Q_BACKSTEP_SPEED)
 		if _q_timer <= 0.0:
 			_q_phase = 1
 			_q_timer = Q_PAUSE_TIME
@@ -425,11 +454,11 @@ func _tick_q_tech(delta: float) -> void:
 		if _q_timer <= 0.0:
 			_q_phase = 2
 			_q_timer = Q_FORWARD_TIME
-			velocity.x = _q_dir.x * Q_FORWARD_SPEED
-			velocity.z = _q_dir.z * Q_FORWARD_SPEED
+			velocity.x = _q_dir.x * _spatial(Q_FORWARD_SPEED)
+			velocity.z = _q_dir.z * _spatial(Q_FORWARD_SPEED)
 	elif _q_phase == 2:
-		velocity.x = _q_dir.x * Q_FORWARD_SPEED
-		velocity.z = _q_dir.z * Q_FORWARD_SPEED
+		velocity.x = _q_dir.x * _spatial(Q_FORWARD_SPEED)
+		velocity.z = _q_dir.z * _spatial(Q_FORWARD_SPEED)
 		if _q_timer <= 0.0:
 			_state = State.NORMAL
 			velocity.x = 0.0
@@ -465,9 +494,9 @@ func _tick_spin_charge(delta: float) -> void:
 	_spin_ring.scale = Vector3(0.45 + progress * 1.2, 0.45 + progress * 1.2, 0.45 + progress * 1.2)
 	var input := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	var wish := Vector3(input.x, 0.0, input.y)
-	var target := wish * SPIN_CHARGE_MOVE_SPEED
-	velocity.x = move_toward(velocity.x, target.x, ACCELERATION * delta)
-	velocity.z = move_toward(velocity.z, target.z, ACCELERATION * delta)
+	var target := wish * _spatial(SPIN_CHARGE_MOVE_SPEED)
+	velocity.x = move_toward(velocity.x, target.x, _spatial(ACCELERATION) * delta)
+	velocity.z = move_toward(velocity.z, target.z, _spatial(ACCELERATION) * delta)
 	if _spin_charge_time >= SPIN_CHARGE_TIME and not _spin_charge_ready:
 		_spin_charge_ready = true
 		_spin_super_armor = true
@@ -508,9 +537,9 @@ func _tick_spin(delta: float) -> void:
 
 	var input := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	var wish := Vector3(input.x, 0.0, input.y)
-	var target := wish * SPIN_MOVE_SPEED
-	velocity.x = move_toward(velocity.x, target.x, ACCELERATION * delta)
-	velocity.z = move_toward(velocity.z, target.z, ACCELERATION * delta)
+	var target := wish * _spatial(SPIN_MOVE_SPEED)
+	velocity.x = move_toward(velocity.x, target.x, _spatial(ACCELERATION) * delta)
+	velocity.z = move_toward(velocity.z, target.z, _spatial(ACCELERATION) * delta)
 	velocity.y = 0.0
 	if _spin_time <= 0.0:
 		_stop_spin()
@@ -625,7 +654,7 @@ func _blink_behind_target() -> void:
 	var offset := _followup_target.global_position - global_position
 	offset.y = 0.0
 	var approach_dir := _facing if offset.length() < 0.05 else offset.normalized()
-	var behind_position := _followup_target.global_position + approach_dir * FOLLOWUP_REAR_DISTANCE
+	var behind_position := _followup_target.global_position + approach_dir * _spatial(FOLLOWUP_REAR_DISTANCE)
 	behind_position.y = global_position.y
 	global_position = behind_position
 	_followup_flash.visible = false
@@ -636,7 +665,11 @@ func _blink_behind_target() -> void:
 func _spawn_blink_effect(p_position: Vector3, p_color: Color) -> void:
 	if not is_inside_tree():
 		return
-	var effect := PlaceholderKit.ground_quad("art_key_followup_blink", p_color, Vector2(1.8, 1.8))
+	var effect := PlaceholderKit.ground_quad(
+		"art_key_followup_blink",
+		p_color,
+		Vector2(1.8, 1.8) * spatial_scale
+	)
 	get_parent().add_child(effect)
 	effect.global_position = p_position
 	effect.global_position.y = 0.08
@@ -668,8 +701,8 @@ func _start_heavy_sweep() -> void:
 	_heavy_time = HEAVY_TIME
 	_heavy_cooldown = HEAVY_COOLDOWN
 	_heavy_hit_done = false
-	_heavy_radius = HEAVY_BASE_RADIUS + _momentum * HEAVY_RADIUS_PER_MOMENTUM
-	_heavy_push_speed = HEAVY_BASE_PUSH + _momentum * HEAVY_PUSH_PER_MOMENTUM
+	_heavy_radius = _spatial(HEAVY_BASE_RADIUS + _momentum * HEAVY_RADIUS_PER_MOMENTUM)
+	_heavy_push_speed = _spatial(HEAVY_BASE_PUSH + _momentum * HEAVY_PUSH_PER_MOMENTUM)
 	_spend_momentum(_momentum)
 	_spin_ring.visible = false
 	_spin_area.monitoring = false
@@ -834,7 +867,7 @@ func take_hit(p_from: Node3D) -> void:
 	if direction.length_squared() < 0.001:
 		direction = -_facing
 	direction = direction.normalized()
-	velocity = direction * 13.0 + Vector3.UP * 3.5
+	velocity = direction * _spatial(13.0) + Vector3.UP * _spatial(3.5)
 	health_changed.emit(health, MAX_HEALTH)
 	if health <= 0:
 		_defeated = true
@@ -868,6 +901,51 @@ func revive(p_position: Vector3) -> void:
 	health_changed.emit(health, MAX_HEALTH)
 	stamina_changed.emit(stamina, MAX_STAMINA)
 	beans_changed.emit(beans, MAX_BEANS)
+
+
+func _respawn_after_fall() -> void:
+	if _state == State.SPIN:
+		_stop_spin()
+	elif _state == State.SPIN_CHARGE:
+		_cancel_spin_charge()
+	elif _state == State.FOLLOWUP:
+		_end_followup()
+	elif _state == State.HEAVY:
+		_end_heavy()
+
+	_state = State.NORMAL
+	_attack_timer = 0.0
+	_dash_timer = 0.0
+	_hitstun_time = 0.0
+	_bounce_time = 0.0
+	_bounce_cooldown = 0.0
+	_hurt_timer = 0.0
+	_followup_window = 0.0
+	_followup_time = 0.0
+	_heavy_time = 0.0
+	_q_phase = 0
+	_q_timer = 0.0
+	_spin_time = 0.0
+	_spin_charge_time = 0.0
+	_spin_charge_ready = false
+	_spin_super_armor = false
+	_followup_target = null
+	_pre_move_velocity = Vector3.ZERO
+	if is_instance_valid(_spin_ring):
+		_spin_ring.visible = false
+	if is_instance_valid(_spin_area):
+		_spin_area.monitoring = false
+	if is_instance_valid(_followup_flash):
+		_followup_flash.visible = false
+	if is_instance_valid(_broom_pivot):
+		_broom_pivot.rotation.y = 0.0
+	if is_instance_valid(_body_visual):
+		_body_visual.scale = Vector3.ONE
+		_body_visual.material_override = PlaceholderKit.material(Color("#cfe06a"))
+
+	global_position = spawn_point
+	velocity = Vector3.ZERO
+	_invuln_time = maxf(_invuln_time, 0.8)
 
 
 func _bounce_and_bump_from_slides() -> void:
@@ -906,7 +984,11 @@ func _bounce_and_bump_from_slides() -> void:
 
 
 func _show_bounce_effect(p_position: Vector3) -> void:
-	var effect := PlaceholderKit.ground_quad("art_key_bounce_ring", Color("#c9ffd2"), Vector2(1.8, 1.8))
+	var effect := PlaceholderKit.ground_quad(
+		"art_key_bounce_ring",
+		Color("#c9ffd2"),
+		Vector2(1.8, 1.8) * spatial_scale
+	)
 	get_parent().add_child(effect)
 	effect.global_position = p_position
 	effect.global_position.y = 0.08
@@ -940,7 +1022,7 @@ func _try_send_off() -> void:
 		if not ghost.is_send_off_ready():
 			continue
 		var distance := global_position.distance_to(ghost.global_position)
-		if distance < INTERACT_RANGE and distance < best_distance:
+		if distance < _spatial(INTERACT_RANGE) and distance < best_distance:
 			best_distance = distance
 			best_target = ghost
 	if best_target and best_target.has_method("start_send_off"):

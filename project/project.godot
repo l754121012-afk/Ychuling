@@ -32,6 +32,7 @@ enabled=PackedStringArray("res://addons/fivestar_authoring/plugin.cfg")
 [fivestar_authoring]
 
 playtest_mode=true
+playtest_scene="res://authoring/scenes/spirit_sprawl_geometry.tscn"
 
 [rendering]
 

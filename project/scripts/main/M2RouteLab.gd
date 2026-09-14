@@ -443,17 +443,24 @@ func _build_environment() -> void:
 func _build_playtest() -> void:
 	_build_environment()
 	_build_playtest_region()
-	_build_playtest_ground()
+	if not _authored_region_has_support():
+		_build_playtest_ground()
 	_build_player()
 	_build_camera()
 
 
 func _build_playtest_region() -> void:
 	var region: Dictionary = V2RouteData.load_region()
-	if region.is_empty():
-		return
 	var region_id := str(region.get("region_id", "first_night"))
-	var scene_path := FSAuthoringRuntime.scene_path_for_region(region_id)
+	if region_id.is_empty():
+		region_id = "first_night"
+	if region.is_empty():
+		region = {"region_id": region_id}
+	var scene_path := PlaytestMode.scene_path()
+	if not PlaytestMode.is_authoring_scene_path(scene_path):
+		scene_path = FSAuthoringRuntime.scene_path_for_region(region_id)
+	if not PlaytestMode.is_authoring_scene_path(scene_path):
+		scene_path = FSAuthoringRuntime.resolve_published_scene(region_id)
 	var handle: Dictionary = FSAuthoringRuntime.build(self, region, scene_path)
 	if handle.is_empty():
 		return
@@ -469,6 +476,27 @@ func _build_playtest_region() -> void:
 	if is_instance_valid(spawn):
 		focus = spawn.global_position
 	_spawn_position = Vector3(focus.x, 4.0, focus.z)
+
+
+func _authored_region_has_support() -> bool:
+	var scene_root = _region_handle.get("scene_root")
+	if not is_instance_valid(scene_root):
+		return false
+	return _has_support_body(scene_root)
+
+
+func _has_support_body(p_node: Node) -> bool:
+	if p_node is StaticBody3D:
+		var body := p_node as StaticBody3D
+		var body_name := str(body.name).to_upper()
+		if body_name.begins_with("SURFACE_") or body_name.begins_with("SUPPORT_"):
+			for child in body.get_children():
+				if child is CollisionShape3D and child.shape != null:
+					return true
+	for child in p_node.get_children():
+		if _has_support_body(child):
+			return true
+	return false
 
 
 func _build_playtest_ground() -> void:
@@ -672,6 +700,10 @@ func _build_player() -> void:
 	_player.name = "Player"
 	_player.position = _spawn_position
 	_player.spawn_point = _player.position
+	var playtest_scale := PlaytestMode.AUTHORING_PLAYER_SCALE if _playtest_mode else 1.0
+	_player.set_spatial_scale(playtest_scale)
+	if _playtest_mode:
+		_player.scale = Vector3.ONE * playtest_scale
 	add_child(_player)
 	_player.health_changed.connect(_on_player_health_changed)
 	_player.momentum_changed.connect(_on_player_momentum_changed)
@@ -690,14 +722,19 @@ func _build_player() -> void:
 func _build_camera() -> void:
 	_camera = Camera3D.new()
 	add_child(_camera)
-	GameView.apply_to_camera(_camera, _player.global_position)
+	GameView.apply_to_camera(
+		_camera,
+		_player.global_position,
+		PlaytestMode.AUTHORING_PLAYER_SCALE if _playtest_mode else 1.0
+	)
 
 
 func _update_follow_camera(delta: float) -> void:
-	var camera_target := GameView.camera_position_for_focus(_player.global_position)
+	var view_scale := PlaytestMode.AUTHORING_PLAYER_SCALE if _playtest_mode else 1.0
+	var camera_target := GameView.camera_position_for_focus(_player.global_position, view_scale)
 	var blend := 1.0 - exp(-6.5 * delta)
 	_camera.global_position = _camera.global_position.lerp(camera_target, blend)
-	_camera.look_at(GameView.look_target_for_focus(_player.global_position), Vector3.UP)
+	_camera.look_at(GameView.look_target_for_focus(_player.global_position, view_scale), Vector3.UP)
 
 
 func _build_hud() -> void:

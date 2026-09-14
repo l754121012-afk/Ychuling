@@ -159,7 +159,7 @@ static func _collect_objects(p_root: Node, p_node: Node, p_objects: Array[Dictio
 			str(data.get("behavior", ""))
 		)
 		object["node_name"] = str(p_node.name)
-		object["node_path"] = "." if p_node == p_root else str(p_root.get_path_to(p_node))
+		object["node_path"] = _safe_node_path(p_root, p_node)
 		object["node_class"] = p_node.get_class()
 		object["script_class"] = _script_class(p_node)
 		object["scene_file_path"] = p_node.scene_file_path
@@ -168,6 +168,22 @@ static func _collect_objects(p_root: Node, p_node: Node, p_objects: Array[Dictio
 		p_objects.append(object)
 	for child in p_node.get_children():
 		_collect_objects(p_root, child, p_objects)
+
+
+static func _safe_node_path(p_root: Node, p_node: Node) -> String:
+	if p_root == null or p_node == null:
+		return ""
+	if p_node == p_root:
+		return "."
+	var parts: Array[String] = []
+	var current: Node = p_node
+	while current != null and current != p_root:
+		parts.append(str(current.name))
+		current = current.get_parent()
+	if current != p_root:
+		return ""
+	parts.reverse()
+	return "/".join(parts)
 
 
 static func _transform_data(p_node: Node) -> Dictionary:

@@ -9,35 +9,51 @@ const FOCUS_FOV := 55.0
 const FOCUS_YAW_DEGREES := 38.0
 const FOCUS_ELEVATION_DEGREES := 36.0
 const FOCUS_MARGIN := 1.18
-const FOCUS_MIN_DISTANCE := 2.2
+const FOCUS_MIN_DISTANCE := 0.3
 const FOCUS_MAX_DISTANCE := 180.0
-const FOCUS_MIN_RADIUS_DISTANCE_FACTOR := 0.35
+const FOCUS_MIN_RADIUS_DISTANCE_FACTOR := 1.0
 const FOCUS_MAX_RADIUS_DISTANCE_FACTOR := 25.0
 const FOCUS_MIN_RADIUS_DISTANCE := 0.15
 const FOCUS_MIN_RADIUS_MAX_DISTANCE := 2.0
-const FOCUS_WHEEL_ZOOM_FACTOR := 0.9
-const FOCUS_ORBIT_DEGREES_PER_PIXEL := 0.16
+const FOCUS_WHEEL_ZOOM_FACTOR := 0.92
+const FOCUS_ORBIT_DEGREES_PER_PIXEL := 0.12
+const FOCUS_ORBIT_REFERENCE_RADIUS := 1.25
+const FOCUS_MIN_ORBIT_SCALE := 0.32
 const FOCUS_MIN_ELEVATION_DEGREES := -80.0
 const FOCUS_MAX_ELEVATION_DEGREES := 80.0
 
 
-static func camera_position_for_focus(p_focus: Vector3) -> Vector3:
-	return p_focus + Vector3(0.0, CAMERA_HEIGHT, CAMERA_BACK)
+static func camera_position_for_focus(
+	p_focus: Vector3,
+	p_world_scale: float = 1.0
+) -> Vector3:
+	var world_scale := maxf(p_world_scale, 0.001)
+	return p_focus + Vector3(0.0, CAMERA_HEIGHT * world_scale, CAMERA_BACK * world_scale)
 
 
-static func look_target_for_focus(p_focus: Vector3) -> Vector3:
-	return p_focus + Vector3(0.0, LOOK_HEIGHT, 0.0)
+static func look_target_for_focus(
+	p_focus: Vector3,
+	p_world_scale: float = 1.0
+) -> Vector3:
+	return p_focus + Vector3(0.0, LOOK_HEIGHT * maxf(p_world_scale, 0.001), 0.0)
 
 
-static func camera_transform_for_focus(p_focus: Vector3) -> Transform3D:
+static func camera_transform_for_focus(
+	p_focus: Vector3,
+	p_world_scale: float = 1.0
+) -> Transform3D:
 	var transform := Transform3D.IDENTITY
-	transform.origin = camera_position_for_focus(p_focus)
-	return transform.looking_at(look_target_for_focus(p_focus), Vector3.UP)
+	transform.origin = camera_position_for_focus(p_focus, p_world_scale)
+	return transform.looking_at(look_target_for_focus(p_focus, p_world_scale), Vector3.UP)
 
 
-static func apply_to_camera(p_camera: Camera3D, p_focus: Vector3) -> void:
+static func apply_to_camera(
+	p_camera: Camera3D,
+	p_focus: Vector3,
+	p_world_scale: float = 1.0
+) -> void:
 	p_camera.fov = CAMERA_FOV
-	p_camera.global_transform = camera_transform_for_focus(p_focus)
+	p_camera.global_transform = camera_transform_for_focus(p_focus, p_world_scale)
 
 
 static func combined_world_aabb(p_nodes: Array) -> Dictionary:
@@ -75,7 +91,8 @@ static func world_aabb_for_node(p_node: Node3D) -> Dictionary:
 static func focus_pose_for_aabb(p_aabb: AABB, p_aspect: float = 1.7777778) -> Dictionary:
 	var center := p_aabb.get_center()
 	var size := p_aabb.size
-	var radius := maxf(size.length() * 0.5, 0.35)
+	var radius := maxf(size.length() * 0.5, 0.16)
+	var zoom_limits := focus_zoom_limits(radius)
 	var yaw := deg_to_rad(FOCUS_YAW_DEGREES)
 	var elevation := deg_to_rad(FOCUS_ELEVATION_DEGREES)
 	var camera_direction := Vector3(
@@ -91,7 +108,7 @@ static func focus_pose_for_aabb(p_aabb: AABB, p_aspect: float = 1.7777778) -> Di
 	var camera_up := provisional.basis.y.normalized()
 	var vertical_half_fov := tan(deg_to_rad(FOCUS_FOV * 0.5))
 	var horizontal_half_fov := vertical_half_fov * maxf(p_aspect, 0.15)
-	var distance := FOCUS_MIN_DISTANCE
+	var distance := float(zoom_limits["min"])
 	for index in range(8):
 		var offset := Vector3(
 			size.x if (index & 1) != 0 else 0.0,
@@ -110,8 +127,8 @@ static func focus_pose_for_aabb(p_aabb: AABB, p_aspect: float = 1.7777778) -> Di
 		)
 	distance = clampf(
 		distance * FOCUS_MARGIN,
-		FOCUS_MIN_DISTANCE,
-		FOCUS_MAX_DISTANCE
+		float(zoom_limits["min"]),
+		minf(float(zoom_limits["max"]), FOCUS_MAX_DISTANCE)
 	)
 	var camera_position := center + camera_direction * distance
 	return {
@@ -162,11 +179,31 @@ static func focus_camera_transform(
 	)
 
 
-static func focus_orbit_step(p_relative: Vector2) -> Dictionary:
+static func focus_orbit_step(
+	p_relative: Vector2,
+	p_radius: float = FOCUS_ORBIT_REFERENCE_RADIUS
+) -> Dictionary:
+	var radius_scale := clampf(
+		p_radius / FOCUS_ORBIT_REFERENCE_RADIUS,
+		FOCUS_MIN_ORBIT_SCALE,
+		1.0
+	)
+	var degrees_per_pixel := FOCUS_ORBIT_DEGREES_PER_PIXEL * radius_scale
 	return {
-		"yaw_delta": -p_relative.x * FOCUS_ORBIT_DEGREES_PER_PIXEL,
-		"elevation_delta": p_relative.y * FOCUS_ORBIT_DEGREES_PER_PIXEL,
+		"yaw_delta": p_relative.x * degrees_per_pixel,
+		"elevation_delta": p_relative.y * degrees_per_pixel,
+		"degrees_per_pixel": degrees_per_pixel,
 	}
+
+
+static func focus_pan_units_per_pixel(
+	p_distance: float,
+	p_fov_degrees: float = FOCUS_FOV,
+	p_viewport_height: float = 720.0
+) -> float:
+	var viewport_height := maxf(p_viewport_height, 1.0)
+	var fov := deg_to_rad(clampf(p_fov_degrees, 1.0, 179.0))
+	return 2.0 * maxf(p_distance, 0.01) * tan(fov * 0.5) / viewport_height
 
 
 static func focus_zoom_step(p_distance: float, p_radius: float, p_wheel_factor: float) -> float:

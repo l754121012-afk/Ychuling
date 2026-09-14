@@ -79,20 +79,69 @@ static func create_document(p_region_id: String, p_scene_path: String) -> Dictio
 static func load_or_create(p_path: String, p_region_id: String, p_scene_path: String) -> Dictionary:
 	if FileAccess.file_exists(p_path):
 		var parsed = JSON.parse_string(FileAccess.get_file_as_string(p_path))
-		if parsed is Dictionary and parsed.has("steps") and parsed["steps"] is Array:
-			var changed := false
-			if str(parsed.get("region_id", "")) != p_region_id:
-				parsed["region_id"] = p_region_id
-				changed = true
-			if not p_scene_path.is_empty() and str(parsed.get("scene_path", "")) != p_scene_path:
-				parsed["scene_path"] = p_scene_path
-				changed = true
-			if changed:
-				save(p_path, parsed)
-			return parsed
+		if parsed is Dictionary:
+			var normalized := normalize_document(parsed, p_region_id, p_scene_path)
+			if normalized != parsed:
+				save(p_path, normalized)
+			return normalized
 	var document := create_document(p_region_id, p_scene_path)
 	save(p_path, document)
 	return document
+
+
+static func normalize_document(
+	p_document: Dictionary,
+	p_region_id: String,
+	p_scene_path: String
+) -> Dictionary:
+	var all_steps := steps()
+	var raw_steps_value: Variant = p_document.get("steps", [])
+	var raw_steps: Array = raw_steps_value if raw_steps_value is Array else []
+	var states_by_id := {}
+	for raw_step in raw_steps:
+		if raw_step is Dictionary:
+			var raw_state: Dictionary = raw_step
+			var raw_id := str(raw_state.get("id", ""))
+			if not raw_id.is_empty() and not states_by_id.has(raw_id):
+				states_by_id[raw_id] = raw_state
+
+	var normalized_steps: Array[Dictionary] = []
+	for index in range(all_steps.size()):
+		var step_id := str(all_steps[index]["id"])
+		var candidate: Dictionary = {}
+		if states_by_id.has(step_id):
+			candidate = states_by_id[step_id]
+		elif index < raw_steps.size() and raw_steps[index] is Dictionary:
+			var indexed_state: Dictionary = raw_steps[index]
+			var indexed_id := str(indexed_state.get("id", ""))
+			if indexed_id.is_empty() or indexed_id == step_id:
+				candidate = indexed_state
+		normalized_steps.append(_normalize_step_state(candidate, step_id))
+
+	var first_pending := normalized_steps.size()
+	for index in range(normalized_steps.size()):
+		if str(normalized_steps[index].get("status", "PENDING")) != "DONE":
+			first_pending = index
+			break
+
+	var normalized_region_id := p_region_id
+	if normalized_region_id.is_empty():
+		normalized_region_id = str(p_document.get("region_id", ""))
+	var normalized_scene_path := p_scene_path
+	if normalized_scene_path.is_empty():
+		normalized_scene_path = str(p_document.get("scene_path", ""))
+	var normalized_updated_at := str(p_document.get("updated_at", ""))
+	if normalized_updated_at.is_empty():
+		normalized_updated_at = Time.get_datetime_string_from_system()
+	return {
+		"schema_version": 1,
+		"region_id": normalized_region_id,
+		"scene_path": normalized_scene_path,
+		"current_step": first_pending,
+		"status": "COMPLETE" if first_pending >= all_steps.size() else "ACTIVE",
+		"steps": normalized_steps,
+		"updated_at": normalized_updated_at,
+	}
 
 
 static func save(p_path: String, p_document: Dictionary) -> bool:
@@ -116,30 +165,45 @@ static func current_step(p_document: Dictionary) -> Dictionary:
 
 static func confirm_current(p_document: Dictionary, p_note: String = "") -> Dictionary:
 	var all_steps := steps()
-	var index := int(p_document.get("current_step", 0))
+	var document := normalize_document(
+		p_document,
+		str(p_document.get("region_id", "")),
+		str(p_document.get("scene_path", ""))
+	)
+	var index := int(document.get("current_step", 0))
 	if index < 0 or index >= all_steps.size():
-		p_document["status"] = "COMPLETE"
+		document["status"] = "COMPLETE"
+		p_document.clear()
+		p_document.merge(document, true)
 		return p_document
-	var state: Dictionary = p_document["steps"][index]
+	var state: Dictionary = document["steps"][index]
 	state["status"] = "DONE"
 	state["confirmed_at"] = Time.get_datetime_string_from_system()
 	state["note"] = p_note
+	document["steps"][index] = state
 	index += 1
-	p_document["current_step"] = index
-	p_document["status"] = "COMPLETE" if index >= all_steps.size() else "ACTIVE"
-	p_document["steps"][index - 1] = state
+	document["current_step"] = index
+	document["status"] = "COMPLETE" if index >= all_steps.size() else "ACTIVE"
+	p_document.clear()
+	p_document.merge(document, true)
 	return p_document
 
 
 static func progress_text(p_document: Dictionary) -> String:
 	var all_steps := steps()
+	var document := normalize_document(
+		p_document,
+		str(p_document.get("region_id", "")),
+		str(p_document.get("scene_path", ""))
+	)
+	var states: Array = document["steps"]
 	var lines: Array[String] = []
 	for index in range(all_steps.size()):
-		var state: Dictionary = p_document["steps"][index]
+		var state: Dictionary = states[index]
 		var marker := "[ ]"
 		if str(state.get("status", "")) == "DONE":
 			marker = "[x]"
-		elif index == int(p_document.get("current_step", 0)):
+		elif index == int(document.get("current_step", 0)):
 			marker = "[>]"
 		lines.append("%s %s" % [marker, str(all_steps[index]["title"])])
 	return "\n".join(lines)
@@ -151,3 +215,15 @@ static func path_for_region(p_region_id: String) -> String:
 
 static func _ensure_project_dir(p_path: String) -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(p_path))
+
+
+static func _normalize_step_state(p_state: Dictionary, p_step_id: String) -> Dictionary:
+	var step_status := str(p_state.get("status", "PENDING")).to_upper()
+	if step_status != "DONE":
+		step_status = "PENDING"
+	return {
+		"id": p_step_id,
+		"status": step_status,
+		"confirmed_at": str(p_state.get("confirmed_at", "")),
+		"note": str(p_state.get("note", "")),
+	}

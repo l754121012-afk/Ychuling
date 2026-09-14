@@ -1,8 +1,8 @@
 {
-	"current_step": 0.0,
+	"current_step": 0,
 	"region_id": "first_night",
 	"scene_path": "res://authoring/scenes/first_night_authoring.tscn",
-	"schema_version": 1.0,
+	"schema_version": 1,
 	"status": "ACTIVE",
 	"steps": [
 		{
@@ -48,5 +48,5 @@
 			"status": "PENDING"
 		}
 	],
-	"updated_at": "2026-09-10T13:24:01"
+	"updated_at": "2026-09-14T23:38:49"
 }

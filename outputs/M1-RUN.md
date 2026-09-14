@@ -32,26 +32,27 @@ Q 键撤步冲撞会消耗 1 点体力；Shift 冲刺改为不消耗体力。靠
 
 打开编辑器后使用右侧 `FIVESTAR 场景语义工具`。正式作者场景是 `res://authoring/scenes/first_night_authoring.tscn`；用户负责布局、模型和视觉，Codex 通过 `semantic_id`、`kind`、`behavior`、`links`、`params` 和 `runtime_support` 实现功能。
 
-当前作者场景已重置为从零搭建状态，只保留 `FS_REGION_FIRST_NIGHT` 和位于 `y=0` 的 `120 x 120` 构建平面 `FS_FLOOR_构建地面_BUILD_PLANE_0`。清场前布局在 `first_night_authoring.tscn.pre-reset-20260910-225140.bak`；不要自动恢复，也不要运行首次生成工具覆盖用户之后的手调内容。
+当前作者场景处于从零搭建状态，包含 `FS_REGION_FIRST_NIGHT`、位于 `y=0` 的 `120 x 120` 构建平面 `FS_FLOOR_构建地面_BUILD_PLANE_0`，以及一块带 `SUPPORT_floor` 承托碰撞的泥土地面 `FS_DECOR_地牢泥土地面_VISUAL_DUNGEON_DIRT_1`。清场前布局在 `first_night_authoring.tscn.pre-reset-20260910-225140.bak`；不要自动恢复，也不要运行首次生成工具覆盖用户之后的手调内容。
 
-构建阶段按 `F5` 默认进入“构建试玩”：只加载作者场景、临时 `y=0` 碰撞地面、玩家和实际跟随相机，不生成 HUD、地图、案件、鬼、NPC 或 Boss。玩家会从空中落到临时地面，便于检查比例、碰撞和实际玩家视角。需要运行完整 V2 玩法时，在右侧 Dock 的“F5 运行模式”点击“F5：完整游戏”，再按 `F5`；切换后若编辑器仍使用旧模式，完全关闭并重新打开 Godot 项目一次。
+构建阶段按 `F5` 默认进入“构建试玩”：允许加载正式 `*_authoring.tscn` 和已批准的基础几何审核场景 `spirit_sprawl_geometry.tscn`，失败候选场景继续拒绝。切换/打开有效场景后插件会把它绑定为 F5 目标；当前项目设置为 `res://authoring/scenes/spirit_sprawl_geometry.tscn`。构建试玩生成玩家和实际跟随相机，不生成 HUD、地图、案件、鬼、NPC 或 Boss；玩家节点、移动/加速/跳跃/冲刺/Q/横扫/交互/追击/越障距离，以及跟随相机高度和后移一起缩放为原来的 `1/3`，FOV `52`、动作时长/冷却/伤害和完整游戏保持原比例。玩家优先落到场景实际可用的承托面；只有完全没有碰撞面时才回退到临时 `y=0` 地面。需要运行完整 V2 玩法时，在右侧 Dock 的“F5 运行模式”点击“F5：完整游戏”，再按 `F5`；插件脚本或 F5 目标更新后，必须完全关闭并重新打开 Godot 项目一次，只重开场景不算重载。
 
 操作顺序：
 
 1. 打开作者场景，选中行为宿主节点。
 2. 填写 `semantic_id`、中文显示名、kind、behavior 等语义字段并点击“应用语义 / 改名”；复制节点后必须改唯一 `semantic_id`。
-3. 手搭布局时按 `Shift+F` 可像 Blender 聚焦一样，按选中物件的包围盒舒适聚焦，并从约 36° 斜上方观察；多选会整体取景。聚焦后中键环绕、滚轮缩放会按当前模型尺寸限制在近距舒适范围，小物件也不会一步甩得过远。按 `Ctrl+Alt+1` 可从当前选中单一 `Node3D` 切入实际游戏视角，按 `Ctrl+Alt+2` 恢复进入前的编辑视角；Dock 的“观察视图”区也有同功能按钮。没有选中物件时会优先观察 `spawn` / 出生点，再回退场景原点；此操作不会修改或保存场景。
-4. 在“可视模型（已导入）”中用固定高度列表搜索并选择模型，右侧预览始终保留；不必先选中场景节点。双击列表项，或填写中文名后点“创建选中模型为新物件”，可直接放入场景。要替换已有宿主时先选中宿主，再看预览并点“应用/替换模型”；应用会清理同一宿主下旧 `VISUAL_*`，不会把两个外观叠在一起。点“打开模型总览”会在只读 UI 浏览器中打开左侧列表和右侧实时预览。
+3. 手搭布局时按 `Shift+F` 可像 Blender 聚焦一样，按选中物件的包围盒舒适聚焦，并从约 36° 斜上方观察；多选会整体取景。`0.4.7` 保留插件对三维视图中键环绕、`Shift+中键`平移和滚轮缩放的接管，按当前物件尺寸使用近距微调尺度，不会再被 Godot 原生编辑相机按世界尺度覆盖；中键拖拽仅反转水平环绕方向，上下俯仰保持原方向。按 `Ctrl+Alt+1` 可从当前选中单一 `Node3D` 切入实际游戏视角，按 `Ctrl+Alt+2` 恢复进入前的编辑视角；Dock 的“观察视图”区也有同功能按钮。没有选中物件时会优先观察 `spawn` / 出生点，再回退场景原点；此操作不会修改或保存场景。
+4. 在“可视模型（已导入）”中用固定高度列表搜索并选择模型，右侧预览始终保留；不必先选中场景节点。双击列表项，或填写中文名后点“创建选中模型为新物件”，可直接放入场景。新物件会按类别进入 `FS_GROUP_地形`、`FS_GROUP_建筑`、`FS_GROUP_物件`、`FS_GROUP_角色` 或 `FS_GROUP_特效`，创建后只选中分类容器，不自动展开或选中刚创建物件。要替换已有宿主时先选中宿主，再看预览并点“应用/替换模型”；应用会清理同一宿主下旧 `VISUAL_*`，不会把两个外观叠在一起。点“打开模型总览”会在只读 UI 浏览器中打开左侧列表和右侧实时预览。
 5. 也可点击“一键区分未配模型”先给空白宿主补推荐原型和中文名。该操作会进入 `ZONE` / `REGION` 分组查找未登记物件，并把无法识别的名字列在校验输出。
 6. 需要喷泉、瀑布、河流、河岸、水面、建筑出水或水车时点击“水体 / 喷泉”，在列表中选择模型；需要归到某个区域时先选中区域节点，再点“创建选中模型为新物件”直接放入该区域。`0.3.3` 新增宽/细瀑布、平静/急流直河、墙面出水口、喷泉竖直水柱、水管细流、排水槽落流、水池溢流边和可拉伸水流面片。
 7. 选中语义宿主，在“事件特效（不替换模型）”中选择案件、能力、门锁、目标、休息、机关或危险提示并应用；事件特效与模型可同时存在。
 8. 在“环境特效”中选灯光、雾、云、火焰、雨幕、风线或尘埃效果并点“创建环境特效”。它生成独立 `ENVIRONMENT_*` 节点，同类可重复创建并单独移动、调参或删除；不影响模型和事件特效。保存后重启或按 F5 仍会保留；若旧场景里只有空环境壳，插件会在打开场景时从元数据自动补建。
 9. 需要频繁搭地板、道路、平台、楼梯、坡道、墙、柱或岩石时，先切到“地形与平台”。带承托类型的模型会自动生成 `SUPPORT_*` 碰撞，地板至少保留 `0.08` 米厚度；用户手搭碰撞不会被覆盖。
-10. 需要给拉伸后的泥地、石板或平台补湿泥、青苔、石屑、水光、破败痕迹时，在“地面绘制（贴面）”选预设和笔触，点“开启地面画笔”，然后在三维视图地形碰撞面上左键点击或拖动。每笔松开后自动保存；选中 `GROUND_PAINT_*` 后点“删除选中绘制”可单独清理。
-11. 若发现旧模型仍漂浮，点“修正场景模型落地”。普通模型会对齐宿主地面；水面、涟漪、泡沫、云和建筑附着水流会按显式浮动规则跳过。
-12. 点击“校验当前场景”，处理到错误为 0；列表里若还有“剩余未登记节点”，选中后手动应用语义和模型。
-13. 模型/特效/环境/绘制/落地/批量操作会尝试自动保存并显示结果；普通手改后按 `Ctrl+S`。插件脚本更新后先完全关闭并重新打开 Godot 项目，Dock 标题显示 `0.3.3` 表示已加载本轮修复；只重开场景不等于重载插件。右侧 Dock 与主画面之间的竖向分隔条可直接拖拽，模型/特效长名称不会再撑大最小宽度。
-14. 点击“导出并发布”，生成 Manifest/Markdown 和运行时绑定。随后在面板“工作流”区按节点提示确认；每个节点确认前都会弹窗。
+10. 需要快速铺带碰撞的实体地板、平台或桥时，使用“地形画笔（实体）”：先选草地平台、浮空平台、石质地面、道路地面或木桥/栈道，再选方形/圆形笔刷、1/3/5/7 格尺寸和每格厚度（`0.10..2.00m`，步进 `0.02m`）；浮空层可通过“垂直层”调整。点“绘制”后，在三维视图里按住左键拖动即可连续铺设，松开自动保存。画笔优先创建在当前选中节点的同一级；存在多个画笔时，绘制、擦除、选格和整组操作会跟随当前选中上下文，不会固定误用第一个。网格拖到其他父级后，重新选中该网格或其所在父级仍可继续编辑；没有选中节点时才回退到旧 `FS_GROUP_地形/FS_TERRAIN_BRUSH_地形画笔` 路径。格子按 1 米自动吸附、同格覆盖去重。点“橡皮擦”后按住左键可按当前形状/尺寸/层位连续擦除；“清空画笔地形”只清空当前这组画笔网格。需要改单格时点“单格选择”；需要批量处理时点“多格选择”或按 `Ctrl+Alt+3`，左键拖动按当前笔刷范围加选、按住 `Ctrl` 拖动减选，再用“批量应用到选中格”或“批量删除选中格”一次处理。选择高亮直接按 `GridMap.map_to_local()` 的格子中心逐格显示，多格选择不会再整体偏移或落到下方。点“选中整组地形”可在场景树中选中共享 `GridMap`，用 Godot 工具整体移动；整组按钮会橙色高亮并变为“结束整组选择”，再次点击退出，开启单格/多格选择时也会自动退出整组。点“复制整组并偏移”可生成保留格子、碰撞、元数据和独立 `MeshLibrary` 的副本。`FS_GROUP_地形` 及静态几何由生成/整理链路写入原生 `_edit_lock_`，在三维视图中可见但不可选；`FS_TERRAIN_BRUSH_地形画笔` 保持未锁定，可继续沿旧地形轮廓直接刷。绘制、擦除、选格、地面画笔和整组启用时均显示橙色；选择预览不保存，中键仍可环绕视图；以上操作不会删除原有手工地形、建筑或物件。
+11. 需要给拉伸后的泥地、石板或平台补湿泥、青苔、石屑、水光、破败痕迹时，在“地面绘制（贴面）”选预设和笔触，点“开启地面画笔”，然后在三维视图地形碰撞面上左键点击或拖动。每笔松开后自动保存；选中 `GROUND_PAINT_*` 后点“删除选中绘制”可单独清理。实体画笔负责承托和碰撞，贴面画笔只负责视觉。
+12. 若发现旧模型仍漂浮，点“修正场景模型落地”。普通模型会对齐宿主地面；水面、涟漪、泡沫、云和建筑附着水流会按显式浮动规则跳过。
+13. 点击“校验当前场景”，处理到错误为 0；列表里若还有“剩余未登记节点”，选中后手动应用语义和模型。
+14. 实体地形/模型/特效/环境/绘制/落地/批量操作会尝试自动保存并显示结果；普通手改后按 `Ctrl+S`。插件脚本更新后先完全关闭并重新打开 Godot 项目，Dock 标题显示 `0.4.7` 表示已加载本轮修复；只重开场景不等于重载插件。右侧 Dock 与主画面之间的竖向分隔条可直接拖拽，模型/特效长名称不会再撑大最小宽度。
+15. 点击“导出并发布”，生成 Manifest/Markdown 和运行时绑定。随后在面板“工作流”区按节点提示确认；每个节点确认前都会弹窗。
 
 作者系统 smoke：
 
@@ -59,7 +60,25 @@ Q 键撤步冲撞会消耗 1 点体力；Shift 冲刺改为不消耗体力。靠
 & 'F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs\project' --script 'res://tests/v2_authoring_smoke.gd'
 ```
 
-预期输出：`V2_AUTHORING objects=71 errors=0 warnings=0 route_gates=2 markers=10 authored=true`。这里的 `objects=71` 来自 smoke 内部构建的临时完整测试脚手架，不是当前作者场景的对象数；它另覆盖环境持久化、新增水流和地面绘制。
+预期输出：`V2_AUTHORING objects=71 errors=0 warnings=0 route_gates=2 markers=10 authored=true`。这里的 `objects=71` 来自 smoke 内部构建的临时完整测试脚手架，不是当前作者场景的对象数；它另覆盖环境持久化、新增水流、地面绘制、实体地形画笔的视觉/碰撞/去重/连续线/擦除、自定义厚度、单格删除、保存重载、清空按钮状态和临时选择预览 owner。
+
+## 雨城灵潮基础几何审核
+
+按用户确认的 `521 x 344` 顶视图建立基础拓扑，并保持三个大区轮廓不变，在已确认的 3 倍基础上再把世界范围翻倍到 `6` 倍线性尺寸：`X=-120..120`、`Z=-79.2..79.2`，施工网格为 `240 x 156`，每格约 `1.0 x 1.015m`。扩区后每个陆区继续细分平台和独立的不规则离岸地形房间；房间周围至少留 `2` 格水，房间只允许接自己的连接桥，不再生成房间墙、门洞或柱子。当前实际为 `14` 个房间、`36` 个平台、`14` 座房间连接桥和 `72` 级楼梯；分布为 `north_knot=6/12`、`east_mainland=6/12`、`northeast_lobe=2/12`（房间/平台）。当前审核场景已经按五类容器整理并经过用户手调；除非用户明确要求从拓扑重新生成，否则不要运行下面的生成器或应用工具覆盖当前手调结果。需要从确认稿重建时才运行生成器：
+
+```powershell
+& 'F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs\project' --script 'res://tools/fs_build_spirit_sprawl_geometry.gd'
+```
+
+预期输出：`FS_SPIRIT_SPRAWL_GEOMETRY path=user://spirit_sprawl_geometry_6x_generated.tscn expansion=6 islands=3 bridges=16 room_bridges=14 rooms=14 platforms=36 stair_steps=72 shore_walls=363 room_validation_errors=0 world_walls=4 errors=0`，并输出 `north_knot=rooms:6,platforms:12 east_mainland=rooms:6,platforms:12 northeast_lobe=rooms:2,platforms:12`。生成器只写 `user://` 候选场景；正式审核场景需通过应用工具按地形组替换，不能直接覆盖用户手调内容。
+
+基础几何 smoke：
+
+```powershell
+& 'F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs\project' --script 'res://tests/spirit_sprawl_geometry_smoke.gd'
+```
+
+预期输出：`SPIRIT_SPRAWL_GEOMETRY_V12_A components=29 cells=1125 cell_meshes=1125 cell_collisions=1125 legacy_overlaps=0 edge_markers=179 bridge=108 jump=54 dash=15 special=2 graph_components=1 bridge_probes=108 gap_probes=47 special_steps=4 top_errors=0 errors=0`。它验证当前区域拆分后的 29 个地形连通组件、1125 个可站立网格/碰撞一一对应、没有旧地形重叠，并确认小区域间连通方式实际满足约 `60% bridge / 30% jump / 10% dash+special`：`108 / 54 / 15+2`。最终图仍为 `graph_components=1`，不包含玩法节点。审核场景为 `res://authoring/scenes/spirit_sprawl_geometry.tscn`，未修改 `first_night_authoring.tscn`。
 
 F5 构建试玩 smoke：
 
@@ -67,7 +86,7 @@ F5 构建试玩 smoke：
 & 'F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'C:\Users\李泽文\Documents\Codex\2026-09-08\3d-f-crypt-custodian-green-chs\project' --script 'res://tests/v2_authoring_playtest_smoke.gd'
 ```
 
-预期输出：`V2_AUTHORING_PLAYTEST grounded=true floor=SUPPORT_floor start_y=3.81 player_y=1.80 authored=true clean=true`。它确认玩家落到用户搭建的实际承托面；只有当前场景完全没有可用碰撞面时，才回退到 `y=0` 临时地面。作者场景已加载且没有生成完整玩法节点。
+预期输出：`V2_AUTHORING_PLAYTEST grounded=true floor=SURFACE_NORTH_KNOT scale=0.333333 move=2.133 dash=5.500 interact=1.133 camera_h=3.500 start_y=3.94 player_y=4.00 fall_respawn=true authored=true clean=true`。它确认基础几何审核场景可作为合法 F5 目标、失败候选场景不可绑定，构建试玩玩家节点、动作空间和镜头同步缩放为 `1/3`，玩家会落到 `SURFACE_NORTH_KNOT`、受地形碰撞与重力影响，并在低于出生点 `8m` 后无损失回到出生点；没有生成完整玩法节点。
 
 注意：`tools/fs_build_authoring_scene.gd` 只用于首次生成或明确要求重置作者场景；用户开始手调后禁止运行，否则会覆盖布局和模型。完整流程见 [AUTHORING-WORKFLOW.md](./AUTHORING-WORKFLOW.md)。
 

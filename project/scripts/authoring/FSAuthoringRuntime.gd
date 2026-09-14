@@ -146,10 +146,26 @@ static func _install_semantics(p_root: Node, p_handle: Dictionary) -> void:
 
 		if kind in ["spawn", "rest", "case", "boss", "objective", "npc", "patrol", "nav"]:
 			var marker := data.duplicate(true)
-			marker["node_path"] = str(p_root.get_path_to(node))
+			marker["node_path"] = _safe_node_path(p_root, node)
 			marker["position"] = _node_position(node)
 			p_handle["markers"][semantic_id] = marker
 			p_handle["marker_nodes"][semantic_id] = node
+
+
+static func _safe_node_path(p_root: Node, p_node: Node) -> String:
+	if p_root == null or p_node == null:
+		return ""
+	if p_node == p_root:
+		return "."
+	var parts: Array[String] = []
+	var current: Node = p_node
+	while current != null and current != p_root:
+		parts.append(str(current.name))
+		current = current.get_parent()
+	if current != p_root:
+		return ""
+	parts.reverse()
+	return "/".join(parts)
 
 
 static func _attach_gate(p_node: Node, p_data: Dictionary) -> Node:

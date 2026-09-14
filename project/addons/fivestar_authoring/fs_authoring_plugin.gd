@@ -7,6 +7,7 @@ var _dock: Control
 
 
 func _enter_tree() -> void:
+	set_input_event_forwarding_always_enabled()
 	_dock = AuthoringDock.new()
 	_dock.name = "FIVESTAR Authoring"
 	add_control_to_dock(DOCK_SLOT_RIGHT_UL, _dock)

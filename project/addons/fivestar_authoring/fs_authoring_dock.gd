@@ -10,14 +10,54 @@ const VisualCatalog := preload("res://scripts/authoring/FSVisualCatalog.gd")
 const EffectCatalog := preload("res://scripts/authoring/FSEffectCatalog.gd")
 const EnvironmentCatalog := preload("res://scripts/authoring/FSEnvironmentCatalog.gd")
 const GroundPaintCatalog := preload("res://scripts/authoring/FSGroundPaintCatalog.gd")
+const TerrainBrushCatalog := preload("res://scripts/authoring/FSTerrainBrushCatalog.gd")
 const ModelPreview := preload("res://scripts/authoring/FSModelPreview.gd")
 const GameView := preload("res://scripts/authoring/FSGameView.gd")
 const PlaytestMode := preload("res://scripts/authoring/FSPlaytestMode.gd")
-const ADDON_VERSION := "0.3.3"
+const ADDON_VERSION := "0.4.7"
+const TOGGLE_ACTIVE_BG := Color("#c96b12")
+const TOGGLE_ACTIVE_BG_HOVER := Color("#e07d18")
+const TOGGLE_ACTIVE_BG_PRESSED := Color("#a9550b")
+const TOGGLE_ACTIVE_BORDER := Color("#ffd089")
+const TOGGLE_ACTIVE_TEXT := Color("#1d1207")
+const TERRAIN_MODE_NONE := "none"
+const TERRAIN_MODE_BRUSH := "brush"
+const TERRAIN_MODE_ERASER := "eraser"
+const TERRAIN_MODE_ADJUST := "adjust"
+const TERRAIN_MODE_MULTI := "multiselect"
+const TERRAIN_MODE_PAINT := "paint"
+const GROUP_TERRAIN := "FS_GROUP_地形"
+const GROUP_BUILDINGS := "FS_GROUP_建筑"
+const GROUP_OBJECTS := "FS_GROUP_物件"
+const GROUP_CHARACTERS := "FS_GROUP_角色"
+const GROUP_EFFECTS := "FS_GROUP_特效"
+const SCENE_GROUP_NAMES := [
+	GROUP_TERRAIN,
+	GROUP_BUILDINGS,
+	GROUP_OBJECTS,
+	GROUP_CHARACTERS,
+	GROUP_EFFECTS,
+]
+const TERRAIN_MODEL_CATEGORIES := [
+	"地形与平台",
+	"城镇道路",
+	"雨城水文",
+	"围栏与墙",
+	"地牢结构",
+]
+const BUILDING_MODEL_CATEGORIES := [
+	"门与出入口",
+	"墓园建筑",
+	"城镇建筑",
+]
+const CHARACTER_MODEL_CATEGORIES := [
+	"角色占位",
+]
 const MODEL_GALLERY_PATH := "res://authoring/scenes/model_gallery.tscn"
 
 var _selected_node: Node
 var _edited_root: Node
+var _last_model_parent: Node
 var _last_manifest: Dictionary = {}
 var _workflow_document: Dictionary = {}
 var _workflow_path := ""
@@ -56,6 +96,44 @@ var _environment_name_edit: LineEdit
 var _environment_create_button: Button
 var _environment_remove_button: Button
 var _environment_status_label: Label
+var _terrain_preset_option: OptionButton
+var _terrain_shape_option: OptionButton
+var _terrain_size_option: OptionButton
+var _terrain_height_spin: SpinBox
+var _terrain_thickness_spin: SpinBox
+var _terrain_toggle_button: Button
+var _terrain_adjust_button: Button
+var _terrain_eraser_button: Button
+var _terrain_multiselect_button: Button
+var _terrain_apply_cell_button: Button
+var _terrain_delete_cell_button: Button
+var _terrain_eyedropper_button: Button
+var _terrain_select_group_button: Button
+var _terrain_copy_group_button: Button
+var _terrain_clear_button: Button
+var _terrain_status_label: Label
+var _terrain_clear_dialog: ConfirmationDialog
+var _terrain_brush_mode_active := false
+var _terrain_eraser_mode_active := false
+var _terrain_adjust_mode_active := false
+var _terrain_multiselect_mode_active := false
+var _terrain_has_selected_cell := false
+var _terrain_selected_cell := Vector3i.ZERO
+var _terrain_selected_cells: Dictionary = {}
+var _terrain_selection_preview: Node3D
+var _terrain_selection_mesh: BoxMesh
+var _terrain_selection_material: StandardMaterial3D
+var _terrain_stroke_active := false
+var _terrain_stroke_changed := 0
+var _terrain_stroke_added := 0
+var _terrain_stroke_replaced := 0
+var _terrain_stroke_erased := 0
+var _terrain_last_cell := Vector3i.ZERO
+var _terrain_has_last_cell := false
+var _terrain_multiselect_stroke_active := false
+var _terrain_multiselect_append := false
+var _terrain_multiselect_last_cell := Vector3i.ZERO
+var _terrain_multiselect_has_last_cell := false
 var _paint_preset_option: OptionButton
 var _paint_shape_option: OptionButton
 var _paint_radius_slider: HSlider
@@ -101,6 +179,7 @@ var _focus_radius := 1.0
 var _focus_yaw_degrees := GameView.FOCUS_YAW_DEGREES
 var _focus_elevation_degrees := GameView.FOCUS_ELEVATION_DEGREES
 var _focus_orbiting := false
+var _focus_panning := false
 
 
 func _ready() -> void:
@@ -111,11 +190,31 @@ func _ready() -> void:
 func on_scene_changed() -> void:
 	if not Engine.is_editor_hint():
 		return
+	_set_terrain_mode(TERRAIN_MODE_NONE, false)
 	_edited_root = EditorInterface.get_edited_scene_root()
+	if _last_model_parent == _edited_root:
+		_last_model_parent = null
+	if (
+		_last_model_parent != null
+		and (
+			not is_instance_valid(_last_model_parent)
+			or not _belongs_to_edited_root(_last_model_parent)
+		)
+	):
+		_last_model_parent = null
 	if _edited_root:
+		var edited_scene_path := _edited_root.scene_file_path
 		var root_data := Schema.data_from_node(_edited_root)
-		if not str(root_data.get("semantic_id", "")).is_empty() and str(root_data.get("kind", "")) == "region":
-			_region_edit.text = str(root_data["semantic_id"])
+		var root_kind := str(root_data.get("kind", ""))
+		var root_semantic_id := str(root_data.get("semantic_id", ""))
+		if (
+			PlaytestMode.is_authoring_scene_path(edited_scene_path)
+			and root_kind == "region"
+			and not root_semantic_id.is_empty()
+		):
+			PlaytestMode.set_scene_path(edited_scene_path)
+		if not root_semantic_id.is_empty() and root_kind == "region":
+			_region_edit.text = root_semantic_id
 	_refresh_selection()
 	_refresh_workflow()
 	_refresh_view_status()
@@ -185,7 +284,7 @@ func _build_ui() -> void:
 	content.add_child(playtest_row)
 	_playtest_build_button = Button.new()
 	_playtest_build_button.text = "F5：构建试玩"
-	_playtest_build_button.tooltip_text = "F5 只加载作者场景、临时 y=0 碰撞地面、玩家和实际跟随相机；不生成案件、敌人、NPC、地图或 HUD。"
+	_playtest_build_button.tooltip_text = "F5 加载正式作者场景、玩家和实际跟随相机；优先落到场景承托面，只有完全无碰撞时才使用临时 y=0 兜底地面。不生成案件、敌人、NPC、地图或 HUD。"
 	_playtest_build_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_playtest_build_button.pressed.connect(_on_playtest_build_pressed)
 	playtest_row.add_child(_playtest_build_button)
@@ -374,7 +473,7 @@ func _build_ui() -> void:
 	model_action_row.add_child(_model_remove_button)
 	_model_create_button = Button.new()
 	_model_create_button.text = "创建选中模型为新物件"
-	_model_create_button.tooltip_text = "直接把列表中的模型做成带中文名和稳定 semantic_id 的新物件；选中区域时放入该区域，否则放到场景根节点。"
+	_model_create_button.tooltip_text = "直接把列表中的模型做成带中文名和稳定 semantic_id 的新物件，并自动放入地形、建筑、物件、角色或特效分类组；当前区域语义仍会写入 zone_id。"
 	_model_create_button.pressed.connect(_on_create_model_instance_pressed)
 	content.add_child(_model_create_button)
 	_model_recommend_button = Button.new()
@@ -450,6 +549,137 @@ func _build_ui() -> void:
 	_environment_status_label.text = "选择一种环境组件后直接创建；总览中可选灯光、云、雾、火焰、雨幕、风和尘埃。"
 	content.add_child(_environment_status_label)
 	_populate_environment_options()
+
+	_add_heading(content, "地形画笔（实体）")
+	var terrain_brush_help := Label.new()
+	terrain_brush_help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	terrain_brush_help.text = "在三维视图中按住左键连续刷出带碰撞的实体地形。画笔优先创建在当前选中节点的同一级；已有多个画笔时，绘制、擦除和选格会跟随当前选中节点所在上下文，而不是固定找第一个。移动网格节点后重新选中它或其父级仍可继续编辑；未选节点时才回退到 FS_GROUP_地形。按 1 米格自动吸附、同格覆盖去重。绘制、橡皮擦、单格选择和多格选择互斥。"
+	content.add_child(terrain_brush_help)
+	_terrain_preset_option = OptionButton.new()
+	_terrain_preset_option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_terrain_preset_option.fit_to_longest_item = false
+	_terrain_preset_option.clip_text = true
+	_terrain_preset_option.item_selected.connect(_on_terrain_preset_selected)
+	content.add_child(_terrain_preset_option)
+	var terrain_brush_row := HBoxContainer.new()
+	content.add_child(terrain_brush_row)
+	var terrain_shape_label := Label.new()
+	terrain_shape_label.text = "笔刷形状"
+	terrain_brush_row.add_child(terrain_shape_label)
+	_terrain_shape_option = OptionButton.new()
+	_terrain_shape_option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	terrain_brush_row.add_child(_terrain_shape_option)
+	_terrain_size_option = OptionButton.new()
+	_terrain_size_option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	terrain_brush_row.add_child(_terrain_size_option)
+	var terrain_height_row := HBoxContainer.new()
+	content.add_child(terrain_height_row)
+	var terrain_height_label := Label.new()
+	terrain_height_label.text = "垂直层（每层 1 米）"
+	terrain_height_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	terrain_height_row.add_child(terrain_height_label)
+	_terrain_height_spin = SpinBox.new()
+	_terrain_height_spin.min_value = TerrainBrushCatalog.MIN_HEIGHT_LEVEL
+	_terrain_height_spin.max_value = TerrainBrushCatalog.MAX_HEIGHT_LEVEL
+	_terrain_height_spin.step = 1.0
+	_terrain_height_spin.value = 0.0
+	_terrain_height_spin.allow_greater = false
+	_terrain_height_spin.allow_lesser = false
+	_terrain_height_spin.custom_minimum_size = Vector2(92.0, 0.0)
+	terrain_height_row.add_child(_terrain_height_spin)
+	var terrain_thickness_row := HBoxContainer.new()
+	content.add_child(terrain_thickness_row)
+	var terrain_thickness_label := Label.new()
+	terrain_thickness_label.text = "每格厚度（米）"
+	terrain_thickness_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	terrain_thickness_row.add_child(terrain_thickness_label)
+	_terrain_thickness_spin = SpinBox.new()
+	_terrain_thickness_spin.min_value = TerrainBrushCatalog.MIN_THICKNESS
+	_terrain_thickness_spin.max_value = TerrainBrushCatalog.MAX_THICKNESS
+	_terrain_thickness_spin.step = TerrainBrushCatalog.THICKNESS_STEP
+	_terrain_thickness_spin.value = TerrainBrushCatalog.default_thickness("grass_platform")
+	_terrain_thickness_spin.allow_greater = false
+	_terrain_thickness_spin.allow_lesser = false
+	_terrain_thickness_spin.custom_minimum_size = Vector2(92.0, 0.0)
+	terrain_thickness_row.add_child(_terrain_thickness_spin)
+	var terrain_paint_mode_row := HBoxContainer.new()
+	content.add_child(terrain_paint_mode_row)
+	_terrain_toggle_button = Button.new()
+	_terrain_toggle_button.text = "绘制"
+	_terrain_toggle_button.tooltip_text = "开启后左键拖动连续刷实体地形。"
+	_terrain_toggle_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_terrain_toggle_button.pressed.connect(_on_toggle_terrain_brush_pressed)
+	terrain_paint_mode_row.add_child(_terrain_toggle_button)
+	_terrain_eraser_button = Button.new()
+	_terrain_eraser_button.text = "橡皮擦"
+	_terrain_eraser_button.tooltip_text = "开启后左键拖动擦除画笔地形；使用当前笔刷形状、尺寸和垂直层。"
+	_terrain_eraser_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_terrain_eraser_button.pressed.connect(_on_toggle_terrain_eraser_pressed)
+	terrain_paint_mode_row.add_child(_terrain_eraser_button)
+	var terrain_select_mode_row := HBoxContainer.new()
+	content.add_child(terrain_select_mode_row)
+	_terrain_adjust_button = Button.new()
+	_terrain_adjust_button.text = "单格选择"
+	_terrain_adjust_button.tooltip_text = "左键点选单格；按住 Ctrl 左键可继续加选或减选。"
+	_terrain_adjust_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_terrain_adjust_button.pressed.connect(_on_toggle_terrain_adjust_pressed)
+	terrain_select_mode_row.add_child(_terrain_adjust_button)
+	_terrain_multiselect_button = Button.new()
+	_terrain_multiselect_button.text = "多格选择"
+	_terrain_multiselect_button.tooltip_text = "左键拖动时使用当前笔刷形状和尺寸批量加选；按住 Ctrl 拖动可从已选中移除。快捷键 Ctrl+Alt+3。"
+	_terrain_multiselect_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_terrain_multiselect_button.pressed.connect(_on_toggle_terrain_multiselect_pressed)
+	terrain_select_mode_row.add_child(_terrain_multiselect_button)
+	var terrain_cell_action_row := HBoxContainer.new()
+	content.add_child(terrain_cell_action_row)
+	_terrain_apply_cell_button = Button.new()
+	_terrain_apply_cell_button.text = "批量应用到选中格"
+	_terrain_apply_cell_button.tooltip_text = "把当前地形、厚度和垂直层覆盖到所有已选中格。"
+	_terrain_apply_cell_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_terrain_apply_cell_button.pressed.connect(_on_apply_terrain_cell_pressed)
+	terrain_cell_action_row.add_child(_terrain_apply_cell_button)
+	_terrain_delete_cell_button = Button.new()
+	_terrain_delete_cell_button.text = "批量删除选中格"
+	_terrain_delete_cell_button.tooltip_text = "删除所有已选中的画笔格，其他格子保持不变。"
+	_terrain_delete_cell_button.pressed.connect(_on_delete_terrain_cell_pressed)
+	terrain_cell_action_row.add_child(_terrain_delete_cell_button)
+	_terrain_eyedropper_button = Button.new()
+	_terrain_eyedropper_button.text = "吸取主选格"
+	_terrain_eyedropper_button.tooltip_text = "把主选格的地形、厚度和垂直层复制到当前画笔参数。"
+	_terrain_eyedropper_button.pressed.connect(_on_eyedropper_terrain_cell_pressed)
+	terrain_cell_action_row.add_child(_terrain_eyedropper_button)
+	var terrain_group_row := HBoxContainer.new()
+	content.add_child(terrain_group_row)
+	_terrain_select_group_button = Button.new()
+	_terrain_select_group_button.text = "选中整组地形"
+	_terrain_select_group_button.tooltip_text = "在场景树中选中共享 GridMap；随后可用 Godot 的移动、旋转和复制工具整体操作。"
+	_terrain_select_group_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_terrain_select_group_button.pressed.connect(_on_select_terrain_group_pressed)
+	terrain_group_row.add_child(_terrain_select_group_button)
+	_terrain_copy_group_button = Button.new()
+	_terrain_copy_group_button.text = "复制整组并偏移"
+	_terrain_copy_group_button.tooltip_text = "复制整个实体地形网格到一个独立副本，并沿网格外接范围向侧面偏移。"
+	_terrain_copy_group_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_terrain_copy_group_button.pressed.connect(_on_copy_terrain_group_pressed)
+	terrain_group_row.add_child(_terrain_copy_group_button)
+	var terrain_clear_row := HBoxContainer.new()
+	content.add_child(terrain_clear_row)
+	_terrain_clear_button = Button.new()
+	_terrain_clear_button.text = "清空画笔地形"
+	_terrain_clear_button.tooltip_text = "清空本场景中由实体地形画笔创建的全部格子；不会删除原有手工地形节点。"
+	_terrain_clear_button.pressed.connect(_on_clear_terrain_brush_pressed)
+	_terrain_clear_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	terrain_clear_row.add_child(_terrain_clear_button)
+	_terrain_status_label = Label.new()
+	_terrain_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_terrain_status_label.text = "画笔关闭。选择地形后开启，按住左键拖动即可连续铺设。"
+	content.add_child(_terrain_status_label)
+	_terrain_clear_dialog = ConfirmationDialog.new()
+	_terrain_clear_dialog.title = "清空实体地形画笔"
+	_terrain_clear_dialog.dialog_text = "将清除 FS_TERRAIN_BRUSH_地形画笔 网格中的全部格子。\n\n原有手工摆放的地形、建筑和物件不会被删除。是否继续？"
+	_terrain_clear_dialog.confirmed.connect(_on_clear_terrain_brush_confirmed)
+	add_child(_terrain_clear_dialog)
+	_populate_terrain_brush_options()
 
 	_add_heading(content, "地面绘制（贴面）")
 	var paint_help := Label.new()
@@ -597,6 +827,9 @@ func _shortcut_input(p_event: InputEvent) -> void:
 		KEY_2:
 			_on_editor_view_pressed()
 			get_viewport().set_input_as_handled()
+		KEY_3:
+			_on_toggle_terrain_multiselect_pressed()
+			get_viewport().set_input_as_handled()
 
 
 func _on_focus_selection_pressed() -> void:
@@ -630,12 +863,13 @@ func _on_focus_selection_pressed() -> void:
 	_focus_yaw_degrees = float(pose["yaw_degrees"])
 	_focus_elevation_degrees = float(pose["elevation_degrees"])
 	_focus_orbiting = false
+	_focus_panning = false
 	_game_view_active = false
 	_focus_view_active = true
 	_focus_view_description = _focus_selection_description(selected_nodes)
 	_refresh_view_status()
 	_set_status(
-		"已舒适聚焦：%s。中键拖动环绕，滚轮缩放；Shift+F 可再次取景。%s" % [
+		"已舒适聚焦：%s。中键拖动环绕，Shift+中键平移，滚轮缩放；Shift+F 可再次取景。%s" % [
 			_focus_view_description,
 			"当前按无可见几何体回退到节点中心。" if bool(bounds.get("fallback", false)) else "",
 		],
@@ -644,6 +878,16 @@ func _on_focus_selection_pressed() -> void:
 
 
 func handle_editor_3d_gui_input(p_camera: Camera3D, p_event: InputEvent) -> int:
+	if _terrain_group_selection_active():
+		return 0
+	if _terrain_adjust_mode_active and p_camera != null:
+		var adjust_result := _handle_terrain_adjust_input(p_camera, p_event)
+		if adjust_result != 0:
+			return adjust_result
+	if (_terrain_brush_mode_active or _terrain_eraser_mode_active) and p_camera != null:
+		var terrain_result := _handle_terrain_brush_input(p_camera, p_event)
+		if terrain_result != 0:
+			return terrain_result
 	if _paint_mode_active and p_camera != null:
 		var paint_result := _handle_ground_paint_input(p_camera, p_event)
 		if paint_result != 0:
@@ -653,7 +897,8 @@ func handle_editor_3d_gui_input(p_camera: Camera3D, p_event: InputEvent) -> int:
 	if p_event is InputEventMouseButton:
 		var button_event := p_event as InputEventMouseButton
 		if button_event.button_index == MOUSE_BUTTON_MIDDLE:
-			_focus_orbiting = button_event.pressed
+			_focus_orbiting = button_event.pressed and not button_event.shift_pressed
+			_focus_panning = button_event.pressed and button_event.shift_pressed
 			return 1
 		if (
 			button_event.pressed
@@ -674,18 +919,432 @@ func handle_editor_3d_gui_input(p_camera: Camera3D, p_event: InputEvent) -> int:
 			)
 			_apply_focus_camera(p_camera)
 			return 1
-	if p_event is InputEventMouseMotion and _focus_orbiting:
+	if p_event is InputEventMouseMotion and (_focus_orbiting or _focus_panning):
 		var motion := p_event as InputEventMouseMotion
-		var orbit := GameView.focus_orbit_step(motion.relative)
-		_focus_yaw_degrees += float(orbit["yaw_delta"])
-		_focus_elevation_degrees = clampf(
-			_focus_elevation_degrees + float(orbit["elevation_delta"]),
-			GameView.FOCUS_MIN_ELEVATION_DEGREES,
-			GameView.FOCUS_MAX_ELEVATION_DEGREES
-		)
+		if _focus_panning:
+			var viewport_height := 720.0
+			var viewport := p_camera.get_viewport()
+			if viewport:
+				viewport_height = viewport.get_visible_rect().size.y
+			var units_per_pixel := GameView.focus_pan_units_per_pixel(
+				_focus_distance,
+				p_camera.fov,
+				viewport_height
+			)
+			var camera_basis := p_camera.global_transform.basis
+			var camera_right := camera_basis.x.normalized()
+			var camera_up := camera_basis.y.normalized()
+			_focus_center += (
+				-camera_right * motion.relative.x
+				+ camera_up * motion.relative.y
+			) * units_per_pixel
+		else:
+			var orbit := GameView.focus_orbit_step(motion.relative, _focus_radius)
+			_focus_yaw_degrees += float(orbit["yaw_delta"])
+			_focus_elevation_degrees = clampf(
+				_focus_elevation_degrees + float(orbit["elevation_delta"]),
+				GameView.FOCUS_MIN_ELEVATION_DEGREES,
+				GameView.FOCUS_MAX_ELEVATION_DEGREES
+			)
 		_apply_focus_camera(p_camera)
 		return 1
 	return 0
+
+
+func _handle_terrain_brush_input(p_camera: Camera3D, p_event: InputEvent) -> int:
+	if p_event is InputEventMouseButton:
+		var button_event := p_event as InputEventMouseButton
+		if button_event.button_index != MOUSE_BUTTON_LEFT:
+			return 0
+		if button_event.pressed:
+			_terrain_stroke_active = true
+			_terrain_stroke_changed = 0
+			_terrain_stroke_added = 0
+			_terrain_stroke_replaced = 0
+			_terrain_stroke_erased = 0
+			_terrain_has_last_cell = false
+			_terrain_brush_at_editor_position(p_camera, button_event.position, true)
+			return 1
+		if _terrain_stroke_active:
+			_terrain_stroke_active = false
+			_terrain_has_last_cell = false
+			var saved := _commit_terrain_brush_stroke()
+			_refresh_terrain_clear_button_state()
+			_terrain_status_label.text = (
+				"本笔已保存：新增 %d 格，覆盖 %d 格，擦除 %d 格。继续左键拖动或关闭画笔。"
+				% [
+					_terrain_stroke_added,
+					_terrain_stroke_replaced,
+					_terrain_stroke_erased,
+				]
+				if saved
+				else "本笔已完成，但自动保存失败；请按 Ctrl+S。"
+			)
+			_terrain_stroke_changed = 0
+			return 1
+	if p_event is InputEventMouseMotion and _terrain_stroke_active:
+		var motion := p_event as InputEventMouseMotion
+		if motion.button_mask & MOUSE_BUTTON_MASK_LEFT:
+			_terrain_brush_at_editor_position(p_camera, motion.position, false)
+			return 1
+	return 0
+
+
+func _handle_terrain_adjust_input(p_camera: Camera3D, p_event: InputEvent) -> int:
+	if p_event is InputEventMouseButton:
+		var button_event := p_event as InputEventMouseButton
+		if button_event.button_index != MOUSE_BUTTON_LEFT:
+			return 0
+		if button_event.pressed:
+			if _terrain_multiselect_mode_active:
+				_terrain_multiselect_stroke_active = true
+				_terrain_multiselect_append = not button_event.ctrl_pressed
+				_terrain_multiselect_has_last_cell = false
+				_select_terrain_cells_at_editor_position(
+					p_camera,
+					button_event.position,
+					true,
+					button_event.ctrl_pressed
+				)
+			else:
+				_select_terrain_cell_at_editor_position(
+					p_camera,
+					button_event.position,
+					button_event.ctrl_pressed
+				)
+			return 1
+		if _terrain_multiselect_stroke_active:
+			_terrain_multiselect_stroke_active = false
+			_terrain_multiselect_has_last_cell = false
+			_terrain_multiselect_append = false
+			_terrain_status_label.text = _terrain_selection_status_text()
+			return 1
+	if p_event is InputEventMouseMotion and _terrain_multiselect_stroke_active:
+		var motion := p_event as InputEventMouseMotion
+		if motion.button_mask & MOUSE_BUTTON_MASK_LEFT:
+			_select_terrain_cells_at_editor_position(
+				p_camera,
+				motion.position,
+				false,
+				not _terrain_multiselect_append
+			)
+			return 1
+	return 0
+
+
+func _select_terrain_cell_at_editor_position(
+	p_camera: Camera3D,
+	p_screen_position: Vector2,
+	p_toggle: bool = false
+) -> void:
+	var grid_map := _terrain_active_grid_map()
+	if grid_map == null or grid_map.get_used_cells().is_empty():
+		_clear_terrain_selection()
+		_terrain_status_label.text = "当前场景还没有实体地形画笔格子。"
+		return
+	var hit := _raycast_ground_point(p_camera, p_screen_position)
+	if not bool(hit.get("ok", false)):
+		_clear_terrain_selection()
+		_terrain_status_label.text = str(hit.get("error", "没有找到可选择的实体地形格。"))
+		return
+	var picked := TerrainBrushCatalog.pick_cell_at_world_position(
+		grid_map,
+		hit["position"]
+	)
+	if not bool(picked.get("ok", false)):
+		_clear_terrain_selection()
+		_terrain_status_label.text = str(
+			picked.get("error", "没有选中实体地形格；请点击已有画笔格。")
+		)
+		return
+	var cell: Vector3i = picked.get("cell", Vector3i.ZERO)
+	if p_toggle and _terrain_selected_cells.has(cell):
+		_terrain_selected_cells.erase(cell)
+	else:
+		if not p_toggle:
+			_terrain_selected_cells.clear()
+		_terrain_selected_cells[cell] = picked
+		_terrain_selected_cell = cell
+	_sync_terrain_selection_primary()
+	_refresh_terrain_selection_preview()
+	_refresh_terrain_cell_action_state()
+	_terrain_status_label.text = _terrain_selection_status_text()
+
+
+func _select_terrain_cells_at_editor_position(
+	p_camera: Camera3D,
+	p_screen_position: Vector2,
+	p_force: bool,
+	p_remove: bool
+) -> void:
+	var grid_map := _terrain_active_grid_map()
+	if grid_map == null or grid_map.get_used_cells().is_empty():
+		if p_force:
+			_clear_terrain_selection()
+			_terrain_status_label.text = "当前场景还没有实体地形画笔格子。"
+		return
+	var hit := _raycast_ground_point(p_camera, p_screen_position)
+	if not bool(hit.get("ok", false)):
+		if p_force:
+			_terrain_status_label.text = str(hit.get("error", "没有找到可选择的实体地形格。"))
+		return
+	var center_cell := TerrainBrushCatalog.cell_for_world_position(
+		grid_map,
+		hit["position"],
+		roundi(_terrain_height_spin.value)
+	)
+	if p_force:
+		if not p_remove:
+			_terrain_selected_cells.clear()
+		_terrain_multiselect_last_cell = center_cell
+		_terrain_multiselect_has_last_cell = true
+		_apply_terrain_selection_stamp(grid_map, center_cell, p_remove)
+	else:
+		var from_cell := (
+			_terrain_multiselect_last_cell
+			if _terrain_multiselect_has_last_cell
+			else center_cell
+		)
+		for stamp_cell in TerrainBrushCatalog.interpolate_cells(from_cell, center_cell):
+			_apply_terrain_selection_stamp(grid_map, stamp_cell, p_remove)
+		_terrain_multiselect_last_cell = center_cell
+		_terrain_multiselect_has_last_cell = true
+	_sync_terrain_selection_primary()
+	_refresh_terrain_selection_preview()
+	_refresh_terrain_cell_action_state()
+	_terrain_status_label.text = _terrain_selection_status_text()
+
+
+func _apply_terrain_selection_stamp(
+	p_grid_map: GridMap,
+	p_center_cell: Vector3i,
+	p_remove: bool
+) -> void:
+	var offsets := TerrainBrushCatalog.brush_offsets(
+		int(_selected_terrain_size()),
+		_selected_option(_terrain_shape_option)
+	)
+	for offset in offsets:
+		var cell := p_center_cell + offset
+		if p_remove:
+			_terrain_selected_cells.erase(cell)
+			continue
+		var info := TerrainBrushCatalog.get_cell_info(p_grid_map, cell)
+		if not bool(info.get("ok", false)):
+			continue
+		_terrain_selected_cells[cell] = info
+		_terrain_selected_cell = cell
+
+
+func _show_terrain_selection(p_info: Dictionary) -> void:
+	var grid_map := _terrain_active_grid_map()
+	if grid_map == null or p_info.is_empty():
+		_clear_terrain_selection()
+		return
+	_terrain_selected_cells.clear()
+	var cell: Vector3i = p_info.get("cell", Vector3i.ZERO)
+	_terrain_selected_cells[cell] = p_info
+	_terrain_selected_cell = cell
+	_terrain_has_selected_cell = true
+	_refresh_terrain_selection_preview()
+	_refresh_terrain_cell_action_state()
+
+
+func _refresh_terrain_selection_preview() -> void:
+	var grid_map := _terrain_active_grid_map()
+	if grid_map == null or _terrain_selected_cells.is_empty():
+		if is_instance_valid(_terrain_selection_preview):
+			_terrain_selection_preview.visible = false
+			_clear_terrain_selection_preview_instances()
+		return
+	if not is_instance_valid(_terrain_selection_preview):
+		_terrain_selection_preview = Node3D.new()
+		_terrain_selection_preview.name = "FS_TERRAIN_SELECTION_PREVIEW"
+		_terrain_selection_preview.owner = null
+		_terrain_selection_mesh = BoxMesh.new()
+		_terrain_selection_mesh.size = Vector3.ONE
+		_terrain_selection_material = StandardMaterial3D.new()
+		_terrain_selection_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		_terrain_selection_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		_terrain_selection_material.albedo_color = Color(1.0, 0.82, 0.24, 0.42)
+		_terrain_selection_material.emission_enabled = true
+		_terrain_selection_material.emission = Color(1.0, 0.58, 0.08)
+		_terrain_selection_mesh.material = _terrain_selection_material
+		grid_map.add_child(_terrain_selection_preview)
+	var cells := _terrain_selected_cells.keys()
+	while _terrain_selection_preview.get_child_count() > cells.size():
+		var extra := _terrain_selection_preview.get_child(
+			_terrain_selection_preview.get_child_count() - 1
+		)
+		_terrain_selection_preview.remove_child(extra)
+		extra.queue_free()
+	for index in range(cells.size()):
+		var cell: Vector3i = cells[index]
+		var info: Dictionary = _terrain_selected_cells[cell]
+		var preview_instance := (
+			_terrain_selection_preview.get_child(index) as MeshInstance3D
+			if index < _terrain_selection_preview.get_child_count()
+			else null
+		)
+		if preview_instance == null:
+			preview_instance = MeshInstance3D.new()
+			preview_instance.name = "selected_%d" % index
+			preview_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			preview_instance.mesh = _terrain_selection_mesh
+			preview_instance.owner = null
+			_terrain_selection_preview.add_child(preview_instance)
+		preview_instance.transform = _terrain_selection_preview_transform(
+			grid_map,
+			cell,
+			info
+		)
+	_terrain_selection_preview.visible = true
+
+
+func _clear_terrain_selection_preview_instances() -> void:
+	if not is_instance_valid(_terrain_selection_preview):
+		return
+	for child in _terrain_selection_preview.get_children():
+		_terrain_selection_preview.remove_child(child)
+		child.queue_free()
+
+
+func _terrain_selection_preview_transform(
+	p_grid_map: GridMap,
+	p_cell: Vector3i,
+	p_info: Dictionary
+) -> Transform3D:
+	var thickness := float(p_info.get("thickness", 0.1))
+	var cell_basis := p_grid_map.get_cell_item_basis(p_cell)
+	return Transform3D(
+		cell_basis * Basis.from_scale(Vector3(
+			p_grid_map.cell_size.x * 1.04,
+			maxf(thickness + 0.08, 0.12),
+			p_grid_map.cell_size.z * 1.04
+		)),
+		p_grid_map.map_to_local(p_cell)
+	)
+
+
+func _sync_terrain_selection_primary() -> void:
+	var grid_map := _terrain_active_grid_map()
+	var next_selection: Dictionary = {}
+	for cell in _terrain_selected_cells.keys():
+		var info := TerrainBrushCatalog.get_cell_info(grid_map, cell)
+		if bool(info.get("ok", false)):
+			next_selection[cell] = info
+	_terrain_selected_cells = next_selection
+	if _terrain_selected_cells.is_empty():
+		_terrain_has_selected_cell = false
+		_terrain_selected_cell = Vector3i.ZERO
+		return
+	if not _terrain_selected_cells.has(_terrain_selected_cell):
+		_terrain_selected_cell = _terrain_selected_cells.keys()[0]
+	_terrain_has_selected_cell = true
+
+
+func _terrain_selection_status_text() -> String:
+	var count := _terrain_selected_cells.size()
+	if count <= 0:
+		return "未选中实体地形格；左键点选或拖动框选。"
+	if count == 1:
+		var info: Dictionary = _terrain_selected_cells[_terrain_selected_cell]
+		return "已选中 1 格：%s · %.2f 米 · 垂直层 %d。" % [
+			str(info.get("preset_label", info.get("preset_id", "实体地形"))),
+			float(info.get("thickness", 0.0)),
+			int(info.get("height_level", 0)),
+		]
+	return "已选中 %d 个实体地形格；可直接批量应用、删除，或吸取主选格参数。" % count
+
+
+func _clear_terrain_selection() -> void:
+	_terrain_has_selected_cell = false
+	_terrain_selected_cell = Vector3i.ZERO
+	_terrain_selected_cells.clear()
+	_terrain_multiselect_stroke_active = false
+	_terrain_multiselect_has_last_cell = false
+	_terrain_multiselect_append = false
+	if is_instance_valid(_terrain_selection_preview):
+		_terrain_selection_preview.visible = false
+		_clear_terrain_selection_preview_instances()
+		_terrain_selection_preview.queue_free()
+	_terrain_selection_preview = null
+	_terrain_selection_mesh = null
+	_terrain_selection_material = null
+	_refresh_terrain_cell_action_state()
+
+
+func _terrain_brush_at_editor_position(
+	p_camera: Camera3D,
+	p_screen_position: Vector2,
+	p_force: bool
+) -> void:
+	if not _edited_root:
+		return
+	var grid_result := TerrainBrushCatalog.ensure_grid_map(
+		_edited_root,
+		_edited_root,
+		_selected_node
+	)
+	if not bool(grid_result.get("ok", false)):
+		_terrain_status_label.text = str(grid_result.get("error", "无法创建实体地形网格。"))
+		return
+	var grid_map := grid_result.get("grid_map") as GridMap
+	var hit := _raycast_ground_point(p_camera, p_screen_position)
+	if not bool(hit.get("ok", false)):
+		if p_force:
+			_terrain_status_label.text = str(hit.get("error", "没有找到可绘制的位置。"))
+		return
+	var params := TerrainBrushCatalog.brush_params(
+		(
+			TerrainBrushCatalog.ERASER_ID
+			if _terrain_eraser_mode_active
+			else _selected_option(_terrain_preset_option)
+		),
+		_selected_option(_terrain_shape_option),
+		int(_selected_terrain_size()),
+		roundi(_terrain_height_spin.value),
+		float(_terrain_thickness_spin.value)
+	)
+	var cell := TerrainBrushCatalog.cell_for_world_position(
+		grid_map,
+		hit["position"],
+		int(params.get("height_level", 0))
+	)
+	var result: Dictionary
+	if not p_force and _terrain_has_last_cell:
+		result = TerrainBrushCatalog.apply_line(grid_map, _terrain_last_cell, cell, params)
+	else:
+		result = TerrainBrushCatalog.apply_stamp(grid_map, cell, params)
+	if not bool(result.get("ok", false)):
+		_terrain_status_label.text = str(result.get("error", "实体地形绘制失败。"))
+		return
+	_terrain_last_cell = cell
+	_terrain_has_last_cell = true
+	_terrain_stroke_added += int(result.get("added", 0))
+	_terrain_stroke_replaced += int(result.get("replaced", 0))
+	_terrain_stroke_erased += int(result.get("erased", 0))
+	_terrain_stroke_changed += int(result.get("changed", 0))
+	_terrain_status_label.text = (
+		"正在%s %s：新增 %d，覆盖 %d，擦除 %d；共享网格中共 %d 格。"
+		% [
+			"擦除" if bool(params.get("is_eraser", false)) else "绘制",
+			str(params.get("preset_label", "")),
+			_terrain_stroke_added,
+			_terrain_stroke_replaced,
+			_terrain_stroke_erased,
+			int(result.get("used_cells", grid_map.get_used_cells().size())),
+		]
+	)
+
+
+func _commit_terrain_brush_stroke() -> bool:
+	if _terrain_stroke_changed <= 0:
+		return true
+	if EditorInterface.has_method("mark_scene_as_unsaved"):
+		EditorInterface.call("mark_scene_as_unsaved")
+	_refresh_terrain_clear_button_state()
+	return EditorInterface.save_scene() == OK
 
 
 func _handle_ground_paint_input(p_camera: Camera3D, p_event: InputEvent) -> int:
@@ -811,22 +1470,383 @@ func _commit_ground_paint_stroke() -> bool:
 	return EditorInterface.save_scene() == OK
 
 
+func _set_terrain_mode(p_mode: String, p_announce: bool = true) -> void:
+	var mode := p_mode
+	if mode not in [
+		TERRAIN_MODE_NONE,
+		TERRAIN_MODE_BRUSH,
+		TERRAIN_MODE_ERASER,
+		TERRAIN_MODE_ADJUST,
+		TERRAIN_MODE_MULTI,
+		TERRAIN_MODE_PAINT,
+	]:
+		mode = TERRAIN_MODE_NONE
+	var selection_mode := mode in [TERRAIN_MODE_ADJUST, TERRAIN_MODE_MULTI]
+	var had_selection_mode := _terrain_adjust_mode_active
+	if mode != TERRAIN_MODE_NONE and _terrain_group_selection_active():
+		_end_terrain_group_selection(false)
+
+	_terrain_brush_mode_active = mode == TERRAIN_MODE_BRUSH
+	_terrain_eraser_mode_active = mode == TERRAIN_MODE_ERASER
+	_terrain_adjust_mode_active = selection_mode
+	_terrain_multiselect_mode_active = mode == TERRAIN_MODE_MULTI
+	_terrain_stroke_active = false
+	_terrain_has_last_cell = false
+	if not _terrain_multiselect_mode_active:
+		_terrain_multiselect_stroke_active = false
+		_terrain_multiselect_has_last_cell = false
+		_terrain_multiselect_append = false
+
+	_paint_mode_active = mode == TERRAIN_MODE_PAINT
+	_paint_stroke_active = false
+	_paint_has_last_position = false
+	if mode in [TERRAIN_MODE_BRUSH, TERRAIN_MODE_ERASER, TERRAIN_MODE_PAINT]:
+		_focus_view_active = false
+		_focus_orbiting = false
+		_focus_panning = false
+
+	if _terrain_toggle_button:
+		_terrain_toggle_button.text = "绘制：已开启" if mode == TERRAIN_MODE_BRUSH else "绘制"
+	if _terrain_eraser_button:
+		_terrain_eraser_button.text = (
+			"橡皮擦：已开启" if mode == TERRAIN_MODE_ERASER else "橡皮擦"
+		)
+	if _terrain_adjust_button:
+		_terrain_adjust_button.text = (
+			"单格选择：已开启" if mode == TERRAIN_MODE_ADJUST else "单格选择"
+		)
+	if _terrain_multiselect_button:
+		_terrain_multiselect_button.text = (
+			"多格选择：已开启" if mode == TERRAIN_MODE_MULTI else "多格选择"
+		)
+	if _paint_toggle_button:
+		_paint_toggle_button.text = (
+			"地面画笔：已开启" if mode == TERRAIN_MODE_PAINT else "开启地面画笔"
+		)
+	_set_toggle_button_active(_terrain_toggle_button, mode == TERRAIN_MODE_BRUSH)
+	_set_toggle_button_active(_terrain_eraser_button, mode == TERRAIN_MODE_ERASER)
+	_set_toggle_button_active(_terrain_adjust_button, mode == TERRAIN_MODE_ADJUST)
+	_set_toggle_button_active(_terrain_multiselect_button, mode == TERRAIN_MODE_MULTI)
+	_set_toggle_button_active(_paint_toggle_button, mode == TERRAIN_MODE_PAINT)
+
+	if (had_selection_mode and not selection_mode) or mode == TERRAIN_MODE_NONE:
+		_clear_terrain_selection()
+
+	match mode:
+		TERRAIN_MODE_BRUSH:
+			_terrain_status_label.text = (
+				"地形画笔已开启。左键按住拖动连续铺设；松开后自动保存。"
+				+ "调整“垂直层”可搭建浮空平台。"
+			)
+			if p_announce:
+				_set_status("实体地形画笔已开启；按左键拖动即可连续绘制。", false)
+		TERRAIN_MODE_ERASER:
+			_terrain_status_label.text = (
+				"橡皮擦已开启。左键按住拖动会按当前形状、尺寸和垂直层擦除画笔格。"
+			)
+			if p_announce:
+				_set_status("实体地形橡皮擦已开启；按左键拖动即可擦除。", false)
+		TERRAIN_MODE_ADJUST:
+			_terrain_status_label.text = (
+				"单格选择已开启。左键点击已有画笔格；按住 Ctrl 可加选或减选。"
+			)
+			if p_announce:
+				_set_status("单格选择已开启；右侧按钮可批量应用、删除或吸取。", false)
+		TERRAIN_MODE_MULTI:
+			_terrain_status_label.text = (
+				"多格选择已开启。左键拖动按当前笔刷形状批量加选；按住 Ctrl 拖动可减选。"
+			)
+			if p_announce:
+				_set_status("多格选择已开启；拖动圈选后可直接批量应用或删除。", false)
+		TERRAIN_MODE_PAINT:
+			_paint_status_label.text = (
+				"画笔已开启。左键在三维视图地面碰撞体上点击或拖动；每笔松开后自动保存。"
+			)
+			if p_announce:
+				_set_status("地面画笔已开启；可先用 Shift+F 调整观察位置。", false)
+		_:
+			_terrain_status_label.text = (
+				"地形工具已关闭。画笔地形继续保存在 %s 下。"
+				% TerrainBrushCatalog.GRID_MAP_NAME
+			)
+			_paint_status_label.text = "画笔已关闭。绘制贴面会继续保存在 GROUND_PAINT_ 地面绘制 节点下。"
+	_refresh_terrain_cell_action_state()
+
+
 func _on_toggle_paint_mode_pressed() -> void:
-	if _paint_mode_active:
-		_paint_mode_active = false
-		_paint_stroke_active = false
-		_paint_has_last_position = false
-		_paint_toggle_button.text = "开启地面画笔"
-		_paint_status_label.text = "画笔已关闭。绘制贴面会继续保存在 GROUND_PAINT_ 地面绘制 节点下。"
-		return
 	if not _edited_root:
 		_set_status("没有打开的作者场景。", true)
 		return
-	_paint_mode_active = true
-	_focus_view_active = false
-	_paint_toggle_button.text = "地面画笔：已开启"
-	_paint_status_label.text = "画笔已开启。左键在三维视图地面碰撞体上点击或拖动；每笔松开后自动保存。"
-	_set_status("地面画笔已开启；可先用 Shift+F 调整观察位置。", false)
+	_set_terrain_mode(
+		TERRAIN_MODE_NONE if _paint_mode_active else TERRAIN_MODE_PAINT
+	)
+
+
+func _on_toggle_terrain_brush_pressed() -> void:
+	if not _edited_root:
+		_set_status("没有打开的作者场景。", true)
+		return
+	_set_terrain_mode(
+		TERRAIN_MODE_NONE if _terrain_brush_mode_active else TERRAIN_MODE_BRUSH
+	)
+
+
+func _on_toggle_terrain_eraser_pressed() -> void:
+	if not _edited_root:
+		_set_status("没有打开的作者场景。", true)
+		return
+	_set_terrain_mode(
+		TERRAIN_MODE_NONE if _terrain_eraser_mode_active else TERRAIN_MODE_ERASER
+	)
+
+
+func _on_toggle_terrain_adjust_pressed() -> void:
+	if not _edited_root:
+		_set_status("没有打开的作者场景。", true)
+		return
+	_set_terrain_mode(
+		TERRAIN_MODE_NONE if _terrain_adjust_mode_active else TERRAIN_MODE_ADJUST
+	)
+
+
+func _on_toggle_terrain_multiselect_pressed() -> void:
+	if not _edited_root:
+		_set_status("没有打开的作者场景。", true)
+		return
+	_set_terrain_mode(
+		TERRAIN_MODE_NONE
+		if _terrain_multiselect_mode_active
+		else TERRAIN_MODE_MULTI
+	)
+
+
+func _on_terrain_preset_selected(p_index: int) -> void:
+	if _terrain_thickness_spin == null:
+		return
+	if p_index < 0 or p_index >= _terrain_preset_option.item_count:
+		return
+	var preset_id := str(_terrain_preset_option.get_item_metadata(p_index))
+	_terrain_thickness_spin.value = TerrainBrushCatalog.default_thickness(preset_id)
+
+
+func _on_apply_terrain_cell_pressed() -> void:
+	var selected_cells := _terrain_selected_cells.keys()
+	if not _terrain_has_selected_cell or selected_cells.is_empty():
+		_set_status("请先在三维视图里选中至少一个实体地形格。", true)
+		return
+	var grid_map := _terrain_active_grid_map()
+	if grid_map == null:
+		_clear_terrain_selection()
+		_set_status("实体地形网格不存在。", true)
+		return
+	var preset_id := _selected_option(_terrain_preset_option)
+	if preset_id == TerrainBrushCatalog.ERASER_ID:
+		_delete_selected_terrain_cell(grid_map)
+		return
+	var item_id := TerrainBrushCatalog.resolve_item_id(
+		grid_map,
+		preset_id,
+		float(_terrain_thickness_spin.value)
+	)
+	if item_id < 0:
+		_set_status("无法创建当前地形和厚度的实体项目。", true)
+		return
+	var changed := 0
+	for cell_value in selected_cells:
+		var cell: Vector3i = cell_value
+		if grid_map.get_cell_item(cell) == item_id:
+			continue
+		grid_map.set_cell_item(cell, item_id)
+		changed += 1
+	_sync_terrain_selection_primary()
+	_refresh_terrain_selection_preview()
+	_mark_editor_scene_unsaved()
+	var save_error := _save_editor_scene()
+	_refresh_terrain_clear_button_state()
+	_refresh_terrain_cell_action_state()
+	var applied_info := TerrainBrushCatalog.get_cell_info(
+		grid_map,
+		_terrain_selected_cell
+	)
+	_terrain_status_label.text = "已应用 %s · %.2f 米到 %d 个选中格（更新 %d 格）%s。" % [
+		str(applied_info.get("preset_label", preset_id)),
+		float(applied_info.get("thickness", _terrain_thickness_spin.value)),
+		selected_cells.size(),
+		changed,
+		"并保存" if save_error == OK else "，但自动保存失败，请按 Ctrl+S",
+	]
+	_set_status(_terrain_status_label.text, save_error != OK)
+
+
+func _on_delete_terrain_cell_pressed() -> void:
+	if not _terrain_has_selected_cell or _terrain_selected_cells.is_empty():
+		_set_status("请先在三维视图里选中至少一个实体地形格。", true)
+		return
+	var grid_map := _terrain_active_grid_map()
+	if grid_map == null:
+		_clear_terrain_selection()
+		_set_status("实体地形网格不存在。", true)
+		return
+	_delete_selected_terrain_cell(grid_map)
+
+
+func _delete_selected_terrain_cell(p_grid_map: GridMap) -> void:
+	var selected_cells := _terrain_selected_cells.keys()
+	if selected_cells.is_empty():
+		_set_status("请先在三维视图里选中至少一个实体地形格。", true)
+		return
+	var removed := 0
+	for cell_value in selected_cells:
+		var cell: Vector3i = cell_value
+		var result := TerrainBrushCatalog.remove_cell(p_grid_map, cell)
+		if not bool(result.get("ok", false)):
+			_set_status(str(result.get("error", "删除选中实体地形格失败。")), true)
+			return
+		removed += int(result.get("removed", 0))
+	_clear_terrain_selection()
+	_refresh_terrain_clear_button_state()
+	_refresh_terrain_cell_action_state()
+	if removed <= 0:
+		_terrain_status_label.text = "选中的格子已经为空。"
+		_set_status(_terrain_status_label.text, false)
+		return
+	_mark_editor_scene_unsaved()
+	var save_error := _save_editor_scene()
+	_terrain_status_label.text = "已删除 %d 个选中格%s。" % [
+		removed,
+		"并保存" if save_error == OK else "，但自动保存失败，请按 Ctrl+S",
+	]
+	_set_status(_terrain_status_label.text, save_error != OK)
+
+
+func _on_eyedropper_terrain_cell_pressed() -> void:
+	if not _terrain_has_selected_cell:
+		_set_status("请先在三维视图里选中一个实体地形格。", true)
+		return
+	var grid_map := _terrain_active_grid_map()
+	var info := (
+		TerrainBrushCatalog.get_cell_info(grid_map, _terrain_selected_cell)
+		if grid_map != null
+		else {}
+	)
+	if not bool(info.get("ok", false)):
+		_clear_terrain_selection()
+		_set_status("选中的格子已不存在，请重新点选。", true)
+		return
+	_select_option(_terrain_preset_option, str(info.get("preset_id", "")))
+	_terrain_thickness_spin.value = float(info.get("thickness", TerrainBrushCatalog.MIN_THICKNESS))
+	_terrain_height_spin.value = float(info.get("height_level", 0))
+	_terrain_status_label.text = "已吸取 %s · %.2f 米 · 垂直层 %d 到当前画笔参数。" % [
+		str(info.get("preset_label", info.get("preset_id", "实体地形"))),
+		float(info.get("thickness", 0.0)),
+		int(info.get("height_level", 0)),
+	]
+	_set_status(_terrain_status_label.text, false)
+
+
+func _on_select_terrain_group_pressed() -> void:
+	if not _edited_root:
+		_set_status("没有打开的作者场景。", true)
+		return
+	if _terrain_group_selection_active():
+		_end_terrain_group_selection()
+		return
+	var grid_map := _terrain_group_grid_map()
+	if grid_map == null or grid_map.get_used_cells().is_empty():
+		_set_status("当前场景还没有实体地形画笔格子。", false)
+		return
+	_select_terrain_grid_map(grid_map)
+	_terrain_status_label.text = (
+		"已选中整组实体地形网格。现在可用 Godot 的移动工具整体移动，"
+		+ "或用“复制整组并偏移”创建独立副本；再次点击“结束整组选择”可退出。"
+	)
+	_set_status(_terrain_status_label.text, false)
+
+
+func _on_copy_terrain_group_pressed() -> void:
+	if not _edited_root:
+		_set_status("没有打开的作者场景。", true)
+		return
+	var grid_map := _terrain_group_grid_map()
+	if grid_map == null or grid_map.get_used_cells().is_empty():
+		_set_status("当前场景还没有实体地形画笔格子。", false)
+		return
+	var result := TerrainBrushCatalog.duplicate_grid_map(grid_map, _edited_root)
+	if not bool(result.get("ok", false)):
+		_set_status(str(result.get("error", "复制整组实体地形失败。")), true)
+		return
+	var duplicate := result.get("grid_map") as GridMap
+	_select_terrain_grid_map(duplicate)
+	_mark_editor_scene_unsaved()
+	var save_error := _save_editor_scene()
+	_terrain_status_label.text = "已复制 %d 个地形格到 %s%s。" % [
+		int(result.get("used_cells", 0)),
+		str(duplicate.name) if duplicate != null else "副本",
+		"并保存" if save_error == OK else "，但自动保存失败，请按 Ctrl+S",
+	]
+	_set_status(_terrain_status_label.text, save_error != OK)
+
+
+func _select_terrain_grid_map(p_grid_map: GridMap) -> void:
+	if p_grid_map == null:
+		return
+	_set_terrain_mode(TERRAIN_MODE_NONE, false)
+	_selected_node = p_grid_map
+	var editor_selection = _editor_selection()
+	if editor_selection:
+		if EditorInterface.has_method("edit_node"):
+			EditorInterface.edit_node(p_grid_map)
+		else:
+			editor_selection.clear()
+			editor_selection.add_node(p_grid_map)
+		_refresh_selection()
+	else:
+		_refresh_terrain_group_button_state()
+	_refresh_terrain_clear_button_state()
+
+
+func _end_terrain_group_selection(p_announce: bool = true) -> void:
+	var had_group_selection := _terrain_group_selection_active()
+	var editor_selection = _editor_selection()
+	if editor_selection:
+		editor_selection.clear()
+	_selected_node = null
+	_refresh_selection()
+	_refresh_terrain_clear_button_state()
+	if p_announce and had_group_selection:
+		_terrain_status_label.text = "已结束整组选择。现在可切换单格选择或多格选择。"
+		_set_status(_terrain_status_label.text, false)
+
+
+func _on_clear_terrain_brush_pressed() -> void:
+	if not _edited_root:
+		_set_status("没有打开的作者场景。", true)
+		return
+	var grid_map := _terrain_active_grid_map()
+	if grid_map == null or grid_map.get_used_cells().is_empty():
+		_set_status("当前场景还没有实体地形画笔格子。", false)
+		return
+	_terrain_clear_dialog.popup_centered(Vector2i(520, 190))
+
+
+func _on_clear_terrain_brush_confirmed() -> void:
+	if not _edited_root:
+		return
+	var grid_map := _terrain_active_grid_map()
+	var result := TerrainBrushCatalog.clear_terrain(grid_map)
+	if not bool(result.get("ok", false)):
+		_set_status(str(result.get("error", "清空画笔地形失败。")), true)
+		return
+	_clear_terrain_selection()
+	_refresh_terrain_clear_button_state()
+	if EditorInterface.has_method("mark_scene_as_unsaved"):
+		EditorInterface.call("mark_scene_as_unsaved")
+	var save_error := EditorInterface.save_scene()
+	_terrain_status_label.text = "已清空 %d 个画笔地形格。" % int(result.get("removed", 0))
+	_set_status(
+		_terrain_status_label.text + ("已保存。" if save_error == OK else "自动保存失败，请按 Ctrl+S。"),
+		save_error != OK
+	)
 
 
 func _on_remove_paint_pressed() -> void:
@@ -852,6 +1872,40 @@ func _on_remove_paint_pressed() -> void:
 	else:
 		_set_status("已删除并保存地面绘制：%s。" % removed_name, false)
 	_refresh_selection()
+
+
+func _populate_terrain_brush_options() -> void:
+	_terrain_preset_option.clear()
+	for entry in TerrainBrushCatalog.presets():
+		_terrain_preset_option.add_item(str(entry.get("label", "")))
+		_terrain_preset_option.set_item_metadata(
+			_terrain_preset_option.item_count - 1,
+			str(entry.get("id", ""))
+		)
+	if _terrain_preset_option.item_count > 0:
+		_terrain_preset_option.select(0)
+	_terrain_shape_option.clear()
+	for entry in TerrainBrushCatalog.shapes():
+		_terrain_shape_option.add_item(str(entry.get("label", "")))
+		_terrain_shape_option.set_item_metadata(
+			_terrain_shape_option.item_count - 1,
+			str(entry.get("id", ""))
+		)
+	if _terrain_shape_option.item_count > 0:
+		_terrain_shape_option.select(0)
+	_terrain_size_option.clear()
+	for entry in TerrainBrushCatalog.sizes():
+		_terrain_size_option.add_item(str(entry.get("label", "")))
+		_terrain_size_option.set_item_metadata(
+			_terrain_size_option.item_count - 1,
+			int(entry.get("value", 1))
+		)
+	if _terrain_size_option.item_count > 0:
+		_terrain_size_option.select(1 if _terrain_size_option.item_count > 1 else 0)
+
+
+func _selected_terrain_size() -> int:
+	return int(_selected_option(_terrain_size_option))
 
 
 func _populate_ground_paint_options() -> void:
@@ -918,6 +1972,7 @@ func _on_game_view_pressed() -> void:
 	_game_view_active = true
 	_focus_view_active = false
 	_focus_orbiting = false
+	_focus_panning = false
 	var focus := _view_focus_position()
 	GameView.apply_to_camera(camera, focus)
 	_game_view_focus_description = _view_focus_description()
@@ -941,6 +1996,7 @@ func _on_editor_view_pressed() -> void:
 	_game_view_active = false
 	_focus_view_active = false
 	_focus_orbiting = false
+	_focus_panning = false
 	_has_saved_editor_camera = false
 	_game_view_focus_description = ""
 	_focus_view_description = ""
@@ -970,7 +2026,25 @@ func _refresh_playtest_mode_ui() -> void:
 	if not _playtest_status_label:
 		return
 	var enabled := PlaytestMode.is_enabled()
-	_playtest_status_label.text = "当前 F5：%s" % PlaytestMode.label()
+	var scene_path := PlaytestMode.scene_path()
+	var scene_valid := PlaytestMode.is_authoring_scene_path(scene_path)
+	if not scene_valid:
+		var region_id := Schema.sanitize_token(_region_edit.text)
+		if region_id.is_empty():
+			region_id = "first_night"
+		scene_path = Runtime.scene_path_for_region(region_id)
+		scene_valid = PlaytestMode.is_authoring_scene_path(scene_path)
+	var scene_suffix := ""
+	if enabled:
+		if scene_valid:
+			scene_suffix = "（实际加载：%s）" % scene_path.get_file()
+		else:
+			scene_suffix = "（未找到合法作者场景，当前会回退为空场景）"
+	_playtest_status_label.text = "当前 F5：%s%s" % [PlaytestMode.label(), scene_suffix]
+	_playtest_status_label.tooltip_text = (
+		"允许 res://authoring/scenes/*_authoring.tscn 和已批准的基础几何审核场景；"
+		+ "普通游戏场景与候选场景不会写入 F5 目标。"
+	)
 	if _playtest_build_button:
 		_playtest_build_button.disabled = enabled
 	if _playtest_full_button:
@@ -1044,7 +2118,7 @@ func _refresh_view_status() -> void:
 	if _game_view_active:
 		_view_status_label.text = "当前：游戏视角 · 观察 %s" % _game_view_focus_description
 	elif _focus_view_active:
-		_view_status_label.text = "当前：舒适聚焦 · %s（中键环绕 / 滚轮缩放）" % _focus_view_description
+		_view_status_label.text = "当前：舒适聚焦 · %s（中键环绕 / Shift+中键平移 / 滚轮缩放）" % _focus_view_description
 	else:
 		_view_status_label.text = "当前：编辑视角（自由搭建）"
 
@@ -1059,14 +2133,12 @@ func _refresh_selection() -> void:
 		_selection_label.text = "请选择一个节点。当前选择：%d" % selected.size()
 		_runtime_support_label.text = "Codex 接管：--"
 		_set_form_enabled(false)
+		_refresh_terrain_group_button_state()
 		return
 	_selected_node = selected[0]
-	var node_path := "<节点尚未进入编辑树>"
-	if _edited_root:
-		if _selected_node == _edited_root:
-			node_path = "."
-		elif _edited_root.is_inside_tree() and _selected_node.is_inside_tree() and _edited_root.get_tree() == _selected_node.get_tree() and _edited_root.is_ancestor_of(_selected_node):
-			node_path = str(_edited_root.get_path_to(_selected_node))
+	if _belongs_to_edited_root(_selected_node):
+		_remember_model_parent(_model_parent_for_selection(_selected_node))
+	var node_path := _safe_node_path(_edited_root, _selected_node)
 	var data := Schema.data_from_node(_selected_node)
 	if data.is_empty():
 		data = Schema.make(_suggest_id(_selected_node), _suggest_kind(_selected_node), "none")
@@ -1090,6 +2162,7 @@ func _refresh_selection() -> void:
 	_refresh_model_picker(data)
 	_refresh_effect_picker(data)
 	_set_form_enabled(true)
+	_refresh_terrain_group_button_state()
 
 
 func _on_apply_pressed() -> void:
@@ -1414,6 +2487,7 @@ func _on_create_environment_pressed() -> void:
 	if entry.is_empty():
 		_set_status("请选择一个目录中的环境特效。", true)
 		return
+	var context_parent := _model_instance_parent()
 	var parent := _environment_parent()
 	var display_name := _environment_name_edit.text.strip_edges() if _environment_name_edit else ""
 	var result := EnvironmentCatalog.apply_environment(
@@ -1439,7 +2513,7 @@ func _on_create_environment_pressed() -> void:
 		_set_status("已创建并保存环境特效：%s。" % node_name, false)
 	if _environment_name_edit:
 		_environment_name_edit.text = ""
-	_select_created_parent(parent)
+	call_deferred("_select_created_parent", context_parent, environment_node)
 
 
 func _on_remove_environment_pressed() -> void:
@@ -1578,7 +2652,8 @@ func _on_create_model_instance_pressed() -> void:
 		_set_status("请先选择一个目录中的模型。", true)
 		return
 
-	var parent := _model_instance_parent()
+	var context_parent := _model_instance_parent()
+	var parent := _model_group_parent(entry)
 
 	var semantic_id := _next_visual_instance_id(model_id)
 	var typed_name := _new_model_name_edit.text.strip_edges() if _new_model_name_edit else ""
@@ -1587,7 +2662,7 @@ func _on_create_model_instance_pressed() -> void:
 		semantic_id,
 		"decor",
 		"none",
-		_zone_id_for_parent(parent),
+		_zone_id_for_parent(context_parent),
 		["新增模型", str(entry.get("category", ""))],
 		[],
 		{},
@@ -1624,20 +2699,30 @@ func _on_create_model_instance_pressed() -> void:
 	if _new_model_name_edit:
 		_new_model_name_edit.text = ""
 
-	_select_created_parent(parent)
+	call_deferred("_select_created_parent", context_parent, host)
 	_run_validation(false)
 
 
-func _select_created_parent(p_parent: Node) -> void:
-	if p_parent == null or not _belongs_to_edited_root(p_parent):
-		p_parent = _edited_root
-	if p_parent == null:
+func _select_created_parent(p_parent: Node, p_created_node: Node = null) -> void:
+	var selection_target: Node = null
+	if p_created_node != null and _belongs_to_edited_root(p_created_node):
+		selection_target = p_created_node.get_parent()
+	if selection_target == null or not _is_valid_model_parent(selection_target):
+		selection_target = p_parent
+	if selection_target == null or not _is_valid_model_parent(selection_target):
+		selection_target = _default_model_parent()
+	if selection_target == null:
 		return
-	_selected_node = p_parent
+	_selected_node = selection_target
+	if p_parent != null and not _is_scene_group(p_parent):
+		_remember_model_parent(p_parent)
 	var editor_selection = _editor_selection()
 	if editor_selection:
-		editor_selection.clear()
-		editor_selection.add_node(p_parent)
+		if EditorInterface.has_method("edit_node"):
+			EditorInterface.edit_node(selection_target)
+		else:
+			editor_selection.clear()
+			editor_selection.add_node(selection_target)
 		_refresh_selection()
 
 
@@ -1648,30 +2733,123 @@ func _editor_selection():
 
 
 func _model_instance_parent() -> Node:
-	if not _selected_node or not _belongs_to_edited_root(_selected_node):
-		return _edited_root
-	var selection := _selected_node
+	if (
+		_selected_node
+		and _selected_node != _edited_root
+		and _belongs_to_edited_root(_selected_node)
+	):
+		var selected_parent := _model_parent_for_selection(_selected_node)
+		if selected_parent:
+			_remember_model_parent(selected_parent)
+			return selected_parent
+	if _is_valid_model_parent(_last_model_parent) and _last_model_parent != _edited_root:
+		return _last_model_parent
+	return _default_model_parent()
+
+
+func _model_parent_for_selection(p_selection: Node) -> Node:
+	if p_selection == null or not _belongs_to_edited_root(p_selection):
+		return _default_model_parent()
+	var selection := p_selection
 	var selected_name := str(selection.name)
 	if (
 		selected_name.begins_with(VisualCatalog.VISUAL_PREFIX)
 		or selected_name.begins_with(VisualCatalog.EFFECT_PREFIX)
+		or selected_name.begins_with(EnvironmentCatalog.ENVIRONMENT_PREFIX)
 	):
 		selection = selection.get_parent()
+	while selection != null and _is_scene_group(selection):
+		selection = selection.get_parent()
+	if selection == null or selection == _edited_root:
+		return _default_model_parent()
 	var selected_data := Schema.data_from_node(selection)
 	if str(selected_data.get("kind", "")) in ["zone", "region"]:
 		return selection
 	var candidate := selection.get_parent()
-	if candidate and _belongs_to_edited_root(candidate):
+	if _is_valid_model_parent(candidate):
 		return candidate
+	return _default_model_parent()
+
+
+func _default_model_parent() -> Node:
+	if (
+		_is_valid_model_parent(_last_model_parent)
+		and _last_model_parent != _edited_root
+	):
+		return _last_model_parent
+	if _edited_root == null:
+		return null
+	var pending: Array[Node] = []
+	for child in _edited_root.get_children():
+		if child is Node:
+			pending.append(child)
+	while not pending.is_empty():
+		var node: Node = pending.pop_front()
+		if node is Node3D:
+			var data := Schema.data_from_node(node)
+			if str(data.get("kind", "")) in ["zone", "region"]:
+				_remember_model_parent(node)
+				return node
+		for child in node.get_children():
+			pending.append(child)
 	return _edited_root
 
 
+func _remember_model_parent(p_parent: Node) -> void:
+	if (
+		p_parent == null
+		or p_parent == _edited_root
+		or _is_scene_group(p_parent)
+		or not _is_valid_model_parent(p_parent)
+	):
+		return
+	_last_model_parent = p_parent
+
+
+func _is_valid_model_parent(p_node: Node) -> bool:
+	return (
+		p_node != null
+		and is_instance_valid(p_node)
+		and p_node is Node3D
+		and _belongs_to_edited_root(p_node)
+	)
+
+
 func _environment_parent() -> Node:
-	if _selected_node and EnvironmentCatalog.is_environment_node(_selected_node):
-		var parent := _selected_node.get_parent()
-		if parent and _belongs_to_edited_root(parent):
-			return parent
-	return _model_instance_parent()
+	return _ensure_scene_group(GROUP_EFFECTS)
+
+
+func _model_group_parent(p_entry: Dictionary) -> Node:
+	return _ensure_scene_group(_scene_group_name_for_entry(p_entry))
+
+
+func _scene_group_name_for_entry(p_entry: Dictionary) -> String:
+	var category := str(p_entry.get("category", "")).strip_edges()
+	if TERRAIN_MODEL_CATEGORIES.has(category):
+		return GROUP_TERRAIN
+	if BUILDING_MODEL_CATEGORIES.has(category):
+		return GROUP_BUILDINGS
+	if CHARACTER_MODEL_CATEGORIES.has(category):
+		return GROUP_CHARACTERS
+	return GROUP_OBJECTS
+
+
+func _is_scene_group(p_node: Node) -> bool:
+	return p_node != null and SCENE_GROUP_NAMES.has(str(p_node.name))
+
+
+func _ensure_scene_group(p_group_name: String) -> Node:
+	if _edited_root == null:
+		return null
+	var existing := _edited_root.get_node_or_null(NodePath(p_group_name))
+	if existing is Node3D:
+		existing.owner = _edited_root
+		return existing
+	var group := Node3D.new()
+	group.name = p_group_name
+	_edited_root.add_child(group)
+	group.owner = _edited_root
+	return group
 
 
 func _on_remove_model_pressed() -> void:
@@ -1970,6 +3148,28 @@ func _set_form_enabled(p_enabled: bool) -> void:
 		_environment_create_button.disabled = not has_scene
 	if _environment_remove_button:
 		_environment_remove_button.disabled = not has_scene or not EnvironmentCatalog.is_environment_node(_selected_node)
+	if _terrain_preset_option:
+		_terrain_preset_option.disabled = not has_scene
+	if _terrain_shape_option:
+		_terrain_shape_option.disabled = not has_scene
+	if _terrain_size_option:
+		_terrain_size_option.disabled = not has_scene
+	if _terrain_height_spin:
+		_terrain_height_spin.editable = has_scene
+	if _terrain_thickness_spin:
+		_terrain_thickness_spin.editable = has_scene
+	if _terrain_toggle_button:
+		_terrain_toggle_button.disabled = not has_scene
+	if _terrain_eraser_button:
+		_terrain_eraser_button.disabled = not has_scene
+	if _terrain_adjust_button:
+		_terrain_adjust_button.disabled = not has_scene
+	if _terrain_multiselect_button:
+		_terrain_multiselect_button.disabled = not has_scene
+	if not has_scene:
+		_clear_terrain_selection()
+	_refresh_terrain_cell_action_state()
+	_refresh_terrain_clear_button_state()
 	if _paint_preset_option:
 		_paint_preset_option.disabled = not has_scene
 	if _paint_shape_option:
@@ -1983,6 +3183,140 @@ func _set_form_enabled(p_enabled: bool) -> void:
 	if _paint_remove_button:
 		_paint_remove_button.disabled = not has_scene or not GroundPaintCatalog.is_paint_node(_selected_node)
 	_refresh_create_button_state()
+
+
+func _refresh_terrain_clear_button_state() -> void:
+	if _terrain_clear_button == null:
+		return
+	var terrain_grid := _terrain_active_grid_map() if _edited_root else null
+	_terrain_clear_button.disabled = (
+		_edited_root == null
+		or terrain_grid == null
+		or terrain_grid.get_used_cells().is_empty()
+	)
+	var group_grid := _terrain_group_grid_map() if _edited_root else null
+	var group_unavailable := (
+		_edited_root == null
+		or group_grid == null
+		or group_grid.get_used_cells().is_empty()
+	)
+	if _terrain_select_group_button:
+		_terrain_select_group_button.disabled = group_unavailable
+	if _terrain_copy_group_button:
+		_terrain_copy_group_button.disabled = group_unavailable
+	_refresh_terrain_group_button_state()
+
+
+func _refresh_terrain_group_button_state() -> void:
+	if _terrain_select_group_button == null:
+		return
+	var active := _terrain_group_selection_active()
+	_terrain_select_group_button.text = "结束整组选择" if active else "选中整组地形"
+	_terrain_select_group_button.tooltip_text = (
+		"当前已选中整组地形；再次点击会退出整组操作，恢复单格或多格选择。"
+		if active
+		else "在场景树中选中共享 GridMap；随后可用 Godot 的移动、旋转和复制工具整体操作。"
+	)
+	_set_toggle_button_active(_terrain_select_group_button, active)
+
+
+func _terrain_group_selection_active() -> bool:
+	return (
+		_edited_root != null
+		and _selected_node is GridMap
+		and _belongs_to_edited_root(_selected_node)
+		and TerrainBrushCatalog.is_terrain_grid_map(_selected_node)
+		and not _selected_node.get_used_cells().is_empty()
+	)
+
+
+func _refresh_terrain_cell_action_state() -> void:
+	var has_scene := _edited_root != null
+	var has_selection := has_scene and not _terrain_selected_cells.is_empty()
+	if _terrain_apply_cell_button:
+		_terrain_apply_cell_button.disabled = not has_selection
+	if _terrain_delete_cell_button:
+		_terrain_delete_cell_button.disabled = not has_selection
+	if _terrain_eyedropper_button:
+		_terrain_eyedropper_button.disabled = not has_selection
+
+
+func _mark_editor_scene_unsaved() -> void:
+	if not Engine.is_editor_hint():
+		return
+	EditorInterface.mark_scene_as_unsaved()
+
+
+func _save_editor_scene() -> Error:
+	if not Engine.is_editor_hint():
+		return OK
+	return EditorInterface.save_scene()
+
+
+func _terrain_group_grid_map() -> GridMap:
+	if (
+		_edited_root != null
+		and _selected_node is GridMap
+		and _belongs_to_edited_root(_selected_node)
+		and TerrainBrushCatalog.is_terrain_grid_map(_selected_node)
+		and not _selected_node.get_used_cells().is_empty()
+	):
+		return _selected_node as GridMap
+	return _terrain_active_grid_map()
+
+
+func _terrain_active_grid_map() -> GridMap:
+	return TerrainBrushCatalog.find_grid_map(_edited_root, _selected_node)
+
+
+func _set_toggle_button_active(p_button: Button, p_active: bool) -> void:
+	if p_button == null:
+		return
+	p_button.set_meta("fs_toggle_active", p_active)
+	for color_name in [
+		"font_color",
+		"font_hover_color",
+		"font_pressed_color",
+	]:
+		p_button.remove_theme_color_override(color_name)
+	for style_name in ["normal", "hover", "pressed"]:
+		p_button.remove_theme_stylebox_override(style_name)
+	if not p_active:
+		return
+	p_button.add_theme_color_override("font_color", TOGGLE_ACTIVE_TEXT)
+	p_button.add_theme_color_override("font_hover_color", TOGGLE_ACTIVE_TEXT)
+	p_button.add_theme_color_override("font_pressed_color", TOGGLE_ACTIVE_TEXT)
+	p_button.add_theme_stylebox_override(
+		"normal",
+		_make_toggle_active_style(TOGGLE_ACTIVE_BG)
+	)
+	p_button.add_theme_stylebox_override(
+		"hover",
+		_make_toggle_active_style(TOGGLE_ACTIVE_BG_HOVER)
+	)
+	p_button.add_theme_stylebox_override(
+		"pressed",
+		_make_toggle_active_style(TOGGLE_ACTIVE_BG_PRESSED)
+	)
+
+
+func _make_toggle_active_style(p_background: Color) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = p_background
+	style.border_color = TOGGLE_ACTIVE_BORDER
+	style.border_width_left = 1
+	style.border_width_top = 1
+	style.border_width_right = 1
+	style.border_width_bottom = 1
+	style.corner_radius_top_left = 4
+	style.corner_radius_top_right = 4
+	style.corner_radius_bottom_right = 4
+	style.corner_radius_bottom_left = 4
+	style.content_margin_left = 8.0
+	style.content_margin_top = 4.0
+	style.content_margin_right = 8.0
+	style.content_margin_bottom = 4.0
+	return style
 
 
 func _set_status(p_text: String, p_is_error: bool) -> void:
@@ -2065,6 +3399,22 @@ func _belongs_to_edited_root(p_node: Node) -> bool:
 			return true
 		current = current.get_parent()
 	return false
+
+
+func _safe_node_path(p_root: Node, p_node: Node) -> String:
+	if p_root == null or p_node == null:
+		return "<节点尚未进入编辑树>"
+	if p_node == p_root:
+		return "."
+	var parts: Array[String] = []
+	var current: Node = p_node
+	while current != null and current != p_root:
+		parts.append(str(current.name))
+		current = current.get_parent()
+	if current != p_root:
+		return "<节点不属于当前作者场景>"
+	parts.reverse()
+	return "/".join(parts)
 
 
 func _zone_id_for_parent(p_parent: Node) -> String:

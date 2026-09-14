@@ -2,6 +2,7 @@
 
 > 目的：让新会话按“我要改哪个功能”直接跳到 文件+行，避免整读大脚本/多次重读。
 > 行数为最近一轮整理时实测；改动后用 `rg`/行范围定位，标“大字”的文件（>300 行）不要整读。
+> 超过 `64 KB` 的大场景、大 Manifest、日志或生成器先查 `outputs/LARGE-ARTIFACT-INDEX.md`；`.tscn` 和 Manifest 永远禁止整读。
 
 ## 场景（scenes/main/）
 
@@ -35,21 +36,29 @@
 - `scripts/authoring/FSEffectCatalog.gd` — 8 种事件/状态特效目录；事件特效独立挂在语义宿主下，不替换 `VISUAL_*`。
 - `scripts/authoring/FSEnvironmentCatalog.gd` — 9 种灯光/大气/天气/粒子环境特效目录；使用独立 `ENVIRONMENT_*` 节点，可重复叠加、单独调参和删除，与模型和事件特效互不替换。`0.3.3` 递归写入作者场景 `owner`，并能从元数据补建旧场景中的空环境节点，保证 F5/重启后仍存在。
 - `scripts/authoring/FSGroundPaintCatalog.gd` — 地面贴面绘制目录/工厂：湿泥、青苔、石屑、水光、破败土痕，圆/长椭圆/方形笔触；在命中地形碰撞面后生成无碰撞 `GROUND_PAINT_*` `MeshInstance3D`，统一归入 `GROUND_PAINT_地面绘制`，不属于玩法语义。
+- `scripts/authoring/FSTerrainBrushCatalog.gd` — 实体地形画笔目录/工厂：草地平台、浮空平台、石质地面、道路地面、木桥/栈道；画笔优先创建在当前选中节点的同一级，存在多个 `GridMap` 时按当前选中上下文查找，网格拖到其他父级后仍可按元数据继续编辑，未选节点时才回退旧 `FS_GROUP_地形/FS_TERRAIN_BRUSH_地形画笔` 路径。按 1 米吸附并生成同时包含网格与 `BoxShape3D` 碰撞的格子。支持方形/圆形笔刷、`1 / 3 / 5 / 7` 格尺寸、`-8..24` 垂直层、`0.10..2.00m` 每格厚度、拖动插值、同格覆盖去重、单格/多格读取与批量删除、命中点反查、自定义厚度 `MeshLibrary` 变体、局部擦除、仅清空当前画笔网格，以及保留格子/朝向/碰撞/元数据/独立 `MeshLibrary` 的整组复制偏移。
 - `scripts/authoring/FSWorkflow.gd` — 七节点定义、状态保存、当前节点和显式确认；状态在 `project/authoring/workflows/<region>.json`。
 - `scripts/authoring/FSRegionScaffold.gd` — 从 region JSON 生成可手调的普通 Godot 场景（用户开始手调后不要再覆盖重建）。
 - `scripts/authoring/FSSceneManifest.gd` — 扫描作者场景生成 Manifest/Markdown；只导出语义数据，不让 AI 整读 `.tscn`。
 - `scripts/authoring/FSAuthoringRuntime.gd` — 加载已发布作者场景，按语义挂门、拾取、可击破、升降和 marker；没有有效绑定时回退旧 builder。
-- `scripts/authoring/FSGameView.gd` — 编辑器与运行态共用游戏摄像机规格：高度 `10.5`、后移 `5.0`、FOV `52`、视线中心抬高 `1.0`；另提供选中物件世界包围盒与 `Shift+F` 舒适聚焦姿态计算。
-- `scripts/authoring/FSPlaytestMode.gd` — 持久化 `fivestar_authoring/playtest_mode`；默认开启构建试玩，Dock 可切回完整游戏。
-- `addons/fivestar_authoring/fs_authoring_dock.gd` — 右侧 `FIVESTAR 场景语义工具`：中文显示名，固定高度模型列表、实时三维预览、无宿主直接创建/中文命名、替换式应用、批量补模型、全部模型总览、落地修正、事件/环境特效、地面贴面绘制、校验、导出发布、七节点确认框。当前版本 `0.3.3`，包含“观察视图”和“F5 运行模式”：`Shift+F` 按选中物件包围盒舒适聚焦，聚焦后按模型半径限制中键环绕和滚轮缩放；新建模型只选中父语义层。`Ctrl+Alt+1` 从当前选中物件切到实际游戏视角，`Ctrl+Alt+2` 恢复原编辑视角；F5 可切换构建试玩/完整游戏。观察操作只移动编辑器摄像机，不改场景。
+- `scripts/authoring/FSGameView.gd` — 编辑器与运行态共用游戏摄像机规格：高度 `10.5`、后移 `5.0`、FOV `52`、视线中心抬高 `1.0`；另提供选中物件世界包围盒与 `Shift+F` 舒适聚焦姿态计算。`0.3.9` 聚焦缩放范围和环绕灵敏度按物件半径缩放，提供与当前视距匹配的平移单位，并保留反转后的直觉中键水平环绕。
+- `scripts/authoring/FSPlaytestMode.gd` — 持久化 `fivestar_authoring/playtest_mode` 与 `fivestar_authoring/playtest_scene`；默认开启构建试玩，构建试玩玩家缩放为 `1/3`，Dock 可切回完整游戏。只接受正式 `*_authoring.tscn` 和白名单审核场景 `spirit_sprawl_geometry.tscn`。
+- `addons/fivestar_authoring/fs_authoring_dock.gd` — 右侧 `FIVESTAR 场景语义工具`：中文显示名，固定高度模型列表、实时三维预览、无宿主直接创建/中文命名、替换式应用、批量补模型、全部模型总览、落地修正、事件/环境特效、实体地形画笔、地面贴面绘制、校验、导出发布、七节点确认框。当前版本 `0.4.7`，实体地形画笔优先按当前选中节点创建同级 `GridMap`，绘制、擦除、选格、清空和整组操作统一跟随当前选中上下文，支持形状/尺寸/垂直层、每格厚度、单格/多格选择、批量应用/删除、吸取、可见橡皮擦、整组选中以及复制并偏移；橡皮擦与绘制共用真正的三维输入消费链路，不会把点击穿透成 `GridMap` 选择并误亮整组地形。整组选择是可取消的独立状态，进入格选/画笔会自动退出，并且整组状态下不截断 Godot gizmo 输入。所有启用中的绘制、擦除、选格、地面画笔和整组按钮使用橙色高亮，关闭后恢复普通样式。临时选择预览 `owner=null`，不会保存进场景。Dock 还包含“观察视图”和“F5 运行模式”：`Shift+F` 按选中物件包围盒舒适聚焦，聚焦后由 `EditorPlugin` 常驻输入转发接管中键环绕、`Shift+中键`平移和滚轮缩放，保留反转后的直觉中键水平环绕；新建模型按 `FS_GROUP_地形 / FS_GROUP_建筑 / FS_GROUP_物件 / FS_GROUP_角色 / FS_GROUP_特效` 归档，创建后只选中分类容器，不自动展开或选中刚创建物件。`Ctrl+Alt+1` 从当前选中物件切到实际游戏视角，`Ctrl+Alt+2` 恢复原编辑视角；`Ctrl+Alt+3` 切换多格选择；F5 可切换构建试玩/完整游戏，构建试玩接受 `res://authoring/scenes/*_authoring.tscn` 和已批准的 `res://authoring/scenes/spirit_sprawl_geometry.tscn`。观察操作只移动编辑器摄像机，不改场景。
 - `tools/fs_build_authoring_scene.gd` — 首次从 JSON 生成/覆盖正式作者场景；用户开始手调后禁用。
 - `tools/fs_repair_owner_duplicates.gd` — 修复旧版模型递归 `owner` 导致的作者场景内部节点重复；先备份，再清重复节点，不重建布局。
 - `project/authoring/assets/model_catalog.json` — 141 个精选中文模型目录项，其中“地形与平台”24 项，并新增 10 个雨城水流组件；插件自动扫描 Kenney 已导入 GLB 后合并去重。`params.visual` 保存可视选择，`params.effect` 保存事件特效，环境节点和 `GROUND_PAINT_*` 独立保存；都不参与行为判断。
 - `authoring/scenes/model_gallery.tscn` / `authoring/scenes/fs_model_gallery.gd` — 只读 UI 模型浏览器：左侧搜索/分类/列表，右侧实时三维预览、自动旋转、复制 ID 和文件定位；只为当前选中项建立预览，不实例化整个目录，不修改作者场景。
 - `authoring/assets/components/effects/` + `scripts/authoring/FSEffectCatalog.gd` — 案件金色信标、能力光柱、可击破提示、门锁红封印、目标金柱、休息光环、压力机关脉冲、危险地面警示 8 种事件特效。
-- `project/authoring/scenes/first_night_authoring.tscn` — 当前用户手搭真源：区域根节点、`y=0` 的 `120 x 120` 构建平面、两块地牢地面模型与 `SUPPORT_*`、成片雨幕和火焰与动态光环境节点。禁止用生成工具覆盖；清场前布局备份为 `*.pre-reset-20260910-225140.bak`。
+- `project/authoring/scenes/first_night_authoring.tscn` — 当前用户手搭真源：区域根节点、`y=0` 的 `120 x 120` 构建平面，以及一块带 `SUPPORT_floor` 承托碰撞的泥土地面。禁止用生成工具覆盖；清场前布局备份为 `*.pre-reset-20260910-225140.bak`。
 - `project/authoring/manifests/first_night_authoring.manifest.json` — Codex 功能实现的机器清单，含每物件 `runtime_support`。
 - `project/authoring/semantic/first_night_authoring.md` — 人类摘要，含接管分类。
+- `project/authoring/scenes/spirit_sprawl_candidate.tscn` / `project/authoring/manifests/spirit_sprawl_candidate.manifest.json` — `FAILED_REFERENCE` 候选实验，不是真源，不继续搭布局；排错前先看 `outputs/LARGE-ARTIFACT-INDEX.md`，禁止整读。
+- `project/tools/fs_build_spirit_sprawl_geometry.gd` — 按用户确认的 v4 `521 x 344` 顶视图保持大区轮廓，在 3 倍基础上再翻倍为 6 倍，从 `240 x 156` cell span 生成 `user://spirit_sprawl_geometry_6x_generated.tscn`；每个陆区细分低平台和独立不规则离岸房间，房间周围至少留 2 格水且只接自己的 `br_room_*` 桥，岸墙从岛/房间/桥 cell 暴露边自动合并。整体运行，只改生成器参数，不手改生成场景。
+- `project/tools/fs_normalize_terrain_cube_components.gd` — 把既有审核场景中的陆地区块可视网格和同级碰撞体统一为 `BoxMesh(size=Vector3.ONE)` / `BoxShape3D(size=Vector3.ONE)`，原实际尺寸移到节点缩放，保留位置、材质和碰撞语义；仅用于已备份的场景维护，不重建布局。
+- `project/tools/fs_audit_terrain_block_shapes.gd` — 只读审计 `FS_GROUP_地形` 的 Box 网格，按网格尺寸乘节点缩放报告实际尺寸、单位网格、均匀缩放和拉伸缩放数量，用于防止地块组件重新退化为写死尺寸的长方体。
+- `project/tools/fs_apply_spirit_sprawl_geometry_expansion.gd` — 把生成器候选中的六倍扩区地形只替换到正式审核场景的 `FS_GROUP_地形`，保留用户手调的 `FS_GROUP_建筑` 等分组内容；应用前必须备份正式场景。
+- `project/tools/fs_organize_spirit_sprawl_groups.gd` — 仅整理已存在的审核场景，把顶层物件原地移入 `FS_GROUP_地形 / FS_GROUP_建筑 / FS_GROUP_物件 / FS_GROUP_角色 / FS_GROUP_特效`，保留 transform、碰撞、meta、owner 和 `semantic_id`；不会重建布局。大型墓穴门按语义 tags 进入建筑组。
+- `project/authoring/scenes/spirit_sprawl_geometry.tscn`（大字）— 用户手调后的六倍扩区审核场景：3 个非对称陆区、用户补入的大型墓穴门、2 座陆区桥、14 个不规则离岸地形房间、14 座房间连接桥、36 个平台、72 级楼梯、363 段自动岸墙、4 面世界墙；地形组件已统一为单位方块加缩放，517 个陆地可视网格/碰撞体完成转换，顶层为五类容器；不含敌人和完整玩法。禁止整读，也禁止直接执行生成器覆盖手调内容。
 - `outputs/AUTHORING-WORKFLOW.md` — 七节点接管工作流、用户手调步骤、失败回退和 AI 接手指令。
 
 ### v2 世界地图（Tab 覆盖层）
@@ -93,15 +102,17 @@
 | `v2_env_components_smoke.gd` | 21 | `V2_ENV platform_children=... jar_valid=...` |
 | `v2_gate_pickup_smoke.gd` | 23 | `V2_GATE allowed_before=... opened=... pickup=...` |
 | `v2_save_smoke.gd` | 26 | `V2_SAVE saved=... seed=... key=... rest=...` |
-| `v2_map_plan.gd` | 347 | 顶视施工图渲染（带窗口）→ `outputs/map-v2-plan.png` |
-| `v2_map_schematic.gd` / `v2_map_capture.gd` / `v2_map_organic.gd` | 175/107/245 | 其余地图渲染辅助，旧参考非基准 |
+| `v2_map_plan.gd` | 347 | 旧顶视施工图渲染实验，已作废；当前地图不用它 |
+| `v2_map_schematic.gd` / `v2_map_capture.gd` / `v2_map_organic.gd` | 175/107/245 | 旧地图渲染辅助，已作废非基准 |
 | `v2_world_map_smoke.gd` | 64 | `V2_WORLDMAP rooms=12 edges=12 rest=DONE hub=IN_PROGRESS seal_init=LOCKED map@-13.5=rest map@-8=case_sofa map@11=boss seal_after=DONE current=case_sofa` |
-| `v2_authoring_smoke.gd` | — | `V2_AUTHORING objects=71 errors=0 warnings=0 route_gates=2 markers=10 authored=true`（`objects=71` 是 smoke 内部临时脚手架，不是当前作者场景；另验证精选目录、24 项地形/平台、自动承托碰撞与用户碰撞保留、环境特效 owner/空节点修复与场景重载、10 个新增水流及浮动规则、地面绘制创建/删除、近距尺寸自适应聚焦、新建后只选父层、UI 模型总览、三维预览、替换清理、落地和事件特效共存） |
-| `v2_authoring_playtest_smoke.gd` | — | `V2_AUTHORING_PLAYTEST grounded=true floor=SUPPORT_floor start_y=3.81 player_y=1.80 authored=true clean=true`（验证 F5 构建试玩落到用户搭建的实际承托面，而不是强制落到 `y=0`） |
+| `v2_authoring_smoke.gd` | — | `V2_AUTHORING objects=71 errors=0 warnings=0 route_gates=2 markers=10 authored=true`（`objects=71` 是 smoke 内部临时脚手架，不是当前作者场景；另验证精选目录、24 项地形/平台、自动承托碰撞与用户碰撞保留、环境特效 owner/空节点修复与场景重载、10 个新增水流及浮动规则、实体地形画笔的视觉/碰撞/去重/连续线/擦除、自定义厚度与单格删除、保存重载、清空按钮状态和选择预览 owner、地面绘制创建/删除、近距尺寸自适应聚焦、五类容器映射与 owner、新建后只选分类容器且不自动展开、UI 模型总览、三维预览、替换清理、落地和事件特效共存） |
+| `v2_authoring_playtest_smoke.gd` | — | `V2_AUTHORING_PLAYTEST grounded=true floor=SURFACE_NORTH_KNOT scale=0.333333 move=2.133 dash=5.500 interact=1.133 camera_h=3.500 start_y=3.94 player_y=4.00 fall_respawn=true authored=true clean=true`（验证基础几何审核场景可绑定、失败候选场景被拒绝、构建试玩玩家为 `1/3` 缩放、落到实际承托面，并确认低于出生点 `8m` 会无损失回到出生点） |
+| `spirit_sprawl_geometry_smoke.gd` | — | `SPIRIT_SPRAWL_GEOMETRY_V12_A components=29 cells=1125 cell_meshes=1125 cell_collisions=1125 legacy_overlaps=0 edge_markers=179 bridge=108 jump=54 dash=15 special=2 graph_components=1 bridge_probes=108 gap_probes=47 special_steps=4 top_errors=0 errors=0` |
 
-## 权威地图数据
+## 当前雨城灵潮地图
 
-- 区域 JSON：`project/content/route/first_night_region.json`（zones/props/decor/gates/abilities/quests）。
-- 玩法施工图：`outputs/map-construction-blueprint.md`（怎么搭/布怪在哪/哪里能走）。
-- 视觉风格：`outputs/map-style-notes.md` + 缩略图 `outputs/reference-map-thumb.png`（512×241）。**大参考图永不整读。**
-- 顶视施工图：`outputs/map-v2-plan.png`；生图提示词：`outputs/map-v2-imagegen-prompt.md`。
+- 真源图片：`G:\好简历\项目原画\Snipaste_2026-09-12_12-52-19.png`；确认轮廓不变，海图在 3 倍基础上再翻倍为 6 倍：`X=-120..120`、`Z=-79.2..79.2`，映射和边界只在 `outputs/SESSION-HANDOFF.md` 当前交接读取。
+- 拓扑与坐标：`outputs/spirit-sprawl-topology-v2.md`。
+- 生成器：`project/tools/fs_build_spirit_sprawl_geometry.gd`；审核场景：`project/authoring/scenes/spirit_sprawl_geometry.tscn`。
+- 验收：`project/tests/spirit_sprawl_geometry_smoke.gd`。
+- 旧 `map-construction-blueprint.md`、`map-style-notes.md`、`reference-map-thumb.png`、`map-v2-plan.png`、`map-v2-imagegen-prompt.md` 和读图模板均已作废，不进入冷启动。
