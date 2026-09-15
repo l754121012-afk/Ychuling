@@ -1,0 +1,52 @@
+{
+	"current_step": 0,
+	"region_id": "spirit_sprawl_candidate",
+	"scene_path": "res://authoring/scenes/spirit_sprawl_candidate_authoring.tscn",
+	"schema_version": 1,
+	"status": "ACTIVE",
+	"steps": [
+		{
+			"confirmed_at": "",
+			"id": "spec_confirm",
+			"note": "",
+			"status": "PENDING"
+		},
+		{
+			"confirmed_at": "",
+			"id": "scene_edit",
+			"note": "",
+			"status": "PENDING"
+		},
+		{
+			"confirmed_at": "",
+			"id": "semantic_audit",
+			"note": "",
+			"status": "PENDING"
+		},
+		{
+			"confirmed_at": "",
+			"id": "manifest_export",
+			"note": "",
+			"status": "PENDING"
+		},
+		{
+			"confirmed_at": "",
+			"id": "implementation",
+			"note": "",
+			"status": "PENDING"
+		},
+		{
+			"confirmed_at": "",
+			"id": "playtest",
+			"note": "",
+			"status": "PENDING"
+		},
+		{
+			"confirmed_at": "",
+			"id": "handoff",
+			"note": "",
+			"status": "PENDING"
+		}
+	],
+	"updated_at": "2026-09-14T22:56:39"
+}
